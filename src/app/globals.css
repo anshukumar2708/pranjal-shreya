@@ -1,0 +1,402 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens — royal Indian wedding palette.
+   Exposed to Tailwind as bg-maroon-700, text-gold-500, font-display, etc.
+------------------------------------------------------------------- */
+@theme {
+  --color-maroon-900: #3d0710;
+  --color-maroon-800: #4a0d14;
+  --color-maroon-700: #6b0f1a;
+  --color-maroon-600: #8a1224;
+  --color-maroon-500: #a5162c;
+
+  --color-royal-600: #b31b1b;
+  --color-royal-500: #c1121f;
+  --color-royal-400: #d93b3b;
+
+  --color-rose-pink-600: #c2185b;
+  --color-rose-pink-500: #e75480;
+  --color-rose-pink-400: #f2789f;
+  --color-rose-pink-200: #fbd3e0;
+
+  --color-peach-400: #ffb38a;
+  --color-peach-300: #ffcba4;
+  --color-peach-200: #ffe0cc;
+
+  --color-marigold-600: #e8760a;
+  --color-marigold-500: #ff7a00;
+  --color-marigold-400: #f9a620;
+  --color-marigold-300: #ffc45c;
+  --color-marigold-100: #fff0d0;
+
+  --color-gold-700: #9c7b16;
+  --color-gold-600: #b8901f;
+  --color-gold-500: #c9a227;
+  --color-gold-400: #d9b64a;
+  --color-gold-300: #e6be8a;
+  --color-gold-200: #f2dcae;
+
+  --color-leaf-700: #1f4d38;
+  --color-leaf-600: #2e6b4f;
+  --color-leaf-500: #4c9a6a;
+  --color-leaf-300: #93c9a8;
+  --color-leaf-100: #ddefe3;
+
+  --color-cream-100: #fff7ec;
+  --color-cream-200: #fdf0dd;
+  --color-ivory: #fdf6ee;
+  --color-ink: #3a1c1c;
+  --color-ink-soft: #6a4b47;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", "Georgia", serif;
+  --font-serif-alt: var(--font-marcellus), "Marcellus", "Georgia", serif;
+  --font-script: var(--font-great-vibes), "Great Vibes", cursive;
+  --font-body: var(--font-mukta), "Mukta", ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-petal: 0 18px 45px -20px rgba(107, 15, 26, 0.45);
+  --shadow-gold: 0 0 0 1px rgba(201, 162, 39, 0.35), 0 20px 50px -24px rgba(107, 15, 26, 0.5);
+
+  --animate-float-slow: floatY 9s ease-in-out infinite;
+  --animate-sway: sway 7s ease-in-out infinite;
+  --animate-spin-slow: spin 42s linear infinite;
+  --animate-twinkle: twinkle 4s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------
+   Base
+------------------------------------------------------------------- */
+@layer base {
+  * {
+    /* Decorative layers are positioned absolutely; never let them widen the page. */
+    min-width: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Clears the floating navbar when jumping to a section. */
+    scroll-padding-top: 6.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-maroon-800);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-marigold-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-marigold-300);
+    color: var(--color-maroon-900);
+  }
+
+  /* Slim, on-theme scrollbar. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-cream-200);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--color-marigold-400), var(--color-maroon-700));
+    border-radius: 999px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Reusable composite utilities
+------------------------------------------------------------------- */
+@layer components {
+  .gold-text {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-gold-700) 0%,
+      var(--color-gold-300) 30%,
+      #fff4d6 45%,
+      var(--color-gold-400) 60%,
+      var(--color-gold-700) 100%
+    );
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 9s linear infinite;
+  }
+
+  .festive-text {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-maroon-700),
+      var(--color-royal-500) 35%,
+      var(--color-marigold-500) 65%,
+      var(--color-maroon-700)
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass-card {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.82),
+      rgba(255, 247, 236, 0.62)
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    box-shadow: var(--shadow-petal);
+  }
+
+  .glass-card-dark {
+    background: linear-gradient(
+      145deg,
+      rgba(74, 13, 20, 0.72),
+      rgba(61, 7, 16, 0.55)
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(230, 190, 138, 0.3);
+  }
+
+  /* Thin double rule used to frame invitation-style panels. */
+  .gold-frame {
+    position: relative;
+    border: 1px solid rgba(201, 162, 39, 0.55);
+  }
+  .gold-frame::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .btn-royal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.9rem 2rem;
+    font-family: var(--font-serif-alt);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    color: var(--color-cream-100);
+    background-image: linear-gradient(
+      120deg,
+      var(--color-maroon-700),
+      var(--color-royal-500) 45%,
+      var(--color-marigold-500)
+    );
+    background-size: 200% auto;
+    box-shadow: var(--shadow-gold);
+    transition: background-position 0.6s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .btn-royal:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+  }
+  .btn-royal:active {
+    transform: translateY(0);
+  }
+
+  .btn-outline-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.85rem 1.9rem;
+    font-family: var(--font-serif-alt);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--color-maroon-700);
+    border: 1px solid var(--color-gold-500);
+    background: rgba(255, 255, 255, 0.6);
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+  .btn-outline-gold:hover {
+    background: var(--color-maroon-700);
+    color: var(--color-cream-100);
+    transform: translateY(-2px);
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif-alt);
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-size: 0.7rem;
+    color: var(--color-maroon-600);
+  }
+
+  /* Faint mandala/paisley wash placed behind sections. */
+  .pattern-mandala {
+    background-image: radial-gradient(
+        circle at 12% 18%,
+        rgba(249, 166, 32, 0.14) 0 2px,
+        transparent 2px
+      ),
+      radial-gradient(circle at 62% 72%, rgba(199, 18, 31, 0.1) 0 2px, transparent 2px),
+      radial-gradient(circle at 88% 32%, rgba(46, 107, 79, 0.1) 0 2px, transparent 2px);
+    background-size: 120px 120px, 160px 160px, 140px 140px;
+  }
+
+  .pattern-diamond {
+    background-image: linear-gradient(
+        45deg,
+        rgba(201, 162, 39, 0.09) 25%,
+        transparent 25%,
+        transparent 75%,
+        rgba(201, 162, 39, 0.09) 75%
+      ),
+      linear-gradient(
+        45deg,
+        rgba(201, 162, 39, 0.09) 25%,
+        transparent 25%,
+        transparent 75%,
+        rgba(201, 162, 39, 0.09) 75%
+      );
+    background-size: 28px 28px;
+    background-position: 0 0, 14px 14px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Keyframes
+------------------------------------------------------------------- */
+@keyframes shimmer {
+  to {
+    background-position: 220% center;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  90% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift, 40px), 112vh, 0) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Scroll-reveal: set by the Reveal component. */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal[data-variant="left"] {
+  transform: translate3d(-42px, 0, 0);
+}
+.reveal[data-variant="right"] {
+  transform: translate3d(42px, 0, 0);
+}
+.reveal[data-variant="scale"] {
+  transform: scale(0.92);
+}
+.reveal[data-variant="fade"] {
+  transform: none;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion — decorative movement stops, content stays visible.
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

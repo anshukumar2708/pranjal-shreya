@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Photograph coming soon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7ec"/>
+      <stop offset="55%" stop-color="#ffe0cc"/>
+      <stop offset="100%" stop-color="#ffcba4"/>
+    </linearGradient>
+    <radialGradient id="bloom" cx="35%" cy="30%">
+      <stop offset="0%" stop-color="#fff4d6"/>
+      <stop offset="100%" stop-color="#ff7a00"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="500" fill="url(#bg)"/>
+
+  <!-- Faint diamond lattice -->
+  <g stroke="#c9a227" stroke-opacity="0.18" stroke-width="1">
+    <path d="M-40 60 L440 60 M-40 160 L440 160 M-40 260 L440 260 M-40 360 L440 360 M-40 460 L440 460"/>
+  </g>
+
+  <!-- Central marigold -->
+  <g transform="translate(200 230)">
+    <g opacity="0.9">
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(0) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(45) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(90) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(135) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(180) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(225) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(270) translate(0 -20)"/>
+      <ellipse rx="13" ry="34" fill="url(#bloom)" transform="rotate(315) translate(0 -20)"/>
+    </g>
+    <circle r="16" fill="#c9a227"/>
+    <circle r="7" fill="#fff7ec"/>
+  </g>
+
+  <!-- Leaf pair -->
+  <path d="M150 300c18-20 40-20 54 0-18 20-40 20-54 0Z" fill="#2e6b4f" opacity="0.5"/>
+  <path d="M250 300c-18-20-40-20-54 0 18 20 40 20 54 0Z" fill="#2e6b4f" opacity="0.5"/>
+
+  <!-- Rule + caption -->
+  <path d="M110 340h180" stroke="#c9a227" stroke-opacity="0.55" stroke-width="1"/>
+  <text x="200" y="372" text-anchor="middle" font-family="Georgia, serif" font-size="19"
+        fill="#6b0f1a" fill-opacity="0.75" letter-spacing="3">PHOTOGRAPH</text>
+  <text x="200" y="396" text-anchor="middle" font-family="Georgia, serif" font-size="13"
+        fill="#6a4b47" fill-opacity="0.7" letter-spacing="4">COMING SOON</text>
+</svg>
