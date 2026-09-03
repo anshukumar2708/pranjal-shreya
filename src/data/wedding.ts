@@ -54,6 +54,7 @@ export const weddingData: WeddingData = {
     title: "The Groom",
     father: "Kamlesh Singh",
     mother: "Lalita Singh",
+    address: "Santrabadi, Durg, Chhattisgarh – 491001",
     bio: "Born and raised in Raipur, Pranjal is an architect who believes every good building — like every good marriage — begins with a strong foundation. He loves early morning chai, old Hindi film music, and making his family laugh at the dinner table.",
     // Square face crop of 8.jpeg - the circular hero frame is only ~288px wide,
     // so the full-length original would render his face barely legible.
@@ -209,6 +210,9 @@ export const weddingData: WeddingData = {
       description:
         "A mutual friend's birthday in Raipur. Pranjal was arguing about architecture; Sherya disagreed with every word. Neither of them left early.",
       icon: "✨",
+      image: photo("2.jpeg"),
+      alt: "Pranjal and Sherya standing together on an afternoon out",
+      focus: "50% 31%",
     },
     {
       id: "first-conversation",
@@ -217,6 +221,9 @@ export const weddingData: WeddingData = {
       description:
         "One coffee turned into four hours, a shared plate of samosas, and a promise to continue the argument next week.",
       icon: "☕",
+      image: photo("13.jpeg"),
+      alt: "Pranjal and Sherya laughing during a stop on a drive",
+      focus: "50% 23%",
     },
     {
       id: "friendship",
@@ -225,6 +232,9 @@ export const weddingData: WeddingData = {
       description:
         "Two years of long drives, terrible movie choices, and being the first person the other called with good news.",
       icon: "🌿",
+      image: photo("1.jpeg"),
+      alt: "Pranjal and Sherya on a drive together",
+      focus: "50% 29%",
     },
     {
       id: "families-met",
@@ -233,6 +243,9 @@ export const weddingData: WeddingData = {
       description:
         "Tea at the Singh house. The mothers exchanged recipes within ten minutes and the fathers discovered they support the same cricket team.",
       icon: "🏡",
+      image: photo("11.jpeg"),
+      alt: "Pranjal and Sherya laughing together as they walk in hand in hand",
+      focus: "50% 10%",
     },
     {
       id: "engagement",
@@ -241,6 +254,9 @@ export const weddingData: WeddingData = {
       description:
         "A courtyard full of marigolds, both families singing, and a yes that surprised absolutely nobody.",
       icon: "💍",
+      image: photo("10.jpeg"),
+      alt: "Pranjal handing Sherya a bouquet of red roses under the floral arch",
+      focus: "50% 33%",
     },
     {
       id: "wedding",
@@ -249,6 +265,9 @@ export const weddingData: WeddingData = {
       description:
         "The chapter we have been writing towards. And you are invited to the very first page of it.",
       icon: "🪔",
+      image: photo("9.jpeg"),
+      alt: "Pranjal and Sherya walking hand in hand between the guests",
+      focus: "50% 19%",
     },
   ],
 
@@ -519,9 +538,9 @@ export const weddingData: WeddingData = {
   },
 
   contact: [
-    { label: "Call Kamlesh Singh", value: "+91 98000 00001", href: "tel:+919800000001" },
+    { label: "Call Kamlesh Singh", value: "+91 98271 16205", href: "tel:+919827116205" },
     { label: "Call Sandeep Singh", value: "+91 98000 00002", href: "tel:+919800000002" },
-    { label: "Email us", value: "pranjalwedssherya@example.com", href: "mailto:pranjalwedssherya@example.com" },
+    { label: "Email us", value: "anshukumar2708@gmail.com", href: "mailto:anshukumar2708@gmail.com" },
   ],
 };
 

@@ -1,3 +1,4 @@
+import WeddingImage from "@/components/ui/WeddingImage";
 import type { StoryMoment } from "@/types/wedding";
 import FloatingPetals from "@/components/decorations/FloatingPetals";
 import Mandala from "@/components/decorations/Mandala";
@@ -70,16 +71,38 @@ export default function StorySection({ moments }: StorySectionProps) {
                     isRight ? "lg:ml-auto lg:pl-4" : "lg:mr-auto lg:pr-4 lg:text-right"
                   }`}
                 >
-                  <div className="glass-card relative rounded-2xl px-5 py-5 transition-transform duration-500 hover:-translate-y-1 sm:px-7 sm:py-6">
-                    <p className="font-serif-alt text-[0.62rem] tracking-[0.24em] text-marigold-600 uppercase">
-                      {moment.date}
-                    </p>
-                    <h3 className="mt-2 font-display text-xl font-semibold sm:text-2xl">
-                      {moment.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
-                      {moment.description}
-                    </p>
+                  <div className="glass-card group relative overflow-hidden rounded-2xl transition-transform duration-500 hover:-translate-y-1">
+                    {moment.image ? (
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
+                        <WeddingImage
+                          src={moment.image}
+                          alt={moment.alt ?? ""}
+                          fill
+                          loading="lazy"
+                          sizes="(max-width: 1024px) 92vw, 420px"
+                          style={{ objectPosition: moment.focus }}
+                          className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
+                        />
+                        {/* Warm wash at the foot of the photo, so the date below
+                            it never sits against a bright patch of sky. */}
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 bg-gradient-to-t from-maroon-900/30 via-transparent to-transparent"
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className="px-5 py-5 sm:px-7 sm:py-6">
+                      <p className="font-serif-alt text-[0.62rem] tracking-[0.24em] text-marigold-600 uppercase">
+                        {moment.date}
+                      </p>
+                      <h3 className="mt-2 font-display text-xl font-semibold sm:text-2xl">
+                        {moment.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
+                        {moment.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </li>

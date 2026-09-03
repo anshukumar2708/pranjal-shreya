@@ -28,6 +28,8 @@ export interface Partner {
   father: string;
   mother: string;
   bio: string;
+  /** Home address, shown on the couple card. Omit to leave the row out. */
+  address?: string;
   image: string;
   alt: string;
   /**
@@ -92,6 +94,16 @@ export interface StoryMoment {
   date: string;
   description: string;
   icon: string;
+  /** Optional photograph for the moment. Supply `alt` whenever this is set. */
+  image?: string;
+  alt?: string;
+  /**
+   * CSS `object-position` for the crop, e.g. "50% 32%".
+   * Real photographs are mostly tall, and the layout crops them to circles,
+   * 16:10 cards and masonry cells — this keeps faces inside the crop.
+   * Omit for the default `50% 50%`.
+   */
+  focus?: string;
 }
 
 export interface Venue {

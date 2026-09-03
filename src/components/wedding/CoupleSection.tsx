@@ -88,6 +88,17 @@ function PartnerCard({
               {partner.mother}
             </dd>
           </div>
+
+          {partner.address ? (
+            <div className="col-span-2 border-t border-gold-500/25 pt-4">
+              <dt className="font-serif-alt text-[0.6rem] tracking-[0.2em] text-marigold-600 uppercase">
+                Address
+              </dt>
+              <dd className="mt-1 text-sm leading-relaxed text-ink-soft sm:text-base">
+                {partner.address}
+              </dd>
+            </div>
+          ) : null}
         </dl>
       </article>
     </Reveal>
