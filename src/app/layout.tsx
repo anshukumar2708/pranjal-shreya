@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Marcellus, Great_Vibes, Mukta } from "next/font/google";
 import weddingData from "@/data/wedding";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -32,15 +33,6 @@ const mukta = Mukta({
 });
 
 const { groom, bride, dateRange, venue, hashtag } = weddingData;
-
-/**
- * Absolute origin the invitation is served from. Open Graph and Twitter cards
- * require absolute image URLs, so this MUST be set in production — put
- * `NEXT_PUBLIC_SITE_URL=https://your-domain.com` in the environment before
- * building. Without it Next falls back to localhost and no crawler, WhatsApp
- * preview or Twitter card will be able to fetch the share image.
- */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 const title = `${groom.shortName} & ${bride.shortName} — Wedding Invitation`;
 const description = `${groom.name} weds ${bride.name}. ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Haldi, Mehendi, Barat, Wedding and Reception.`;

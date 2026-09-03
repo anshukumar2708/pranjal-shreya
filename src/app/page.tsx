@@ -1,4 +1,5 @@
 import weddingData from "@/data/wedding";
+import { siteUrl } from "@/lib/site";
 
 import Navbar from "@/components/wedding/Navbar";
 import HeroSection from "@/components/wedding/HeroSection";
@@ -42,8 +43,6 @@ export default function Home() {
 
   // Structured data, so search engines can show the wedding as a real event
   // (date, venue, address) rather than just a page title.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
   // schema.org wants ISO 8601. Our copy carries human dates ("23 November
   // 2026"), so convert — and drop the field rather than emit an invalid one.
   // Parsed AS UTC and read back in UTC: anchoring to a local zone instead would

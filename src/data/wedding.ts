@@ -532,9 +532,10 @@ export const weddingData: WeddingData = {
   ],
 
   music: {
-    // Drop your own track at /public/music/wedding-theme.mp3 to replace this.
+    // Drop the track at /public/music/wedding-theme.mp3 — see the README in
+    // that folder. It starts softly on open and loops.
     src: "/music/wedding-theme.mp3",
-    title: "Shehnai — Wedding Theme",
+    title: "Shehnai & Shree Ganesh Vandana",
   },
 
   contact: [
