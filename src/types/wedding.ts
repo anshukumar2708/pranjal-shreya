@@ -127,14 +127,6 @@ export interface NavItem {
   href: `#${string}`;
 }
 
-export interface RsvpConfig {
-  /** POST target once a backend exists; `null` keeps the local demo handler. */
-  endpoint: string | null;
-  eventOptions: string[];
-  maxGuests: number;
-  deadline: string;
-}
-
 export interface WeddingData {
   groom: Partner;
   bride: Partner;
@@ -150,23 +142,7 @@ export interface WeddingData {
   brideFamily: FamilyGroup;
   gallery: GalleryImage[];
   venue: Venue;
-  rsvp: RsvpConfig;
   nav: NavItem[];
   music: { src: string; title: string };
   contact: { label: string; value: string; href: string }[];
 }
-
-/** RSVP form state, shared by the form and its validator. */
-export interface RsvpFormValues {
-  name: string;
-  email: string;
-  phone: string;
-  guests: string;
-  attending: "yes" | "no" | "";
-  event: string;
-  message: string;
-}
-
-export type RsvpErrors = Partial<Record<keyof RsvpFormValues, string>>;
-
-export type RsvpStatus = "idle" | "submitting" | "success" | "error";

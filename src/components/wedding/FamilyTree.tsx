@@ -33,6 +33,7 @@ function TreeNode({
   alt,
   name,
   role,
+  focus,
   accent,
   size = "md",
   className = "w-24 sm:w-28",
@@ -41,6 +42,8 @@ function TreeNode({
   alt: string;
   name: string;
   role: string;
+  /** CSS object-position — keeps a face inside the circular crop. */
+  focus?: string;
   accent: Accent;
   size?: "sm" | "md" | "lg";
   /** Width of the whole node, so it can fill a grid cell. */
@@ -66,6 +69,7 @@ function TreeNode({
             fill
             loading="lazy"
             sizes="(max-width: 640px) 112px, 128px"
+            style={{ objectPosition: focus }}
             className="object-cover"
           />
         </div>
@@ -142,6 +146,7 @@ function FamilyBranch({
             alt={family.parents[0].alt}
             name={family.parents[0].name}
             role={family.parents[0].role}
+            focus={family.parents[0].focus}
             accent={accent}
             size="md"
           />
@@ -156,6 +161,7 @@ function FamilyBranch({
             alt={family.parents[1].alt}
             name={family.parents[1].name}
             role={family.parents[1].role}
+            focus={family.parents[1].focus}
             accent={accent}
             size="md"
           />
@@ -169,6 +175,7 @@ function FamilyBranch({
           alt={partner.alt}
           name={partner.name}
           role={partner.title}
+          focus={partner.focus}
           accent={accent}
           size="lg"
         />
@@ -184,6 +191,7 @@ function FamilyBranch({
               alt={relative.alt}
               name={relative.name}
               role={relative.role}
+              focus={relative.focus}
               accent={accent}
               size="sm"
               className="w-full"

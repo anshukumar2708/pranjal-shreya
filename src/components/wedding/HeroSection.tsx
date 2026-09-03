@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import WeddingImage from "@/components/ui/WeddingImage";
 import type { WeddingData } from "@/types/wedding";
 import FloatingPetals from "@/components/decorations/FloatingPetals";
@@ -31,24 +33,27 @@ function CouplePortrait({
   priority?: boolean;
 }) {
   return (
-    <figure className="group flex flex-col items-center">
+    <figure className="group flex w-[var(--portrait)] flex-col items-center">
       {/* Ring wrapper is its own square box, so the decorative rings can never
-          stretch over the caption below. */}
-      <div className="relative">
+          stretch over the caption below. `w-full` is required: the figure is a
+          centred flex column, which does not stretch its children, so without
+          it the frame would shrink-to-fit to nothing. */}
+      <div className="relative w-full">
         {/* Rotating gold ring behind the portrait */}
         <span
           aria-hidden="true"
-          className="absolute -inset-2 rounded-full bg-[conic-gradient(from_0deg,#c9a227,#ff7a00,#c1121f,#e75480,#c9a227)] opacity-80 blur-[1.5px] motion-safe:animate-[spin_18s_linear_infinite] sm:-inset-3"
+          className="absolute -inset-2 rounded-full bg-[conic-gradient(from_0deg,#c9a227,#ff7a00,#c1121f,#e75480,#c9a227)] opacity-80 blur-[1.5px] motion-safe:animate-[spin_18s_linear_infinite] sm:-inset-3 lg:-inset-4"
         />
         <span aria-hidden="true" className="absolute -inset-0.5 rounded-full bg-cream-100" />
 
-        <div className="relative aspect-square w-28 overflow-hidden rounded-full border-4 border-cream-100 shadow-[0_18px_50px_-18px_rgba(107,15,26,0.7)] min-[380px]:w-32 sm:w-52 md:w-60 lg:w-72">
+        {/* `--portrait` is set once on the section; see the comment there. */}
+        <div className="relative aspect-square w-full overflow-hidden rounded-full border-4 border-cream-100 shadow-[0_18px_50px_-18px_rgba(107,15,26,0.7)]">
           <WeddingImage
             src={src}
             alt={alt}
             fill
             priority={priority}
-            sizes="(max-width: 640px) 128px, (max-width: 1024px) 240px, 288px"
+            sizes="(max-width: 640px) 45vw, (max-width: 1280px) 40vw, 420px"
             style={{ objectPosition: focus }}
             className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
           />
@@ -59,11 +64,11 @@ function CouplePortrait({
         </div>
       </div>
 
-      <figcaption className="mt-5 text-center">
-        <span className="eyebrow block text-[0.6rem] text-marigold-600 sm:text-[0.65rem]">
+      <figcaption className="mt-[clamp(0.75rem,2svh,1.25rem)] text-center">
+        <span className="eyebrow block text-[0.6rem] whitespace-nowrap text-marigold-600 sm:text-[0.65rem]">
           {label}
         </span>
-        <span className="mt-1 block font-display text-xl font-semibold text-maroon-800 sm:text-2xl lg:text-3xl">
+        <span className="mt-1 block font-display text-[clamp(0.95rem,calc(var(--portrait)*0.135),1.875rem)] font-semibold whitespace-nowrap text-maroon-800">
           {name}
         </span>
       </figcaption>
@@ -78,7 +83,20 @@ export default function HeroSection({ data }: HeroSectionProps) {
     <section
       id="home"
       aria-labelledby="hero-heading"
-      className="relative isolate flex min-h-[100svh] w-full flex-col items-center overflow-hidden bg-gradient-to-b from-marigold-100 via-cream-100 to-peach-200/60 px-4 pt-28 pb-20 sm:px-6 sm:pt-32 lg:pt-36"
+      className="relative isolate flex min-h-[100svh] w-full flex-col items-center overflow-hidden bg-gradient-to-b from-marigold-100 via-cream-100 to-peach-200/60 px-4 pt-[clamp(5.5rem,13svh,9rem)] pb-[clamp(3rem,8svh,5rem)] sm:px-6"
+      /* One diameter drives the portraits, the "&" and the garland, so the
+         couple always scales as a single unit. It is read from the viewport's
+         width AND height at once:
+         - 34vw keeps both circles, the gaps and the "&" inside a 320px screen;
+         - `66svh - 9rem` is the height term. The 9rem is what sits above and
+           below the frames — nav clearance, the two lines of script, the
+           garland's drop and the caption — so the subtraction is what keeps the
+           whole couple above the fold on a short laptop screen or a phone held
+           sideways, where a flat percentage would still push the names off.
+         - 6rem / 26rem are the floor and the ceiling. */
+      style={
+        { "--portrait": "clamp(6rem, min(34vw, calc(66svh - 9rem)), 26rem)" } as CSSProperties
+      }
     >
       {/* Background ornament layers */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
@@ -98,7 +116,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
       <FlowerCorner position="tl" className="absolute top-16 left-0 h-24 w-24 opacity-70 sm:h-36 sm:w-36" />
       <FlowerCorner position="tr" className="absolute top-16 right-0 h-24 w-24 opacity-70 sm:h-36 sm:w-36" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center lg:max-w-6xl xl:max-w-7xl">
         <Reveal variant="fade">
           <p className="eyebrow">Shubh Vivah · शुभ विवाह</p>
           <p className="mt-3 font-script text-2xl text-rose-pink-500 sm:text-3xl">
@@ -109,10 +127,10 @@ export default function HeroSection({ data }: HeroSectionProps) {
         {/* Couple portraits with the varmala arcing above them.
             The garland sits behind the portraits (z-0) so any overlap tucks
             neatly under the frames rather than across the faces. */}
-        <div className="relative mt-6 w-full sm:mt-8">
-          <Varmala className="absolute -top-2 left-1/2 z-0 w-[132%] max-w-none -translate-x-1/2 opacity-95 sm:-top-4 sm:w-[116%] lg:-top-6 lg:w-[106%]" />
+        <div className="relative mt-[clamp(0.75rem,3svh,2rem)] w-full">
+          <Varmala className="absolute -top-2 left-1/2 z-0 w-[min(100%,calc(var(--portrait)*3.1))] max-w-none -translate-x-1/2 opacity-95 sm:-top-4 lg:-top-6" />
 
-          <div className="relative z-10 flex items-start justify-center gap-2 pt-14 min-[380px]:gap-4 sm:gap-8 sm:pt-24 lg:gap-14 lg:pt-28">
+          <div className="relative z-10 flex items-start justify-center gap-[clamp(0.5rem,2vw,2.5rem)] pt-[clamp(2.25rem,9svh,7rem)]">
             <Reveal variant="left" delay={100}>
               <CouplePortrait
                 src={groom.image}
@@ -127,7 +145,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             <Reveal variant="scale" delay={250} className="self-center">
               <span
                 aria-hidden="true"
-                className="gold-text block font-script text-5xl leading-none sm:text-7xl lg:text-8xl"
+                className="gold-text block font-script text-[calc(var(--portrait)*0.3)] leading-none"
               >
                 &amp;
               </span>
@@ -146,7 +164,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
           </div>
         </div>
 
-        <Reveal delay={150} className="mt-10 w-full sm:mt-12">
+        <Reveal delay={150} className="mt-[clamp(1.5rem,5svh,3rem)] w-full">
           <h1 id="hero-heading" className="sr-only">
             {groom.name} and {bride.name} are getting married · {dateRange}
           </h1>
@@ -175,8 +193,8 @@ export default function HeroSection({ data }: HeroSectionProps) {
             <ScrollLink href="#events" className="btn-royal w-full sm:w-auto">
               View Wedding Details
             </ScrollLink>
-            <ScrollLink href="#rsvp" className="btn-outline-gold w-full sm:w-auto">
-              RSVP Now
+            <ScrollLink href="#venue" className="btn-outline-gold w-full sm:w-auto">
+              Venue Details
             </ScrollLink>
           </div>
 
@@ -189,7 +207,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
       {/* Scroll cue */}
       <div
         aria-hidden="true"
-        className="relative z-10 mt-12 flex flex-col items-center gap-2 text-maroon-600/70"
+        className="relative z-10 mt-[clamp(1.5rem,5svh,3rem)] flex flex-col items-center gap-2 text-maroon-600/70"
       >
         <span className="font-serif-alt text-[0.62rem] tracking-[0.3em] uppercase">Scroll</span>
         <span className="flex h-9 w-5 items-start justify-center rounded-full border border-maroon-600/40 p-1">

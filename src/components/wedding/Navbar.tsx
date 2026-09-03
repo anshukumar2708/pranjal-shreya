@@ -150,14 +150,6 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
               })}
             </ul>
 
-            <a
-              href="#rsvp"
-              onClick={(event) => handleNav(event, "#rsvp")}
-              className="btn-royal hidden !px-5 !py-2.5 !text-[0.7rem] lg:inline-flex"
-            >
-              RSVP
-            </a>
-
             {/* Mobile trigger */}
             <button
               type="button"
@@ -228,14 +220,6 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
               </li>
             ))}
           </ul>
-
-          <a
-            href="#rsvp"
-            onClick={(event) => handleNav(event, "#rsvp")}
-            className="btn-royal mt-5 w-full"
-          >
-            Confirm Your Seat
-          </a>
         </nav>
       </div>
     </>

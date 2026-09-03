@@ -55,6 +55,7 @@ export default function FamilyMemberCard({
             fill
             loading="lazy"
             sizes={portrait ? "(max-width: 640px) 128px, 176px" : "(max-width: 640px) 80px, 96px"}
+            style={{ objectPosition: person.focus }}
             className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
           />
         </div>

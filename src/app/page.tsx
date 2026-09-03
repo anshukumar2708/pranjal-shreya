@@ -13,7 +13,6 @@ import FamilyTree from "@/components/wedding/FamilyTree";
 import CoupleShowcase from "@/components/wedding/CoupleShowcase";
 import GallerySection from "@/components/wedding/GallerySection";
 import VenueSection from "@/components/wedding/VenueSection";
-import RSVPSection from "@/components/wedding/RSVPSection";
 import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
@@ -33,7 +32,6 @@ export default function Home() {
     brideFamily,
     gallery,
     venue,
-    rsvp,
     nav,
     music,
     countdownTarget,
@@ -95,17 +93,14 @@ export default function Home() {
         {/* 15 — Venue */}
         <VenueSection venue={venue} />
 
-        {/* 16 — RSVP */}
-        <RSVPSection config={rsvp} coupleName={coupleShortName} />
-
-        {/* 17 — Add to calendar */}
+        {/* 16 — Add to calendar */}
         <AddToCalendar events={events} coupleName={coupleShortName} />
 
-        {/* 18 — Final invitation */}
+        {/* 17 — Final invitation */}
         <FinalInvitation data={weddingData} />
       </main>
 
-      {/* 19 — Footer */}
+      {/* 18 — Footer */}
       <Footer data={weddingData} />
 
       <MusicPlayer src={music.src} title={music.title} />

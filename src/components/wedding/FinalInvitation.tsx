@@ -70,10 +70,10 @@ export default function FinalInvitation({ data }: FinalInvitationProps) {
 
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <ScrollLink
-              href="#rsvp"
+              href="#events"
               className="btn-royal w-full !bg-none !bg-marigold-500 !text-maroon-900 sm:w-auto"
             >
-              RSVP Now
+              Wedding Events
             </ScrollLink>
             <ScrollLink
               href="#venue"

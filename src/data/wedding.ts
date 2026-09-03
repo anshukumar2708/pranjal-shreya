@@ -13,9 +13,10 @@ import type { WeddingData } from "@/types/wedding";
  * in the hero and the couple section, where the full-length originals would
  * leave the faces too small to read at 288px across.
  *
- * Relatives still use `portrait()` headshots: no photographs of the family
- * were supplied. Drop real ones in `public/images/` and swap the value -
- * nothing else needs to change.
+ * The groom's parents use their own photographs from
+ * `public/images/groom-family/`. The remaining relatives still use `portrait()`
+ * headshots: no photographs of them were supplied. Drop real ones in
+ * `public/images/` and swap the value - nothing else needs to change.
  *
  * ---------------------------------------------------------------------------
  * FOCUS POINTS
@@ -258,15 +259,20 @@ export const weddingData: WeddingData = {
       {
         name: "Kamlesh Singh",
         role: "Father of the Groom",
-        image: portrait(13),
-        alt: "Portrait of Kamlesh Singh, father of the groom",
+        image: photo("groom-family/groom-father.jpeg"),
+        alt: "Portrait of Kamlesh Singh, father of the groom, in a navy collared shirt",
+        // 473x644 headshot: the family circles are square, and a plain centre
+        // crop would cut the top of his head. This lifts the window so the eyes
+        // land at about 45% of the frame.
+        focus: "50% 16%",
         note: "The quiet planner behind every family celebration.",
       },
       {
         name: "Lalita Singh",
         role: "Mother of the Groom",
-        image: portrait(44),
-        alt: "Portrait of Lalita Singh, mother of the groom",
+        image: photo("groom-family/groom-mother.jpeg"),
+        alt: "Portrait of Lalita Singh, mother of the groom, in an orange saree",
+        focus: "50% 20%",
         note: "Keeper of the family recipes and everyone's favourite person.",
       },
     ],
@@ -491,13 +497,6 @@ export const weddingData: WeddingData = {
       "https://www.google.com/maps/search/?api=1&query=Royal+Palace+Banquet+Raipur+Chhattisgarh",
   },
 
-  rsvp: {
-    endpoint: null,
-    eventOptions: ["Haldi", "Mehendi", "Barat & Wedding", "Reception", "All Events"],
-    maxGuests: 10,
-    deadline: "1 November 2026",
-  },
-
   nav: [
     { label: "Home", href: "#home" },
     { label: "Couple", href: "#couple" },
@@ -506,7 +505,6 @@ export const weddingData: WeddingData = {
     { label: "Story", href: "#story" },
     { label: "Gallery", href: "#gallery" },
     { label: "Venue", href: "#venue" },
-    { label: "RSVP", href: "#rsvp" },
   ],
 
   music: {
