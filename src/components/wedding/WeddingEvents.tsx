@@ -82,6 +82,7 @@ function EventCard({ event, index }: { event: WeddingEvent; index: number }) {
             fill
             loading="lazy"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            style={{ objectPosition: event.focus }}
             className="object-cover transition-transform duration-[1400ms] group-hover:scale-110"
           />
           <span

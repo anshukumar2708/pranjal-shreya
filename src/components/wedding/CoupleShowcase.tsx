@@ -67,6 +67,7 @@ function ShowcaseStack({
               fill
               loading="lazy"
               sizes="(max-width: 640px) 90vw, 28rem"
+              style={{ objectPosition: hero.focus }}
               className="object-cover transition-transform duration-[1400ms] group-hover:scale-110"
             />
             <span
@@ -101,6 +102,7 @@ function ShowcaseStack({
                   fill
                   loading="lazy"
                   sizes="(max-width: 640px) 30vw, 128px"
+                  style={{ objectPosition: photo.focus }}
                   className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
                 />
                 <span

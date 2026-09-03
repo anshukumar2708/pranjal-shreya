@@ -19,12 +19,15 @@ function CouplePortrait({
   alt,
   name,
   label,
+  focus,
   priority,
 }: {
   src: string;
   alt: string;
   name: string;
   label: string;
+  /** CSS object-position, so the face stays centred inside the circle. */
+  focus?: string;
   priority?: boolean;
 }) {
   return (
@@ -46,6 +49,7 @@ function CouplePortrait({
             fill
             priority={priority}
             sizes="(max-width: 640px) 128px, (max-width: 1024px) 240px, 288px"
+            style={{ objectPosition: focus }}
             className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
           />
           <span
@@ -115,6 +119,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                 alt={groom.alt}
                 name={groom.name}
                 label="The Groom"
+                focus={groom.focus}
                 priority
               />
             </Reveal>
@@ -134,6 +139,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                 alt={bride.alt}
                 name={bride.name}
                 label="The Bride"
+                focus={bride.focus}
                 priority
               />
             </Reveal>

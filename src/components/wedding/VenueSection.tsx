@@ -48,6 +48,7 @@ export default function VenueSection({ venue }: VenueSectionProps) {
               fill
               loading="lazy"
               sizes="(max-width: 1024px) 100vw, 50vw"
+              style={{ objectPosition: venue.focus }}
               className="object-cover"
             />
             <span

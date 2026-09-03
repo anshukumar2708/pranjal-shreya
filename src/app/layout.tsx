@@ -56,11 +56,21 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    // `suppressHydrationWarning` guards against browser extensions that stamp
+    // their own attributes onto <html> and <body> before React hydrates —
+    // QuillBot's `data-qb-installed`, Grammarly's `data-gr-ext-installed`, and
+    // friends. The server can never have rendered those, so React reports a
+    // hydration mismatch that no application change can fix. It only suppresses
+    // warnings for these two elements' own attributes, one level deep, so real
+    // mismatches inside the page are still reported.
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${cormorant.variable} ${marcellus.variable} ${greatVibes.variable} ${mukta.variable}`}
     >
-      <body className="antialiased">{children}</body>
+      <body suppressHydrationWarning className="antialiased">
+        {children}
+      </body>
     </html>
   );
 }

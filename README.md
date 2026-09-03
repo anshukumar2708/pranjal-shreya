@@ -39,34 +39,53 @@ What lives there:
 | `music` | Background track path and title |
 | `contact` | Footer phone/email entries |
 
-### Replacing the placeholder photos
+### The photographs
 
-All 63 photos are dummy placeholders, served from two hosts and set through two
-helpers at the top of [`src/data/wedding.ts`](src/data/wedding.ts):
+The couple's real photographs live in `public/images/` and are referenced from
+[`src/data/wedding.ts`](src/data/wedding.ts) through a `photo()` helper. See
+[`public/images/README.md`](public/images/README.md) for a per-file table of
+what each photo is and where it appears.
 
-| Helper | Source | Used for |
+Two derived crops back the circular frames in the hero and the couple section:
+
+| File | Cut from | Why |
 | --- | --- | --- |
-| `scene(id, w, h)` | Unsplash | Ceremonies, decor, venue, gallery, couple portraits |
-| `portrait(n)` | pravatar.cc | The 20 family member cards |
+| `groom-portrait.jpg` | `8.jpeg` | The hero circle is ~288px across. The full-length original would render his face too small to read, so a square face crop is used instead. |
+| `bride-portrait.jpg` | `3.jpeg` | Same reason. |
 
-Unsplash ids are collected in the `SCENE` map so each slot reads as what it
-depicts (`SCENE.brideSaree`, `SCENE.celebrationLights`, …).
+The family member cards are the one thing still on placeholders — `portrait(n)`
+serves [pravatar.cc](https://i.pravatar.cc) headshots, because no photographs of
+the relatives were supplied. Remote hosts must be allow-listed in
+[`next.config.ts`](next.config.ts) under `images.remotePatterns`; local
+`/public` paths need no configuration.
 
-To use real photos, drop them in `public/images/` and replace the value with a
-plain path — the helpers are only a convenience, any string works:
+#### Focus points
+
+Twelve of the thirteen supplied photographs are tall, and the layout crops
+photos into circles, 16:10 event cards and masonry cells. Every image slot
+therefore takes an optional `focus` — a CSS `object-position` — that decides
+which slice of a tall frame survives the crop:
 
 ```ts
-image: "/images/pranjal.jpg",
-alt: "Portrait of Pranjal Singh, the groom",
+{
+  src: photo("7.jpeg"),
+  alt: "Pranjal leading Sherya into the hall through the smoke",
+  caption: "The Grand Entry",
+  focus: "50% 12%",   // keep the top of the frame: that is where the faces are
+}
 ```
 
-Remote hosts must be allow-listed in [`next.config.ts`](next.config.ts) under
-`images.remotePatterns`; local `/public` paths need no configuration.
+Lower percentages keep more of the top of the photo. Omitting `focus` falls
+back to a plain centre crop, which is right for photos that already match the
+slot's shape. If a crop ever looks off, this one value is the only thing to
+tune.
 
 **If a photo fails to load**, [`WeddingImage`](src/components/ui/WeddingImage.tsx)
 swaps in `public/images/placeholder.svg` — a local marigold card reading
-"Photograph coming soon". The layout and alt text stay intact, so a placeholder
-host going down can never leave blank holes in the invitation.
+"Photograph coming soon". The layout and alt text stay intact, so a missing file
+can never leave a blank hole in the invitation. While a photo is still decoding,
+the same component holds its frame with a blurred cream-to-blush wash, so
+pictures fade up out of the page's palette instead of popping in.
 
 ### Background music
 

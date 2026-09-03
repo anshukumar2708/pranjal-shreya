@@ -149,6 +149,7 @@ export default function GallerySection({ images }: GallerySectionProps) {
                 fill
                 loading="lazy"
                 sizes="(max-width: 640px) 48vw, (max-width: 1024px) 31vw, 23vw"
+                style={{ objectPosition: image.focus }}
                 className="object-cover transition-transform duration-[1400ms] group-hover:scale-110"
               />
               <span

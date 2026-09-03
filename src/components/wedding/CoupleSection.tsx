@@ -47,6 +47,7 @@ function PartnerCard({
               fill
               sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 224px"
               loading="lazy"
+              style={{ objectPosition: partner.focus }}
               className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
             />
           </div>

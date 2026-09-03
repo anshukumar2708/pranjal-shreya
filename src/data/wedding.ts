@@ -2,57 +2,40 @@ import type { WeddingData } from "@/types/wedding";
 
 /**
  * Every piece of copy, name and image on the site comes from this file.
- * To personalise the invitation, edit here only — no component hardcodes wedding content.
+ * To personalise the invitation, edit here only - no component hardcodes wedding content.
  *
  * ---------------------------------------------------------------------------
- * DUMMY IMAGES
+ * PHOTOGRAPHS
  * ---------------------------------------------------------------------------
- * Two placeholder sources are used, both verified to serve real photographs:
+ * The couple's real photographs live in `public/images/` and are referenced
+ * through `photo()`. Two square, face-centred crops - `groom-portrait.jpg` and
+ * `bride-portrait.jpg`, cut from 8.jpeg and 3.jpeg - back the circular frames
+ * in the hero and the couple section, where the full-length originals would
+ * leave the faces too small to read at 288px across.
  *
- *   scene()    — Unsplash wedding photography (ceremonies, decor, venue, couple)
- *   portrait() — pravatar.cc headshots, used for the family member cards
+ * Relatives still use `portrait()` headshots: no photographs of the family
+ * were supplied. Drop real ones in `public/images/` and swap the value -
+ * nothing else needs to change.
  *
- * To use your own photos, drop them in `public/images/` and replace the value
- * with a plain path, e.g.  image: "/images/pranjal.jpg".
- * Nothing else needs to change — every component reads from this file.
+ * ---------------------------------------------------------------------------
+ * FOCUS POINTS
+ * ---------------------------------------------------------------------------
+ * Every supplied photograph but one is tall, and the layout crops photos into
+ * circles, 16:10 event cards and masonry cells. `focus` is a CSS
+ * `object-position` deciding which slice of a tall frame survives that crop -
+ * it is what keeps faces inside the visible band instead of being cut off at
+ * the chin. Omitting it falls back to a plain centre crop; tune a value if a
+ * crop ever looks off.
  *
  * If an image ever fails to load, `WeddingImage` swaps in a local floral
  * placeholder, so the layout never breaks.
  */
 
-/** A wedding photograph from Unsplash, cropped to the size the layout needs. */
-const scene = (id: string, w: number, h: number) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
+/** A photograph from `public/images/`. */
+const photo = (name: string) => `/images/${name}`;
 
-/** A portrait headshot, used for relatives. `n` selects the face (1–70). */
+/** A portrait headshot, used for relatives. `n` selects the face (1-70). */
 const portrait = (n: number, size = 600) => `https://i.pravatar.cc/${size}?img=${n}`;
-
-/** Named Unsplash photo ids, so each slot below reads as what it depicts. */
-const SCENE = {
-  brideSaree: "1610030469983-98e550d6193c",
-  groomPortrait: "1607346256330-dee7af15f7c5",
-  groomFormal: "1618886614638-80e3c103d31a",
-  coupleConfetti: "1583939003579-730e3918a45a",
-  coupleBarn: "1595407753234-0882f1e77954",
-  couplePalms: "1606216794074-735e91aa2c92",
-  coupleField: "1604017011826-d3b4c23f8914",
-  coupleBeach: "1544078751-58fee2d8a03b",
-  brideVeilBeach: "1537633552985-df8429e8048b",
-  brideVeilMono: "1460978812857-470ed1c77af0",
-  handsHeart: "1520854221256-17451cc331bf",
-  handsTable: "1556484687-30636164638b",
-  ringHands: "1465495976277-4387d4b0b4c6",
-  bouquet: "1519741497674-611481863552",
-  aisleFlowers: "1469371670807-013ccf25f16a",
-  tableFlowers: "1519225421980-715cb0215aed",
-  receptionCandles: "1525772764200-be829a350797",
-  celebrationLights: "1516450360452-9312f5e86fc7",
-  bridalParty: "1583939411023-14783179e581",
-  weddingShoes: "1509927083803-4bd519298ac4",
-  lawnChairs: "1522673607200-164d1b6ce486",
-  balloons: "1530103862676-de8c9debad1d",
-  feast: "1600891964092-4316c288032e",
-} as const;
 
 export const weddingData: WeddingData = {
   hashtag: "#PranjalWedsSherya",
@@ -71,28 +54,34 @@ export const weddingData: WeddingData = {
     father: "Kamlesh Singh",
     mother: "Lalita Singh",
     bio: "Born and raised in Raipur, Pranjal is an architect who believes every good building — like every good marriage — begins with a strong foundation. He loves early morning chai, old Hindi film music, and making his family laugh at the dinner table.",
-    image: scene(SCENE.groomPortrait, 900, 1200),
-    alt: "Portrait of Pranjal Singh, the groom, in traditional wedding attire",
+    // Square face crop of 8.jpeg - the circular hero frame is only ~288px wide,
+    // so the full-length original would render his face barely legible.
+    image: photo("groom-portrait.jpg"),
+    alt: "Portrait of Pranjal Singh, the groom, in his wine sherwani",
     gallery: [
       {
-        src: scene(SCENE.groomPortrait, 800, 1000),
-        alt: "Pranjal Singh in a cream sherwani",
+        // 3:4 original - fills the showcase's 3:4 hero frame with no crop at all.
+        src: photo("8.jpeg"),
+        alt: "Pranjal Singh standing in a deep wine embroidered sherwani",
         caption: "The Sherwani",
       },
       {
-        src: scene(SCENE.coupleBarn, 800, 1000),
-        alt: "Pranjal Singh smiling during a family celebration",
-        caption: "Family Function",
+        src: photo("11.jpeg"),
+        alt: "Pranjal Singh laughing with Sherya as they walk in hand in hand",
+        caption: "That Smile",
+        focus: "50% 22%",
       },
       {
-        src: scene(SCENE.groomFormal, 800, 1000),
-        alt: "Pranjal Singh dressed for the engagement in a formal black suit",
-        caption: "Golden Hour",
+        src: photo("7.jpeg"),
+        alt: "Pranjal Singh leading Sherya into the hall through the smoke",
+        caption: "The Grand Entry",
+        focus: "50% 0%",
       },
       {
-        src: scene(SCENE.handsHeart, 800, 1000),
-        alt: "Pranjal Singh during his engagement ceremony",
-        caption: "Engagement Day",
+        src: photo("13.jpeg"),
+        alt: "Pranjal Singh looking at Sherya during a stop on a drive",
+        caption: "Off Duty",
+        focus: "50% 0%",
       },
     ],
   },
@@ -104,28 +93,34 @@ export const weddingData: WeddingData = {
     father: "Sandeep Singh",
     mother: "Suneeta Singh",
     bio: "Sherya is a classical dancer turned graphic designer from Raipur. She collects handwoven sarees, paints when the house is quiet, and has never once said no to a plate of jalebi. Her warmth is the first thing everyone remembers about her.",
-    image: scene(SCENE.brideSaree, 900, 1200),
-    alt: "Portrait of Sherya Singh, the bride, in bridal red and gold",
+    // Square face crop of 3.jpeg, for the same reason as the groom's.
+    image: photo("bride-portrait.jpg"),
+    alt: "Portrait of Sherya Singh, the bride, in a blush pink lehenga",
     gallery: [
       {
-        src: scene(SCENE.brideSaree, 800, 1000),
-        alt: "Sherya Singh in a red bridal lehenga",
-        caption: "Bridal Red",
+        src: photo("12.jpeg"),
+        alt: "Sherya Singh in her blush lehenga before the ceremony",
+        caption: "Getting Ready",
+        // Trims the empty curtain above her so she sits centred in the frame.
+        focus: "50% 78%",
       },
       {
-        src: scene(SCENE.handsTable, 800, 1000),
-        alt: "Sherya Singh with mehendi on her hands",
-        caption: "Mehendi Hands",
+        src: photo("3.jpeg"),
+        alt: "Sherya Singh smiling in a studio portrait, mehendi on her hands",
+        caption: "Pink & Silver",
+        focus: "55% 58%",
       },
       {
-        src: scene(SCENE.brideVeilBeach, 800, 1000),
-        alt: "Sherya Singh laughing at a family gathering",
-        caption: "Pure Joy",
+        src: photo("5.jpeg"),
+        alt: "Sherya Singh seated for the ceremony beside the puja thali",
+        caption: "The Rituals",
+        focus: "52% 34%",
       },
       {
-        src: scene(SCENE.brideVeilMono, 800, 1000),
-        alt: "Sherya Singh in a marigold decorated courtyard",
-        caption: "Marigold Courtyard",
+        src: photo("9.jpeg"),
+        alt: "Sherya Singh walking in hand in hand with Pranjal",
+        caption: "Hand In Hand",
+        focus: "50% 0%",
       },
     ],
   },
@@ -144,8 +139,9 @@ export const weddingData: WeddingData = {
         "Turmeric, laughter and a very yellow morning. Come ready to be smeared in blessings — and please do not wear anything you love too much.",
       theme: "haldi",
       icon: "🌼",
-      image: scene(SCENE.bouquet, 900, 700),
-      alt: "Marigold and turmeric decorations set up for a Haldi ceremony",
+      image: photo("5.jpeg"),
+      alt: "Sherya seated for the ceremony rituals beside the puja thali",
+      focus: "50% 31%",
       calendar: false,
     },
     {
@@ -161,8 +157,9 @@ export const weddingData: WeddingData = {
         "An evening of henna, dholak songs and far too many sweets. Bring your best voice — the ladies of both families have promised a singing duel.",
       theme: "mehendi",
       icon: "🌿",
-      image: scene(SCENE.handsTable, 900, 700),
-      alt: "Henna patterns being applied at a Mehendi ceremony",
+      image: photo("12.jpeg"),
+      alt: "Sherya with mehendi on both hands, waiting in her blush lehenga",
+      focus: "50% 48%",
       calendar: false,
     },
     {
@@ -178,8 +175,9 @@ export const weddingData: WeddingData = {
         "The dhol starts at six and does not stop. Dance the groom to the gate, watch the pheras under the stars, and stay for the feast.",
       theme: "barat",
       icon: "🥁",
-      image: scene(SCENE.celebrationLights, 900, 700),
-      alt: "A Barat procession with dhol players and festive lights",
+      image: photo("7.jpeg"),
+      alt: "Pranjal and Sherya walking into the hall through the smoke",
+      focus: "50% 12%",
       calendar: true,
     },
     {
@@ -195,8 +193,9 @@ export const weddingData: WeddingData = {
         "A royal evening to close the celebration — dinner, music, and the newlyweds meeting every single guest who made the journey.",
       theme: "reception",
       icon: "✨",
-      image: scene(SCENE.receptionCandles, 900, 700),
-      alt: "An elegantly lit banquet hall prepared for a wedding reception",
+      image: photo("9.jpeg"),
+      alt: "Pranjal and Sherya walking hand in hand between the guests",
+      focus: "50% 19%",
       calendar: true,
     },
   ],
@@ -395,69 +394,84 @@ export const weddingData: WeddingData = {
   },
 
   gallery: [
+    // The masonry mixes tall cells (row-span-2, roughly 3:4) with short ones
+    // (row-span-1, roughly 16:10). `tall` matches each photo's own shape, and
+    // `focus` is what keeps faces inside the short, landscape-shaped cells.
     {
-      src: scene(SCENE.coupleConfetti, 900, 1200),
-      alt: "Pranjal and Sherya together at their engagement",
+      src: photo("11.jpeg"),
+      alt: "Pranjal and Sherya laughing together as they walk in hand in hand",
       caption: "Us, Together",
       tall: true,
+      focus: "50% 10%",
     },
     {
-      src: scene(SCENE.groomPortrait, 900, 700),
-      alt: "Pranjal in a festive kurta during a family function",
+      src: photo("13.jpeg"),
+      alt: "Pranjal and Sherya laughing during a stop on a drive",
+      caption: "Just Us Two",
+      focus: "50% 23%",
+    },
+    {
+      src: photo("8.jpeg"),
+      alt: "Pranjal in his deep wine embroidered sherwani",
       caption: "The Groom",
+      tall: true,
     },
     {
-      src: scene(SCENE.brideSaree, 900, 1200),
-      alt: "Sherya in a red lehenga with traditional jewellery",
+      src: photo("1.jpeg"),
+      alt: "Pranjal and Sherya on a drive together before the wedding",
+      caption: "Golden Days",
+      focus: "50% 29%",
+    },
+    {
+      src: photo("5.jpeg"),
+      alt: "Sherya seated for the ceremony beside the puja thali",
+      caption: "The Rituals",
+      focus: "50% 31%",
+    },
+    {
+      src: photo("3.jpeg"),
+      alt: "Sherya smiling in a studio portrait, mehendi on her hands",
       caption: "The Bride",
       tall: true,
+      focus: "55% 49%",
     },
     {
-      src: scene(SCENE.bouquet, 900, 700),
-      alt: "Turmeric and marigolds arranged for the Haldi ceremony",
-      caption: "Haldi Mornings",
+      src: photo("7.jpeg"),
+      alt: "Pranjal leading Sherya into the hall through the smoke",
+      caption: "The Grand Entry",
+      focus: "50% 12%",
     },
     {
-      src: scene(SCENE.handsTable, 900, 700),
-      alt: "Intricate henna patterns drawn on hands",
-      caption: "Mehendi Evening",
+      src: photo("2.jpeg"),
+      alt: "Pranjal and Sherya standing together on an afternoon out",
+      caption: "Before It All Began",
+      focus: "50% 31%",
     },
     {
-      src: scene(SCENE.aisleFlowers, 900, 1200),
-      alt: "Marigold garlands hanging above a wedding mandap",
-      caption: "Marigold Skies",
+      src: photo("12.jpeg"),
+      alt: "Sherya in her blush lehenga before the ceremony",
+      caption: "Getting Ready",
       tall: true,
+      focus: "50% 95%",
     },
     {
-      src: scene(SCENE.celebrationLights, 900, 700),
-      alt: "Dhol players leading a Barat procession",
-      caption: "Barat Beats",
+      src: photo("10.jpeg"),
+      alt: "Pranjal handing Sherya a bouquet of red roses under the floral arch",
+      caption: "Roses & Promises",
+      focus: "50% 33%",
     },
     {
-      src: scene(SCENE.bridalParty, 900, 700),
-      alt: "Both families gathered for a group photograph",
-      caption: "Our People",
+      // The one landscape photograph in the set - it fills a short cell exactly.
+      src: photo("4.jpeg"),
+      alt: "Sherya reflected in the mirror while she waits, softly lit",
+      caption: "A Quiet Moment",
+      focus: "60% 40%",
     },
     {
-      src: scene(SCENE.receptionCandles, 900, 1200),
-      alt: "A softly lit reception stage with floral arrangements",
-      caption: "Reception Night",
-      tall: true,
-    },
-    {
-      src: scene(SCENE.weddingShoes, 900, 700),
-      alt: "Traditional wedding outfits and jewellery laid out",
-      caption: "The Trousseau",
-    },
-    {
-      src: scene(SCENE.tableFlowers, 900, 700),
-      alt: "Rose petals and jasmine flowers in a brass bowl",
-      caption: "Petals & Prayers",
-    },
-    {
-      src: scene(SCENE.coupleField, 900, 700),
-      alt: "Pranjal and Sherya laughing during a photoshoot",
-      caption: "Somewhere In Between",
+      src: photo("9.jpeg"),
+      alt: "Pranjal and Sherya walking hand in hand between the guests",
+      caption: "Hand In Hand",
+      focus: "50% 19%",
     },
   ],
 
@@ -467,8 +481,9 @@ export const weddingData: WeddingData = {
     city: "Raipur, Chhattisgarh, India",
     description:
       "A palace-style banquet with lantern-lit lawns, a marble mandap courtyard, and parking for 300 cars. Both the Barat and the Reception happen here, so you only need to find your way once.",
-    image: scene(SCENE.aisleFlowers, 1400, 900),
-    alt: "The Royal Palace and Banquet venue lit up in the evening",
+    image: photo("10.jpeg"),
+    alt: "The floral arch and chandelier of the banquet hall on the wedding day",
+    focus: "50% 33%",
     date: "25 – 26 November 2026",
     time: "Barat 6:00 PM · Reception 7:00 PM",
     // Replace with the real Google Maps place link once confirmed.
