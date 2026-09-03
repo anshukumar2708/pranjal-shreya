@@ -46,7 +46,7 @@ export default function FamilyMemberCard({
 
         <div
           className={`relative aspect-square overflow-hidden rounded-full border-2 border-cream-100 shadow-petal ${
-            portrait ? "w-32 sm:w-40 lg:w-44" : "w-20 sm:w-24"
+            portrait ? "w-32 sm:w-40 lg:w-44" : "w-28 sm:w-32 lg:w-40"
           }`}
         >
           <WeddingImage
@@ -54,7 +54,11 @@ export default function FamilyMemberCard({
             alt={person.alt}
             fill
             loading="lazy"
-            sizes={portrait ? "(max-width: 640px) 128px, 176px" : "(max-width: 640px) 80px, 96px"}
+            sizes={
+              portrait
+                ? "(max-width: 640px) 128px, 176px"
+                : "(max-width: 640px) 112px, (max-width: 1024px) 128px, 160px"
+            }
             style={{ objectPosition: person.focus }}
             className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
           />

@@ -13,10 +13,10 @@ import type { WeddingData } from "@/types/wedding";
  * in the hero and the couple section, where the full-length originals would
  * leave the faces too small to read at 288px across.
  *
- * The groom's parents use their own photographs from
- * `public/images/groom-family/`. The remaining relatives still use `portrait()`
- * headshots: no photographs of them were supplied. Drop real ones in
- * `public/images/` and swap the value - nothing else needs to change.
+ * The groom's side - parents, siblings, uncle, aunt and bua - uses their own
+ * photographs from `public/images/groom-family/`. The bride's relatives still
+ * use `portrait()` headshots: no photographs of them were supplied. Drop real
+ * ones in `public/images/` and swap the value - nothing else needs to change.
  *
  * ---------------------------------------------------------------------------
  * FOCUS POINTS
@@ -278,52 +278,57 @@ export const weddingData: WeddingData = {
     ],
     members: [
       {
-        name: "Aditya Singh",
-        role: "Elder Brother",
-        image: portrait(12),
-        alt: "Portrait of Aditya Singh, elder brother of the groom",
-      },
-      {
-        name: "Ananya Singh",
-        role: "Sister",
-        image: portrait(36),
-        alt: "Portrait of Ananya Singh, sister of the groom",
-      },
-      {
-        name: "Mahesh Singh",
+        name: "Arvind Singh",
         role: "Uncle (Chacha)",
-        image: portrait(51),
-        alt: "Portrait of Mahesh Singh, uncle of the groom",
+        image: photo("groom-family/groom-uncle.jpeg"),
+        alt: "Portrait of Arvind Singh, uncle of the groom, in a black shirt",
+        focus: "50% 0%",
       },
       {
-        name: "Rekha Singh",
+        name: "Rupa Singh",
         role: "Aunt (Chachi)",
-        image: portrait(32),
-        alt: "Portrait of Rekha Singh, aunt of the groom",
+        image: photo("groom-family/groom-aunty.jpeg"),
+        alt: "Portrait of Rupa Singh, aunt of the groom, in a grey and gold saree",
+        focus: "50% 0%",
       },
       {
-        name: "Kabir Singh",
-        role: "Cousin",
-        image: portrait(53),
-        alt: "Portrait of Kabir Singh, cousin of the groom",
+        name: "Manish Singh",
+        role: "Bua (Father's Sister)",
+        image: photo("groom-family/groom-bua.jpeg"),
+        alt: "Portrait of Manish Singh, bua of the groom, in a cream blazer",
       },
       {
-        name: "Ishita Singh",
-        role: "Cousin",
-        image: portrait(47),
-        alt: "Portrait of Ishita Singh, cousin of the groom",
+        name: "Himanshu Singh",
+        role: "Brother",
+        image: photo("groom-family/groom-brother-1.jpeg"),
+        alt: "Portrait of Himanshu Singh, brother of the groom, in a printed shirt",
+        // 1024x1280 and his head starts at the very top edge, so the square
+        // crop has to begin there too.
+        focus: "50% 0%",
       },
       {
-        name: "Ramesh Singh",
-        role: "Grandfather (Dadaji)",
-        image: portrait(50),
-        alt: "Portrait of Ramesh Singh, grandfather of the groom",
+        name: "Ishan Singh",
+        role: "Brother",
+        image: photo("groom-family/groom-brother-2.jpeg"),
+        alt: "Portrait of Ishan Singh, brother of the groom, in a checked overshirt",
+        // Landscape 423x366 and he stands well right of frame, so the square
+        // crop takes the right-hand side and drops the doorway behind him.
+        focus: "85% 50%",
       },
       {
-        name: "Kamla Devi",
-        role: "Grandmother (Dadiji)",
-        image: portrait(29),
-        alt: "Portrait of Kamla Devi, grandmother of the groom",
+        name: "Palak Singh",
+        role: "Sister",
+        image: photo("groom-family/groom-sister.jpg"),
+        alt: "Portrait of Palak Singh, sister of the groom, by the water",
+        // Landscape 960x720 with her off to the left of frame.
+        focus: "33% 50%",
+      },
+      {
+        name: "Rajveer Singh",
+        role: "Brother",
+        image: photo("groom-family/groom-brother-3.jpg"),
+        alt: "Portrait of Rajveer Singh, the youngest brother of the groom, smiling",
+        focus: "50% 20%",
       },
     ],
   },

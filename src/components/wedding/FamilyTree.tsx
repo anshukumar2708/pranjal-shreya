@@ -131,7 +131,13 @@ function FamilyBranch({
   accent: Accent;
 }) {
   // Show the closest relatives; the full list lives in the family sections above.
-  const relatives = family.members.slice(0, 4);
+  // Siblings first, whatever order the family grid above happens to use — the
+  // nodes under the couple are their generation, not their parents'. The role
+  // has to match on its own: "Bua (Father's Sister)" is not a sibling.
+  const isSibling = (role: string) => /^(elder |younger |twin )?(brother|sister)$/i.test(role.trim());
+  const relatives = [...family.members]
+    .sort((a, b) => Number(isSibling(b.role)) - Number(isSibling(a.role)))
+    .slice(0, 4);
 
   return (
     <Reveal variant={accent === "warm" ? "left" : "right"} className="h-full">
