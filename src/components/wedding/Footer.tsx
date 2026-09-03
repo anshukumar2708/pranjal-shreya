@@ -13,7 +13,7 @@ export default function Footer({ data }: FooterProps) {
   const year = new Date(data.countdownTarget).getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-maroon-900 to-[#2a040c] px-4 pt-16 pb-10 sm:px-6">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-maroon-900 to-[#2a040c] px-4 pt-16 pb-24 sm:px-6 sm:pb-28">
       <MarigoldBorder edge="top" />
 
       <div aria-hidden="true" className="pattern-diamond absolute inset-0 opacity-25" />
@@ -95,6 +95,27 @@ export default function Footer({ data }: FooterProps) {
         <p className="mt-4 text-[0.7rem] text-cream-200/45">
           © {year} {groom.name} &amp; {bride.name}. Made with love for our families and friends.
         </p>
+
+        {/* Developer credit */}
+        <div className="mt-8 border-t border-gold-500/20 pt-6">
+          <p className="font-serif-alt text-[0.55rem] tracking-[0.24em] text-cream-200/45 uppercase">
+            Designed &amp; Developed by
+          </p>
+          <p className="mt-2 flex flex-col items-center justify-center gap-x-3 gap-y-1 sm:flex-row">
+            <span className="font-display text-sm text-cream-100/90 sm:text-base">
+              Anshu Singh
+            </span>
+            <span aria-hidden="true" className="hidden text-gold-500/40 sm:inline">
+              ·
+            </span>
+            <a
+              href="tel:+919770601469"
+              className="font-display text-sm text-cream-200/70 transition-colors hover:text-marigold-300 sm:text-base"
+            >
+              +91 97706 01469
+            </a>
+          </p>
+        </div>
       </Reveal>
     </footer>
   );

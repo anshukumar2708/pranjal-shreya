@@ -40,8 +40,64 @@ export default function Home() {
 
   const coupleShortName = `${groom.shortName} & ${bride.shortName}`;
 
+  // Structured data, so search engines can show the wedding as a real event
+  // (date, venue, address) rather than just a page title.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+  // schema.org wants ISO 8601. Our copy carries human dates ("23 November
+  // 2026"), so convert — and drop the field rather than emit an invalid one.
+  // Parsed AS UTC and read back in UTC: anchoring to a local zone instead would
+  // shift every date a day earlier once it round-tripped through toISOString.
+  const isoDate = (human: string) => {
+    const parsed = new Date(`${human} UTC`);
+    return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString().slice(0, 10);
+  };
+
+  const eventSchema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: `${groom.name} & ${bride.name} — Wedding`,
+    description: `The wedding of ${groom.name} and ${bride.name}, ${dateRange}, at ${venue.name}.`,
+    startDate: countdownTarget,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    image: [`${siteUrl}/og-image.jpg`],
+    location: {
+      "@type": "Place",
+      name: venue.name,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: venue.address,
+        addressLocality: venue.city,
+        addressCountry: "IN",
+      },
+      ...(venue.mapsUrl ? { hasMap: venue.mapsUrl } : {}),
+    },
+    organizer: {
+      "@type": "Person",
+      name: `${groom.name} & ${bride.name}`,
+    },
+    subEvent: events.map((event) => ({
+      "@type": "Event",
+      name: event.name,
+      ...(isoDate(event.date) ? { startDate: isoDate(event.date) } : {}),
+      description: event.description,
+      location: {
+        "@type": "Place",
+        name: event.venue,
+        address: { "@type": "PostalAddress", streetAddress: event.address },
+      },
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        // The payload is built here from our own data — never user input.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+      />
+
       <Navbar items={nav} coupleName={coupleShortName} />
 
       <main id="main">
