@@ -5,7 +5,7 @@ import type { NavItem } from "@/types/wedding";
 
 interface NavbarProps {
   items: NavItem[];
-  /** Shown as the wordmark, e.g. "Pranjal & Sherya". */
+  /** Shown as the wordmark, e.g. "Pranjal & Shriya". */
   coupleName: string;
 }
 

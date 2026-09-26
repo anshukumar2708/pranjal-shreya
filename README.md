@@ -1,4 +1,4 @@
-# Pranjal & Sherya — Wedding Invitation
+# Pranjal & Shriya — Wedding Invitation
 
 A premium one-page Indian wedding invitation built with **Next.js 16**, **React 19**, **TypeScript** and **Tailwind CSS v4**.
 
@@ -69,7 +69,7 @@ which slice of a tall frame survives the crop:
 ```ts
 {
   src: photo("7.jpeg"),
-  alt: "Pranjal leading Sherya into the hall through the smoke",
+  alt: "Pranjal leading Shriya into the hall through the smoke",
   caption: "The Grand Entry",
   focus: "50% 12%",   // keep the top of the frame: that is where the faces are
 }

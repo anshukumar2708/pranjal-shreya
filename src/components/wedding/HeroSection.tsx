@@ -118,7 +118,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center text-center lg:max-w-6xl xl:max-w-7xl">
         <Reveal variant="fade">
-          <p className="eyebrow">Shubh Vivah · शुभ विवाह</p>
+          <p className="eyebrow font-bold">शुभ-विवाह</p>
           <p className="mt-3 font-script text-2xl text-rose-pink-500 sm:text-3xl">
             Together with our families
           </p>
