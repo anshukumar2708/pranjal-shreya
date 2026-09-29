@@ -34,6 +34,7 @@ export default function Home() {
     brideFamily,
     gallery,
     venue,
+    receptionVenue,
     nav,
     music,
     countdownTarget,
@@ -154,8 +155,8 @@ export default function Home() {
         {/* 14 — Wedding gallery */}
         {/* <GallerySection images={gallery} /> */}
 
-        {/* 15 — Venue */}
-        <VenueSection venue={venue} />
+        {/* 15 — Wedding & reception venues */}
+        <VenueSection venues={[venue, receptionVenue]} />
 
         {/* 16 — Add to calendar */}
         {/* <AddToCalendar events={events} coupleName={coupleShortName} /> */}

@@ -206,9 +206,9 @@ export const weddingData: WeddingData = {
     {
       id: "reception",
       name: "Reception",
-      date: "26 November 2026",
-      start: "2026-11-26T19:00:00+05:30",
-      end: "2026-11-26T23:59:00+05:30",
+      date: "25 November 2026",
+      start: "2026-11-25T19:00:00+05:30",
+      end: "2026-11-25T23:59:00+05:30",
       time: "7:00 PM onwards",
       venue: "Nirmal's SAPTAPADI, Marriage Garden and Resort",
       address: "Borsi Road, near Nirmal HP Fuels, Hanoda, Durg, Chhattisgarh",
@@ -527,20 +527,39 @@ export const weddingData: WeddingData = {
   ],
 
   venue: {
+    label: "Wedding",
+    icon: "🛕",
     name: "Thakur Vighnaharan Singh Rajput Bhawan",
     address: "Sarona, Raipur, Chhattisgarh, India",
     city: "Raipur, Chhattisgarh, India",
     description:
-      "A palace-style banquet with lantern-lit lawns, a marble mandap courtyard, and parking for 300 cars. Both the Barat and the Reception happen here, so you only need to find your way once.",
+      "A palace-style banquet with lantern-lit lawns and a marble mandap courtyard — where the Barat arrives and the pheras are taken.",
     image: photo("10.jpeg"),
     alt: "The floral arch and chandelier of the banquet hall on the wedding day",
     focus: "50% 33%",
-    date: "25 – 26 November 2026",
-    time: "Barat 6:00 PM · Reception 7:00 PM",
+    date: "24 November 2026",
+    time: "6:00 PM onwards",
     // Used as the event's map link in search results; "Get Directions" routes
     // to `name, address` instead.
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=Thakur+Vighnaharan+Singh+Rajput+Bhawan+Sarona+Raipur+Chhattisgarh",
+  },
+
+  receptionVenue: {
+    label: "Reception",
+    icon: "🥂",
+    name: "Nirmal's SAPTAPADI, Marriage Garden and Resort",
+    address: "Borsi Road, near Nirmal HP Fuels, Hanoda, Durg, Chhattisgarh, India",
+    city: "Durg, Chhattisgarh, India",
+    description:
+      "A marriage garden and resort on Borsi Road, Durg — the setting for a royal evening of dinner, music and blessings for the newlyweds.",
+    image: photo("4.jpeg"),
+    alt: "Shriya smiling in her blush lehenga, framed by grey curtains",
+    focus: "75% 35%",
+    date: "25 November 2026",
+    time: "7:00 PM onwards",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Nirmal%27s+SAPTAPADI+Marriage+Garden+and+Resort+Borsi+Road+Hanoda+Durg+Chhattisgarh",
   },
 
   nav: [
@@ -549,7 +568,7 @@ export const weddingData: WeddingData = {
     { label: "Invitation", href: "#invitation" },
     { label: "Events", href: "#events" },
     { label: "Photos", href: "#photos" },
-    { label: "Venue", href: "#venue" },
+    { label: "Venues", href: "#venue" },
   ],
 
   music: {

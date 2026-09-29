@@ -113,6 +113,9 @@ export interface StoryMoment {
 }
 
 export interface Venue {
+  /** Which celebration is held here, e.g. "Wedding" or "Reception". */
+  label: string;
+  icon: string;
   name: string;
   address: string;
   city: string;
@@ -160,6 +163,7 @@ export interface WeddingData {
   brideFamily: FamilyGroup;
   gallery: GalleryImage[];
   venue: Venue;
+  receptionVenue: Venue;
   nav: NavItem[];
   music: { src: string; title: string };
   contact: { label: string; value: string; href: string }[];
