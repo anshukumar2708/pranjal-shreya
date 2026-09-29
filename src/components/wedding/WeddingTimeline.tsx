@@ -10,6 +10,7 @@ interface WeddingTimelineProps {
 const NODE_COLORS: Record<EventTheme, string> = {
   haldi: "from-marigold-300 to-marigold-600",
   mehendi: "from-leaf-300 to-leaf-700",
+  sangeet: "from-rose-pink-400 to-rose-pink-600",
   barat: "from-rose-pink-400 to-royal-600",
   reception: "from-gold-300 to-gold-700",
 };

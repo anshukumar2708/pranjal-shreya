@@ -43,7 +43,7 @@ export interface Partner {
   gallery: GalleryImage[];
 }
 
-export type EventTheme = "haldi" | "mehendi" | "barat" | "reception";
+export type EventTheme = "mehendi" | "haldi" | "sangeet" | "barat" | "reception";
 
 export interface WeddingEvent {
   id: string;
@@ -57,6 +57,12 @@ export interface WeddingEvent {
   time: string;
   venue: string;
   address: string;
+  /**
+   * What "Get Directions" searches Google Maps for. Omit to use
+   * `venue, address`; set it when the venue name is not a findable place
+   * (e.g. "At Home").
+   */
+  mapQuery?: string;
   description: string;
   theme: EventTheme;
   icon: string;

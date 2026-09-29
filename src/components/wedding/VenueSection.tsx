@@ -1,3 +1,4 @@
+import DirectionsButton from "@/components/ui/DirectionsButton";
 import WeddingImage from "@/components/ui/WeddingImage";
 import type { Venue } from "@/types/wedding";
 import FlowerCorner from "@/components/decorations/FlowerCorner";
@@ -93,16 +94,11 @@ export default function VenueSection({ venue }: VenueSectionProps) {
               ))}
             </dl>
 
-            <a
-              href={venue.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <DirectionsButton
+              destination={`${venue.name}, ${venue.address}`}
+              srLabel="to the venue"
               className="btn-royal mt-8 w-full sm:w-auto"
-            >
-              <span aria-hidden="true">🧭</span>
-              Get Directions
-              <span className="sr-only">(opens Google Maps in a new tab)</span>
-            </a>
+            />
           </div>
         </div>
       </Reveal>

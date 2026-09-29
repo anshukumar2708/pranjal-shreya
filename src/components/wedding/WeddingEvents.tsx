@@ -1,3 +1,4 @@
+import DirectionsButton from "@/components/ui/DirectionsButton";
 import WeddingImage from "@/components/ui/WeddingImage";
 import type { EventTheme, WeddingEvent } from "@/types/wedding";
 import FlowerCorner from "@/components/decorations/FlowerCorner";
@@ -39,6 +40,14 @@ const THEMES: Record<EventTheme, ThemeStyle> = {
     accent: "text-leaf-700",
     overlay: "from-leaf-700/45 via-leaf-500/10 to-transparent",
     motif: "🌿 ✦ 🍃 ✦ 🌿",
+  },
+  sangeet: {
+    surface:
+      "bg-gradient-to-br from-rose-pink-200/60 via-cream-100 to-royal-500/15 border-rose-pink-500/45",
+    badge: "bg-gradient-to-r from-rose-pink-500 to-royal-600 text-cream-100",
+    accent: "text-rose-pink-600",
+    overlay: "from-royal-600/50 via-rose-pink-500/10 to-transparent",
+    motif: "🎶 ✦ 💃 ✦ 🎶",
   },
   barat: {
     surface:
@@ -158,6 +167,18 @@ function EventCard({ event, index }: { event: WeddingEvent; index: number }) {
               </div>
             ))}
           </dl>
+
+          {/* mt-auto pins the button to the card's foot, so buttons line up
+              across a row even when descriptions differ in length. */}
+          <div className="mt-auto pt-6">
+            <DirectionsButton
+              destination={event.mapQuery ?? `${event.venue}, ${event.address}`}
+              srLabel={`to the ${event.name} venue`}
+              className={`btn-royal w-full ${
+                dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
+              }`}
+            />
+          </div>
         </div>
       </article>
     </Reveal>
@@ -186,18 +207,26 @@ export default function WeddingEvents({ events }: WeddingEventsProps) {
       <div className="pt-10">
         <SectionHeading
           id="events-heading"
-          eyebrow="Four days of celebration"
+          eyebrow="Five joyful ceremonies"
           script="Join us for the"
           title="Wedding Ceremonies"
-          subtitle="Every ritual has its own colour, its own music and its own kind of chaos. Come for one, come for all four — we would love to have you at each."
+          subtitle="Every ritual has its own colour, its own music and its own kind of chaos. Come for one, come for all five — we would love to have you at each."
         />
       </div>
 
       <FlowerCorner position="bl" className="absolute bottom-6 left-0 h-24 w-24 opacity-60 sm:h-32 sm:w-32" />
 
-      <div className="mx-auto mt-12 grid max-w-7xl gap-6 sm:gap-7 md:grid-cols-2 xl:grid-cols-4">
+      {/* Flex-wrap rather than grid, so an uneven last row (five cards = 3 + 2)
+          sits centred instead of hugging the left edge. Widths subtract the
+          gap share: one 1.75rem gap per two columns, two per three. */}
+      <div className="mx-auto mt-12 flex max-w-7xl flex-wrap justify-center gap-6 sm:gap-7">
         {events.map((event, index) => (
-          <EventCard key={event.id} event={event} index={index} />
+          <div
+            key={event.id}
+            className="w-full md:w-[calc((100%-1.75rem)/2)] xl:w-[calc((100%-3.5rem)/3)]"
+          >
+            <EventCard event={event} index={index} />
+          </div>
         ))}
       </div>
     </section>

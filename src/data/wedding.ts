@@ -44,7 +44,7 @@ export const weddingData: WeddingData = {
   countdownTarget: "2026-11-25T10:00:00+05:30",
 
   invitationMessage:
-    "Together with our families, we invite you to celebrate the beginning of our beautiful journey.",
+    "joyfully request the pleasure of your gracious presence, with family and friends, at the wedding of their beloved son",
   finalInvitationMessage:
     "With hearts full of happiness and families full of blessings, we invite you to join us as we celebrate the beginning of a beautiful new chapter.",
 
@@ -127,7 +127,27 @@ export const weddingData: WeddingData = {
     ],
   },
 
+  // Listed in ceremony order: Mehendi, Haldi, Sangeet, Wedding, Reception.
   events: [
+    {
+      id: "mehendi",
+      name: "Mehendi",
+      date: "22 November 2026",
+      start: "2026-11-22T16:00:00+05:30",
+      end: "2026-11-22T21:00:00+05:30",
+      time: "4:00 PM onwards",
+      venue: "At Home, Singh's Villa",
+      address: "Santrabadi, Durg, Chhattisgarh",
+      mapQuery: "Singh's Villa, Santrabadi, Durg, Chhattisgarh",
+      description:
+        "An evening of henna, dholak songs and far too many sweets. Bring your best voice — the ladies of both families have promised a singing duel.",
+      theme: "mehendi",
+      icon: "🌿",
+      image: photo("12.jpeg"),
+      alt: "Shriya with mehendi on both hands, waiting in her blush lehenga",
+      focus: "50% 48%",
+      calendar: false,
+    },
     {
       id: "haldi",
       name: "Haldi",
@@ -135,8 +155,9 @@ export const weddingData: WeddingData = {
       start: "2026-11-23T10:00:00+05:30",
       end: "2026-11-23T13:00:00+05:30",
       time: "10:00 AM onwards",
-      venue: "Singh Nivas, Courtyard",
-      address: "Shankar Nagar, Raipur, Chhattisgarh",
+      venue: "At Home, Singh's Villa",
+      address: "Santrabadi, Durg, Chhattisgarh",
+      mapQuery: "Singh's Villa, Santrabadi, Durg, Chhattisgarh",
       description:
         "Turmeric, laughter and a very yellow morning. Come ready to be smeared in blessings — and please do not wear anything you love too much.",
       theme: "haldi",
@@ -147,21 +168,21 @@ export const weddingData: WeddingData = {
       calendar: false,
     },
     {
-      id: "mehendi",
-      name: "Mehendi",
-      date: "24 November 2026",
-      start: "2026-11-24T16:00:00+05:30",
-      end: "2026-11-24T21:00:00+05:30",
-      time: "4:00 PM onwards",
-      venue: "The Green Courtyard Lawn",
-      address: "Civil Lines, Raipur, Chhattisgarh",
+      id: "sangeet",
+      name: "Sangeet",
+      date: "23 November 2026",
+      start: "2026-11-23T19:00:00+05:30",
+      end: "2026-11-23T23:30:00+05:30",
+      time: "7:00 PM onwards",
+      venue: "Hotel Alka Palace",
+      address: "Station Road, Durg, Chhattisgarh",
       description:
-        "An evening of henna, dholak songs and far too many sweets. Bring your best voice — the ladies of both families have promised a singing duel.",
-      theme: "mehendi",
-      icon: "🌿",
-      image: photo("12.jpeg"),
-      alt: "Shriya with mehendi on both hands, waiting in her blush lehenga",
-      focus: "50% 48%",
+        "A night of music, dance and family performances. Both sides have been rehearsing in secret — come cheer, sing along and take over the dance floor.",
+      theme: "sangeet",
+      icon: "🎶",
+      image: photo("11.jpeg"),
+      alt: "Pranjal laughing with Shriya as they walk in hand in hand",
+      focus: "50% 22%",
       calendar: false,
     },
     {
@@ -189,8 +210,8 @@ export const weddingData: WeddingData = {
       start: "2026-11-26T19:00:00+05:30",
       end: "2026-11-26T23:59:00+05:30",
       time: "7:00 PM onwards",
-      venue: "Thakur Vighnaharan Singh Rajput Bhawan",
-      address: "Sarona, Raipur, Chhattisgarh",
+      venue: "Nirmal's SAPTAPADI, Marriage Garden and Resort",
+      address: "Borsi Road, near Nirmal HP Fuels, Hanoda, Durg, Chhattisgarh",
       description:
         "A royal evening to close the celebration — dinner, music, and the newlyweds meeting every single guest who made the journey.",
       theme: "reception",
@@ -516,9 +537,10 @@ export const weddingData: WeddingData = {
     focus: "50% 33%",
     date: "25 – 26 November 2026",
     time: "Barat 6:00 PM · Reception 7:00 PM",
-    // Replace with the real Google Maps place link once confirmed.
+    // Used as the event's map link in search results; "Get Directions" routes
+    // to `name, address` instead.
     mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Royal+Palace+Banquet+Raipur+Chhattisgarh",
+      "https://www.google.com/maps/search/?api=1&query=Thakur+Vighnaharan+Singh+Rajput+Bhawan+Sarona+Raipur+Chhattisgarh",
   },
 
   nav: [
