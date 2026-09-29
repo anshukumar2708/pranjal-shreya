@@ -67,13 +67,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    if (!(await allowPost(clientKey(request)))) {
+    const key = clientKey(request);
+    if (!(await allowPost(key))) {
       return Response.json(
         { error: "Thank you! You've sent several blessings — please try again in a few minutes." },
         { status: 429 },
       );
     }
-    const blessing = await addBlessing(name, message);
+    const blessing = await addBlessing(name, message, key);
     return Response.json({ blessing }, { status: 201 });
   } catch (error) {
     console.error("[blessings] add failed", error);

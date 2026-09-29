@@ -10,5 +10,3 @@ npm-debug.log*
 next-env.d.ts
 tsconfig.tsbuildinfo
 
-# Blessings Wall local store (next dev only)
-/.data/

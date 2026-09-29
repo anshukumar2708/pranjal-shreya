@@ -1,18 +1,11 @@
-import { randomUUID } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { MongoClient, type Collection } from "mongodb";
 
 /**
- * Storage for the Blessings Wall. Server-only.
+ * Storage for the Blessings Wall, in MongoDB. Server-only.
  *
- * Two backends, picked automatically:
- *
- * - **Upstash Redis** (production). Used whenever its REST credentials are
- *   set — either the Upstash names or the ones Vercel's Upstash/KV integration
- *   injects. Talked to over plain `fetch`, so no SDK is needed.
- * - **A local JSON file** (`.data/blessings.json`) otherwise, so the wall
- *   works in `next dev` with no setup. Serverless hosts such as Vercel have no
- *   writable, persistent disk, so the live site must use Redis.
+ * Needs `MONGODB_URI` (and optionally `MONGODB_DB`, default "wedding") — in
+ * `.env.local` for development and in the host's environment variables for
+ * the live site.
  */
 
 export interface Blessing {
@@ -23,96 +16,79 @@ export interface Blessing {
   createdAt: string;
 }
 
-const LIST_KEY = "blessings";
-/** Oldest blessings beyond this are dropped, keeping the list bounded. */
-const MAX_STORED = 2000;
-
-const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-
-export const usingRedis = Boolean(REDIS_URL && REDIS_TOKEN);
-
-/* ------------------------------------------------------------------ Redis */
-
-async function redis<T>(command: (string | number)[]): Promise<T> {
-  const res = await fetch(REDIS_URL!, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${REDIS_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify(command),
-    cache: "no-store",
-  });
-  const body = (await res.json()) as { result?: T; error?: string };
-  if (!res.ok || body.error) throw new Error(`Redis error: ${body.error ?? res.status}`);
-  return body.result as T;
+interface BlessingDoc {
+  name: string;
+  message: string;
+  createdAt: Date;
+  /** Hashed visitor key, used only for rate limiting. Never sent to clients. */
+  clientKey: string;
 }
 
-/* ------------------------------------------------------------------- File */
+const DB_NAME = process.env.MONGODB_DB || "wedding";
+const COLLECTION = "blessings";
 
-const FILE = path.join(process.cwd(), ".data", "blessings.json");
+/**
+ * One client per server process. In development the module is re-evaluated on
+ * every hot reload, so the promise is parked on `globalThis` to avoid opening
+ * a new connection pool each time.
+ */
+const globalForMongo = globalThis as typeof globalThis & {
+  _blessingsMongo?: Promise<Collection<BlessingDoc>>;
+};
 
-async function readFileStore(): Promise<Blessing[]> {
-  try {
-    return JSON.parse(await readFile(FILE, "utf8")) as Blessing[];
-  } catch {
-    return [];
+function collection(): Promise<Collection<BlessingDoc>> {
+  if (!globalForMongo._blessingsMongo) {
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      return Promise.reject(new Error("MONGODB_URI is not set"));
+    }
+
+    globalForMongo._blessingsMongo = (async () => {
+      const client = await new MongoClient(uri, { appName: "pranjal-weds-shriya" }).connect();
+      const blessings = client.db(DB_NAME).collection<BlessingDoc>(COLLECTION);
+      await Promise.all([
+        blessings.createIndex({ createdAt: -1 }),
+        blessings.createIndex({ clientKey: 1, createdAt: -1 }),
+      ]);
+      return blessings;
+    })().catch((error) => {
+      // Don't cache a failed connection — let the next request retry.
+      globalForMongo._blessingsMongo = undefined;
+      throw error;
+    });
   }
+  return globalForMongo._blessingsMongo;
 }
-
-// Serialise writes so two quick posts cannot overwrite each other.
-let fileQueue: Promise<unknown> = Promise.resolve();
-
-function writeFileStore(update: (list: Blessing[]) => Blessing[]) {
-  const run = fileQueue.then(async () => {
-    const next = update(await readFileStore());
-    await mkdir(path.dirname(FILE), { recursive: true });
-    await writeFile(FILE, JSON.stringify(next, null, 2), "utf8");
-  });
-  fileQueue = run.catch(() => {});
-  return run;
-}
-
-/* -------------------------------------------------------------------- API */
 
 /** Newest first. */
 export async function listBlessings(limit = 200): Promise<Blessing[]> {
-  if (usingRedis) {
-    const raw = await redis<string[]>(["LRANGE", LIST_KEY, 0, limit - 1]);
-    return raw.flatMap((item) => {
-      try {
-        return [JSON.parse(item) as Blessing];
-      } catch {
-        return [];
-      }
-    });
-  }
-  return (await readFileStore()).slice(0, limit);
+  const docs = await (await collection())
+    .find({}, { projection: { clientKey: 0 } })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .toArray();
+
+  return docs.map((doc) => ({
+    id: doc._id.toHexString(),
+    name: doc.name,
+    message: doc.message,
+    createdAt: doc.createdAt.toISOString(),
+  }));
 }
 
-export async function addBlessing(name: string, message: string): Promise<Blessing> {
-  const blessing: Blessing = {
-    id: randomUUID(),
-    name,
-    message,
-    createdAt: new Date().toISOString(),
-  };
-
-  if (usingRedis) {
-    await redis(["LPUSH", LIST_KEY, JSON.stringify(blessing)]);
-    await redis(["LTRIM", LIST_KEY, 0, MAX_STORED - 1]);
-  } else {
-    await writeFileStore((list) => [blessing, ...list].slice(0, MAX_STORED));
-  }
-  return blessing;
+export async function addBlessing(
+  name: string,
+  message: string,
+  clientKey: string,
+): Promise<Blessing> {
+  const createdAt = new Date();
+  const { insertedId } = await (await collection()).insertOne({ name, message, createdAt, clientKey });
+  return { id: insertedId.toHexString(), name, message, createdAt: createdAt.toISOString() };
 }
 
-/**
- * Allows `limit` posts per `windowSeconds` for one client key (an IP hash).
- * Only enforced with Redis; the local file store is for development.
- */
-export async function allowPost(key: string, limit = 5, windowSeconds = 600): Promise<boolean> {
-  if (!usingRedis) return true;
-  const bucket = `blessings:rate:${key}`;
-  const count = await redis<number>(["INCR", bucket]);
-  if (count === 1) await redis(["EXPIRE", bucket, windowSeconds]);
-  return count <= limit;
+/** Allows `limit` blessings per `windowSeconds` from one visitor key. */
+export async function allowPost(clientKey: string, limit = 5, windowSeconds = 600): Promise<boolean> {
+  const since = new Date(Date.now() - windowSeconds * 1000);
+  const recent = await (await collection()).countDocuments({ clientKey, createdAt: { $gte: since } });
+  return recent < limit;
 }
