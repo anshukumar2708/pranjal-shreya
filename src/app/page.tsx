@@ -21,6 +21,7 @@ import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 
 /**
  * The complete one-page wedding invitation.
@@ -179,6 +180,7 @@ export default function Home() {
       <Footer data={weddingData} />
 
       <MusicPlayer src={music.src} title={music.title} />
+      <ScrollToTop />
     </>
   );
 }

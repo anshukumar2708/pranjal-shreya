@@ -66,10 +66,10 @@ export default function Footer({ data }: FooterProps) {
         <div className="mt-9 border-t border-gold-500/25 pt-8">
           <p className="eyebrow text-gold-300">For any questions</p>
           <ul className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-            {contact.map((item) => {
+            {contact.map((item, i) => {
               const isPhone = item.href.startsWith("tel:");
               return (
-                <li key={item.href}>
+                <Reveal as="li" key={item.href} delay={150 + i * 120}>
                   {/* The whole row is one link, so the icon, name and number
                       all dial — and the tap target stays generous on phones. */}
                   <a
@@ -96,7 +96,7 @@ export default function Footer({ data }: FooterProps) {
                       </span>
                     </span>
                   </a>
-                </li>
+                </Reveal>
               );
             })}
           </ul>

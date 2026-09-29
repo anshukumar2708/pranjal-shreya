@@ -185,8 +185,10 @@ export default function Countdown({
             </p>
 
             <div className="mx-auto grid max-w-3xl grid-cols-4 gap-2 sm:gap-4">
-              {units.map((unit) => (
-                <Unit key={unit.label} {...unit} ready={isReady} />
+              {units.map((unit, i) => (
+                <Reveal key={unit.label} variant="scale" delay={150 + i * 120}>
+                  <Unit {...unit} ready={isReady} />
+                </Reveal>
               ))}
             </div>
           </>
