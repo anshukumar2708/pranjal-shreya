@@ -640,8 +640,8 @@ export const weddingData: WeddingData = {
 
   contact: [
     { label: "Call Kamlesh Singh", value: "+91 98271 16205", href: "tel:+919827116205" },
-    { label: "Call Sandeep Singh", value: "+91 98000 00002", href: "tel:+919800000002" },
-    { label: "Email us", value: "anshukumar2708@gmail.com", href: "mailto:anshukumar2708@gmail.com" },
+    { label: "Call Arvind Singh", value: "+91 98271 82384", href: "tel:+919827182384" },
+    { label: "Call Honey", value: "+91 98279 30007", href: "tel:+919827930007" },
   ],
 };
 
