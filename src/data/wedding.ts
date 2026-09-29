@@ -621,6 +621,7 @@ export const weddingData: WeddingData = {
     { label: "Events", href: "#events" },
     { label: "Photos", href: "#photos" },
     { label: "Venues", href: "#venue" },
+    { label: "Blessings", href: "#blessings" },
   ],
 
   music: {

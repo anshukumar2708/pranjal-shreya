@@ -352,6 +352,18 @@
   }
 }
 
+/* A newly posted blessing rising onto the wall. */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Scroll-reveal: set by the Reveal component. */
 .reveal {
   opacity: 0;

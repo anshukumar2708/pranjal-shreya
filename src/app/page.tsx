@@ -16,6 +16,7 @@ import FamilyTree from "@/components/wedding/FamilyTree";
 import CoupleShowcase from "@/components/wedding/CoupleShowcase";
 import GallerySection from "@/components/wedding/GallerySection";
 import VenueSection from "@/components/wedding/VenueSection";
+import BlessingsSection from "@/components/wedding/BlessingsSection";
 import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
@@ -163,6 +164,9 @@ export default function Home() {
 
         {/* 15 — Wedding & reception venues */}
         <VenueSection venues={[venue, receptionVenue]} />
+
+        {/* Blessings wall — guests' wishes, stored on the server */}
+        <BlessingsSection coupleName={coupleShortName} />
 
         {/* 16 — Add to calendar */}
         {/* <AddToCalendar events={events} groomName={groom.shortName} brideName={bride.shortName} /> */}
