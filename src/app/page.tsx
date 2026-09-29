@@ -64,7 +64,7 @@ export default function Home() {
     startDate: countdownTarget,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: [`${siteUrl}/og-image.jpg`],
+    image: [`${siteUrl}/og-image.jpg?v=2`],
     location: {
       "@type": "Place",
       name: venue.name,

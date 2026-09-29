@@ -35,15 +35,18 @@ const mukta = Mukta({
 const { groom, bride, dateRange, venue, hashtag } = weddingData;
 
 const title = `${groom.shortName} & ${bride.shortName} — Wedding Invitation`;
-const description = `${groom.name} weds ${bride.name}. ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Haldi, Mehendi, Barat, Wedding and Reception.`;
+const description = `${groom.name} weds ${bride.name}. ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Mehendi, Haldi, Sangeet, Wedding and Reception.`;
 
 /**
- * The share card: both portraits side by side under the couple's names, so a
- * pasted link previews as the invitation itself rather than a bare URL.
- * Regenerate `public/og-image.jpg` at 1200x630 if the portraits ever change.
+ * The share card: the homepage banner photo with the couple's names, date and
+ * place over a maroon fade, so a pasted link previews as the invitation itself.
+ * `public/og-image.jpg` is 1200x630. When it changes, bump `?v=` — WhatsApp,
+ * Facebook and others cache previews by image URL.
  */
+const SHARE_IMAGE_PATH = "/og-image.jpg?v=2";
+
 const shareImage = {
-  url: "/og-image.jpg",
+  url: SHARE_IMAGE_PATH,
   width: 1200,
   height: 630,
   alt: `${groom.name} and ${bride.name} — wedding invitation for ${dateRange}`,
