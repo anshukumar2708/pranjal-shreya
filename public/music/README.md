@@ -1,30 +1,33 @@
 # Background music
 
-Place the track here as **`wedding-theme.mp3`**.
+**`wedding-theme.mp3`** — "Traditional wedding — ceremonial vibe with shehnai"
+(1:34, ~3 MB), from Pixabay Music under the Pixabay Content License (free to
+use, no attribution required):
+https://pixabay.com/music/wedding-traditional-wedding-ceremonial-vibe-with-shehna-376293/
 
-A shehnai instrumental or a Shree Ganesh vandana suits the invitation — something
-calm and looping, since guests hear it under the whole page.
+Also tried: the shorter version by the same artist (0:59) —
+https://pixabay.com/music/wedding-traditional-wedding-ceremonial-vibe-with-shehna-1-376289/
+
+To use a different track, replace the file (keep the name) and update `title`
+under `music` in `src/data/wedding.ts`.
 
 ## How it behaves
 
-- It starts on its own as the invitation opens, fading up from silence over
-  ~2.6s to a soft background level (30% volume) rather than starting loud.
-- Every browser blocks unprompted audio, so if the opening attempt is refused,
-  the floating button pulses and reads "Tap for music" — the track then starts
-  the moment the guest taps, presses a key or scrolls.
-- It loops, and a guest who presses pause is never restarted automatically.
+- It starts on its own as the invitation opens, fading up from silence to a
+  soft background level, and loops.
+- Browsers block sound until the visitor has interacted with the page. When
+  that first attempt is refused, the button pulses "Tap for music" and the
+  track starts on the guest's first tap, click or key press anywhere.
+  (Scrolling does not count as interaction for browsers.)
+- The one floating button mutes and unmutes. Muting is remembered, so a guest
+  who muted is not surprised by sound when they reopen the link.
 - With no file here the button shows a disabled "No music" state, so the page
   is never broken by a missing track.
 
-## Choosing the file
+## Choosing another file
 
-- **Format**: MP3 is the safe choice; every browser plays it.
-- **Length**: 1–3 minutes is plenty — it loops seamlessly.
-- **Size**: keep it under ~3 MB. It is fetched on load, and guests will open
-  this on mobile data.
-- **Rights**: use a track you own or one licensed for this use. Royalty-free
-  Indian wedding instrumentals are available from Pixabay Music, YouTube Audio
-  Library and Free Music Archive.
-
-The path and the name shown in the player's tooltip live in
-`src/data/wedding.ts` under `music`.
+- **Format**: MP3 — every browser plays it.
+- **Length**: 1–3 minutes is plenty; it loops.
+- **Size**: keep it under ~3 MB; guests open this on mobile data.
+- **Rights**: use a track you own or one licensed for this use (Pixabay Music,
+  YouTube Audio Library, Free Music Archive).
