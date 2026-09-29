@@ -11,8 +11,6 @@ interface DirectionsButtonProps {
   children?: ReactNode;
 }
 
-type GeoPermission = PermissionState | "unknown";
-
 const MAPS_DIR = "https://www.google.com/maps/dir/?api=1";
 
 function directionsUrl(destination: string, origin?: string) {
@@ -20,29 +18,21 @@ function directionsUrl(destination: string, origin?: string) {
   return `${MAPS_DIR}${from}&destination=${encodeURIComponent(destination)}`;
 }
 
-function getPosition() {
-  return new Promise<GeolocationPosition>((resolve, reject) =>
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 60000,
-    }),
-  );
-}
-
 /**
- * Opens Google Maps directions starting from the viewer's current location.
+ * Opens Google Maps directions to the venue, starting from the viewer's
+ * current location.
  *
- * - Phones: the plain link hands off to the Maps app, which routes from the
- *   device's GPS on its own, so the click is left alone.
- * - Desktop, location already allowed: a tab is opened synchronously (so popup
- *   blockers allow it) and pointed at the route once the position arrives.
- * - Desktop, not yet asked: the permission prompt must show in *this* tab, so
- *   the position is fetched first and the route opened afterwards; if the
- *   browser then blocks the popup, this tab navigates instead.
- * - Location denied or unavailable: the route opens without an origin and
- *   Google Maps asks for a starting point.
- * - Without JavaScript the href still works as a plain directions link.
+ * The click itself is always a plain, synchronous link — never an async
+ * `window.open`. An earlier version opened a blank tab and filled it in once
+ * the position arrived, but the browser pauses geolocation for the page behind
+ * the new tab, so the tab was left stuck on about:blank.
+ *
+ * - Location already allowed: the position is read in the background when the
+ *   button mounts (and refreshed on hover/focus), so the click can put it in
+ *   the link as `origin` with no waiting.
+ * - Not allowed yet, denied, or on phones: the link goes out without an
+ *   origin. Google Maps then starts from "Your location" itself — the Maps app
+ *   uses the phone's GPS, and maps on the web asks for location on its own.
  */
 export default function DirectionsButton({
   destination,
@@ -51,14 +41,28 @@ export default function DirectionsButton({
   children,
 }: DirectionsButtonProps) {
   const href = directionsUrl(destination);
-  const permission = useRef<GeoPermission>("unknown");
+  const origin = useRef<string | null>(null);
+  const allowed = useRef(false);
 
-  // Read the permission ahead of the click: the answer decides whether the new
-  // tab can be opened before the position is known.
+  const refresh = () => {
+    if (!allowed.current || !("geolocation" in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        origin.current = `${coords.latitude},${coords.longitude}`;
+      },
+      () => {},
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 5 * 60 * 1000 },
+    );
+  };
+
+  // Only read the position when the viewer has already allowed it — never
+  // trigger a permission prompt just because the page loaded.
   useEffect(() => {
     let status: PermissionStatus | undefined;
     const sync = () => {
-      if (status) permission.current = status.state;
+      allowed.current = status?.state === "granted";
+      if (!allowed.current) origin.current = null;
+      refresh();
     };
 
     navigator.permissions
@@ -73,39 +77,11 @@ export default function DirectionsButton({
     return () => status?.removeEventListener("change", sync);
   }, []);
 
-  const handleClick = async (event: MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
-    if (isTouch || !("geolocation" in navigator) || permission.current === "denied") return;
-
-    event.preventDefault();
-
-    if (permission.current === "granted") {
-      const tab = window.open("", "_blank");
-      if (tab) tab.opener = null;
-      let url = href;
-      try {
-        const { coords } = await getPosition();
-        url = directionsUrl(destination, `${coords.latitude},${coords.longitude}`);
-      } catch {
-        // Fall through with the origin-less route.
-      }
-      if (tab) tab.location.href = url;
-      else window.location.href = url;
-      return;
-    }
-
-    let url = href;
-    try {
-      const { coords } = await getPosition();
-      url = directionsUrl(destination, `${coords.latitude},${coords.longitude}`);
-    } catch {
-      // Denied or timed out — open the route without an origin.
-    }
-    // No "noopener" feature here: it makes window.open return null even on
-    // success, which would hide a blocked popup. The opener is cut by hand.
-    const tab = window.open(url, "_blank");
-    if (tab) tab.opener = null;
-    else window.location.href = url;
+    // Rewrite the link in place, then let the browser follow it as normal.
+    event.currentTarget.href =
+      !isTouch && origin.current ? directionsUrl(destination, origin.current) : href;
   };
 
   return (
@@ -114,6 +90,8 @@ export default function DirectionsButton({
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
+      onPointerEnter={refresh}
+      onFocus={refresh}
       className={className}
     >
       {children ?? (

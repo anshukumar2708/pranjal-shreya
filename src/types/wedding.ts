@@ -112,6 +112,15 @@ export interface StoryMoment {
   focus?: string;
 }
 
+export interface VenuePhoto {
+  src: string;
+  alt: string;
+  /** Short label shown in the full-screen viewer, e.g. "Mandap stage". */
+  caption: string;
+  /** CSS `object-position` for the cropped frames. Omit for the centre. */
+  focus?: string;
+}
+
 export interface Venue {
   /** Which celebration is held here, e.g. "Wedding" or "Reception". */
   label: string;
@@ -120,15 +129,10 @@ export interface Venue {
   address: string;
   city: string;
   description: string;
-  image: string;
-  alt: string;
-  /**
-   * CSS `object-position` for the crop, e.g. "50% 32%".
-   * Real photographs are mostly tall, and the layout crops them to circles,
-   * 16:10 cards and masonry cells — this keeps faces inside the crop.
-   * Omit for the default `50% 50%`.
-   */
-  focus?: string;
+  /** Photographs of the venue itself, shown in the card's gallery. First is the cover. */
+  photos: VenuePhoto[];
+  /** Where the photos come from, credited under the gallery. */
+  photoCredit?: { label: string; href: string };
   date: string;
   time: string;
   /** Replace with a real Google Maps link when the venue is confirmed. */

@@ -534,9 +534,34 @@ export const weddingData: WeddingData = {
     city: "Raipur, Chhattisgarh, India",
     description:
       "A palace-style banquet with lantern-lit lawns and a marble mandap courtyard — where the Barat arrives and the pheras are taken.",
-    image: photo("10.jpeg"),
-    alt: "The floral arch and chandelier of the banquet hall on the wedding day",
-    focus: "50% 33%",
+    // Real photographs of the venue, from its VenueLook listing (595x400 is
+    // the largest size published there).
+    photos: [
+      {
+        src: photo("venues/wedding/1.jpg"),
+        alt: "Dining lawn at Rajput Bhawan under rows of crystal chandeliers and hanging floral strands",
+        caption: "Chandelier dining lawn",
+      },
+      {
+        src: photo("venues/wedding/2.jpg"),
+        alt: "The carved mandap stage at Rajput Bhawan lit up in gold and violet at night",
+        caption: "Mandap stage",
+      },
+      {
+        src: photo("venues/wedding/3.jpg"),
+        alt: "Tables and carved chairs set beneath chandeliers on the open lawn",
+        caption: "Banquet seating",
+      },
+      {
+        src: photo("venues/wedding/4.jpg"),
+        alt: "Golden buffet counter with brass serving urns beside the lawn",
+        caption: "Buffet counter",
+      },
+    ],
+    photoCredit: {
+      label: "VenueLook",
+      href: "https://www.venuelook.com/raipur/40552-thakur-vighnaharan-singh-rajput-bhawan-in-sarona/package",
+    },
     date: "24 November 2026",
     time: "6:00 PM onwards",
     // Used as the event's map link in search results; "Get Directions" routes
@@ -553,9 +578,44 @@ export const weddingData: WeddingData = {
     city: "Durg, Chhattisgarh, India",
     description:
       "A marriage garden and resort on Borsi Road, Durg — the setting for a royal evening of dinner, music and blessings for the newlyweds.",
-    image: photo("4.jpeg"),
-    alt: "Shriya smiling in her blush lehenga, framed by grey curtains",
-    focus: "75% 35%",
+    // Real photographs of the resort, from its official website.
+    photos: [
+      {
+        // Cover: the resort building lit up at night behind the decorated lawn.
+        src: photo("venues/reception/lawn-night.jpg"),
+        alt: "Nirmal's Saptapadi Resort at night: the lit two-storey building behind a decorated lawn with red sofas and white chairs",
+        caption: "Resort by night",
+        focus: "50% 40%",
+      },
+      {
+        src: photo("venues/reception/stage-aisle.jpg"),
+        alt: "Flower-lined aisle with glowing globe lamps leading to the lit floral stage, pink-draped chairs on either side",
+        caption: "Stage & aisle",
+        focus: "50% 62%",
+      },
+      {
+        src: photo("venues/reception/stage-seating.jpg"),
+        alt: "Rows of pink satin-draped chairs facing the decorated stage on the lawn at night",
+        caption: "Reception seating",
+        focus: "50% 58%",
+      },
+      {
+        src: photo("venues/reception/floral-stage.jpg"),
+        alt: "Red and white floral stage with chandeliers, white arches and a velvet couch for the couple",
+        caption: "Floral stage",
+        focus: "50% 50%",
+      },
+      {
+        src: photo("venues/reception/buffet.jpg"),
+        alt: "Long golden buffet counter lit up beside red drapes and glowing arches",
+        caption: "Buffet",
+        focus: "50% 55%",
+      },
+    ],
+    photoCredit: {
+      label: "saptapadiresorts.com",
+      href: "https://www.saptapadiresorts.com/",
+    },
     date: "25 November 2026",
     time: "7:00 PM onwards",
     mapsUrl:
