@@ -17,6 +17,9 @@ interface BlessingsSectionProps {
   coupleName: string;
 }
 
+/** Give up on a request after this long, so the wall never loads forever. */
+const REQUEST_TIMEOUT_MS = 15000;
+
 /** Cards shown before "Show more". */
 const PAGE = 12;
 
@@ -78,7 +81,10 @@ export default function BlessingsSection({ coupleName }: BlessingsSectionProps) 
   const load = useCallback(async () => {
     setStatus("loading");
     try {
-      const res = await fetch("/api/blessings", { cache: "no-store" });
+      const res = await fetch("/api/blessings", {
+        cache: "no-store",
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as { blessings: Blessing[] };
       setBlessings(data.blessings);
@@ -121,6 +127,7 @@ export default function BlessingsSection({ coupleName }: BlessingsSectionProps) 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, message, website }),
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });
       const data = (await res.json()) as { blessing?: Blessing; error?: string };
       if (!res.ok || !data.blessing) {

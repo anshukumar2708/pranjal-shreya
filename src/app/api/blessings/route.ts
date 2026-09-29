@@ -30,6 +30,8 @@ export async function GET() {
     const blessings = await listBlessings();
     return Response.json({ blessings }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
+    // Shows in the host's logs (Vercel → Logs) with the real cause, e.g.
+    // "MONGODB_URI is not set" or "MongoServerSelectionError".
     console.error("[blessings] list failed", error);
     return Response.json({ error: "Could not load blessings right now." }, { status: 503 });
   }

@@ -44,7 +44,15 @@ function collection(): Promise<Collection<BlessingDoc>> {
     }
 
     globalForMongo._blessingsMongo = (async () => {
-      const client = await new MongoClient(uri, { appName: "pranjal-weds-shriya" }).connect();
+      // Short timeouts: the driver's default is to keep retrying for 30s, which
+      // left the wall's loading placeholders spinning when the server could
+      // not reach Atlas (e.g. its IP missing from Network Access). Failing in
+      // a few seconds lets the page show an error with a "Try again" button.
+      const client = await new MongoClient(uri, {
+        appName: "pranjal-weds-shriya",
+        serverSelectionTimeoutMS: 6000,
+        connectTimeoutMS: 6000,
+      }).connect();
       const blessings = client.db(DB_NAME).collection<BlessingDoc>(COLLECTION);
       await Promise.all([
         blessings.createIndex({ createdAt: -1 }),
