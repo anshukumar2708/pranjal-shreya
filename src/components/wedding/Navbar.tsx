@@ -7,6 +7,9 @@ interface NavbarProps {
   items: NavItem[];
   /** Shown as the wordmark, e.g. "Pranjal & Shriya". */
   coupleName: string;
+  /** True when the page opens on a dark photo banner: the transparent bar
+      then uses light text until it scrolls onto its cream background. */
+  onDark?: boolean;
 }
 
 /**
@@ -14,7 +17,7 @@ interface NavbarProps {
  * background once the page scrolls; on mobile it collapses to a hamburger that
  * opens a full-screen menu. The active link is tracked with an IntersectionObserver.
  */
-export default function Navbar({ items, coupleName }: NavbarProps) {
+export default function Navbar({ items, coupleName, onDark = false }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>(items[0]?.href ?? "");
@@ -67,6 +70,8 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
     };
   }, [open]);
 
+  const light = onDark && !scrolled;
+
   const handleNav = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
       const target = document.querySelector<HTMLElement>(href);
@@ -105,7 +110,9 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
             className={`flex items-center justify-between gap-4 rounded-full px-4 py-2.5 transition-all duration-500 sm:px-6 ${
               scrolled
                 ? "border border-gold-500/40 bg-cream-100/90 shadow-[0_10px_40px_-18px_rgba(107,15,26,0.55)] backdrop-blur-xl"
-                : "border border-transparent bg-transparent"
+                : light
+                  ? "border border-cream-100/15 bg-maroon-900/25 backdrop-blur-md"
+                  : "border border-transparent bg-transparent"
             }`}
           >
             <a
@@ -116,7 +123,11 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
               <span aria-hidden="true" className="text-lg">
                 🪔
               </span>
-              <span className="font-script text-xl leading-none text-maroon-700 sm:text-2xl">
+              <span
+                className={`font-script text-xl leading-none transition-colors duration-500 sm:text-2xl ${
+                  light ? "text-cream-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]" : "text-maroon-700"
+                }`}
+              >
                 {coupleName}
               </span>
             </a>
@@ -132,9 +143,13 @@ export default function Navbar({ items, coupleName }: NavbarProps) {
                       onClick={(event) => handleNav(event, item.href)}
                       aria-current={isActive ? "true" : undefined}
                       className={`relative rounded-full px-3.5 py-2 font-serif-alt text-[0.78rem] tracking-[0.14em] uppercase transition-colors duration-300 ${
-                        isActive
-                          ? "text-maroon-700"
-                          : "text-ink-soft hover:text-maroon-600"
+                        light
+                          ? isActive
+                            ? "text-marigold-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
+                            : "text-cream-100/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] hover:text-marigold-300"
+                          : isActive
+                            ? "text-maroon-700"
+                            : "text-ink-soft hover:text-maroon-600"
                       }`}
                     >
                       {item.label}

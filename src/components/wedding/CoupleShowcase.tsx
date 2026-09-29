@@ -129,6 +129,7 @@ function ShowcaseStack({
 export default function CoupleShowcase({ groom, bride }: CoupleShowcaseProps) {
   return (
     <section
+      id="photos"
       aria-labelledby="showcase-heading"
       className="relative overflow-hidden bg-gradient-to-b from-cream-100 via-ivory to-marigold-100/40 px-4 py-20 sm:px-6 sm:py-24"
     >

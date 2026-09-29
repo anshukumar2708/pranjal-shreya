@@ -523,11 +523,10 @@ export const weddingData: WeddingData = {
 
   nav: [
     { label: "Home", href: "#home" },
-    { label: "Couple", href: "#couple" },
+    { label: "Countdown", href: "#countdown" },
+    { label: "Invitation", href: "#invitation" },
     { label: "Events", href: "#events" },
-    { label: "Families", href: "#families" },
-    { label: "Story", href: "#story" },
-    { label: "Gallery", href: "#gallery" },
+    { label: "Photos", href: "#photos" },
     { label: "Venue", href: "#venue" },
   ],
 

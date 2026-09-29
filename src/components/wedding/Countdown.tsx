@@ -52,6 +52,7 @@ export default function Countdown({ target, targetLabel, coupleName }: Countdown
 
   return (
     <section
+      id="countdown"
       aria-labelledby="countdown-heading"
       className="relative overflow-hidden bg-gradient-to-br from-maroon-800 via-maroon-700 to-maroon-900 px-4 py-20 sm:px-6 sm:py-24"
     >
@@ -86,15 +87,54 @@ export default function Countdown({ target, targetLabel, coupleName }: Countdown
       <MarigoldBorder edge="top" />
 
       <Reveal className="mx-auto max-w-4xl text-center">
-        <p className="eyebrow text-gold-300">Counting every moment</p>
+        {/* Invocation to Lord Ganesha, which opens every Hindu wedding card. */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
+          <span
+            aria-hidden="true"
+            className="h-px w-[clamp(1.5rem,8vw,4.5rem)] bg-gradient-to-r from-transparent to-gold-400"
+          />
+          <p
+            lang="hi"
+            className="font-body text-lg font-medium whitespace-nowrap text-marigold-300 sm:text-xl"
+          >
+            ॥ श्री गणेशाय नमः ॥
+          </p>
+          <span
+            aria-hidden="true"
+            className="h-px w-[clamp(1.5rem,8vw,4.5rem)] bg-gradient-to-l from-transparent to-gold-400"
+          />
+        </div>
+
         <h2
           id="countdown-heading"
-          className="mt-3 font-display text-3xl font-semibold text-cream-100 sm:text-4xl lg:text-5xl"
+          className="gold-text mt-5 pb-2 font-script text-5xl leading-tight sm:text-6xl lg:text-7xl"
         >
-          {isComplete ? "The Day Is Here" : "The Wedding Begins In"}
+          {isComplete ? "The Day Is Here" : "Save the Date"}
         </h2>
 
-        <FloralDivider tone="light" className="my-6" />
+        {/* Date band */}
+        <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-gold-400/50 bg-maroon-900/40 px-6 py-2.5 backdrop-blur-sm sm:gap-4 sm:px-8 sm:py-3">
+          <span aria-hidden="true" className="hidden text-marigold-400 min-[380px]:inline">
+            ❖
+          </span>
+          <p className="font-serif-alt text-sm tracking-[0.18em] text-cream-100 uppercase sm:text-base">
+            {targetLabel}
+          </p>
+          <span aria-hidden="true" className="hidden text-marigold-400 min-[380px]:inline">
+            ❖
+          </span>
+        </div>
+
+        <FloralDivider tone="light" className="my-7" />
+
+        {!isComplete && (
+          <div className="mb-8">
+            <p className="eyebrow text-gold-300">Counting every moment</p>
+            <p className="mt-2 font-display text-2xl font-semibold text-cream-100 sm:text-3xl">
+              The Wedding Begins In
+            </p>
+          </div>
+        )}
 
         {isComplete ? (
           <div className="glass-card-dark mx-auto max-w-2xl rounded-3xl px-6 py-10 sm:px-10">
@@ -123,10 +163,6 @@ export default function Countdown({ target, targetLabel, coupleName }: Countdown
                 <Unit key={unit.label} {...unit} ready={isReady} />
               ))}
             </div>
-
-            <p className="mt-8 font-serif-alt text-sm tracking-[0.2em] text-gold-300 uppercase">
-              {targetLabel}
-            </p>
           </>
         )}
       </Reveal>

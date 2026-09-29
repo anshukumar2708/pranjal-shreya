@@ -3,6 +3,7 @@ import { siteUrl } from "@/lib/site";
 
 import Navbar from "@/components/wedding/Navbar";
 import HeroSection from "@/components/wedding/HeroSection";
+import PhotoBanner from "@/components/wedding/PhotoBanner";
 import InvitationSection from "@/components/wedding/InvitationSection";
 import Countdown from "@/components/wedding/Countdown";
 import CoupleSection from "@/components/wedding/CoupleSection";
@@ -18,7 +19,6 @@ import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
-import Image from "next/image";
 
 /**
  * The complete one-page wedding invitation.
@@ -98,26 +98,29 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
 
-      <Navbar items={nav} coupleName={coupleShortName} />
+      <Navbar items={nav} coupleName={coupleShortName} onDark />
 
       <main id="main">
         {/* 2 — Hero / couple banner */}
         {/* <HeroSection data={weddingData} /> */}
 
-        <div className="relative flex w-full flex-col items-center justify-center">
-          <Image src="/images/pranjal-shriya.jpeg" alt="Couple standing together" className="w-full h-auto" width={1200} height={600} />
-        </div>
+        <PhotoBanner
+          src="/images/pranjal-shriya.jpeg"
+          alt={`${groom.name} and ${bride.name}`}
+          groomName={groom.shortName}
+          brideName={bride.shortName}
+        />
 
 
-        {/* 3 — Invitation message */}
-        <InvitationSection data={weddingData} />
-
-        {/* 4 — Countdown */}
+        {/* Countdown — "Counting every moment" */}
         <Countdown
           target={countdownTarget}
           targetLabel={dateRange}
           coupleName={coupleShortName}
         />
+
+        {/* 3 — Invitation message */}
+        <InvitationSection data={weddingData} />
 
         {/* 5 — Bride & groom introduction */}
         {/* <CoupleSection groom={groom} bride={bride} /> */}
