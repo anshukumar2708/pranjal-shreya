@@ -131,8 +131,6 @@ export interface Venue {
   description: string;
   /** Photographs of the venue itself, shown in the card's gallery. First is the cover. */
   photos: VenuePhoto[];
-  /** Where the photos come from, credited under the gallery. */
-  photoCredit?: { label: string; href: string };
   date: string;
   time: string;
   /** Replace with a real Google Maps link when the venue is confirmed. */

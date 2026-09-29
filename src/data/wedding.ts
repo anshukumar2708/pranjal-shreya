@@ -558,10 +558,6 @@ export const weddingData: WeddingData = {
         caption: "Buffet counter",
       },
     ],
-    photoCredit: {
-      label: "VenueLook",
-      href: "https://www.venuelook.com/raipur/40552-thakur-vighnaharan-singh-rajput-bhawan-in-sarona/package",
-    },
     date: "24 November 2026",
     time: "6:00 PM onwards",
     // Used as the event's map link in search results; "Get Directions" routes
@@ -612,10 +608,6 @@ export const weddingData: WeddingData = {
         focus: "50% 55%",
       },
     ],
-    photoCredit: {
-      label: "saptapadiresorts.com",
-      href: "https://www.saptapadiresorts.com/",
-    },
     date: "25 November 2026",
     time: "7:00 PM onwards",
     mapsUrl:

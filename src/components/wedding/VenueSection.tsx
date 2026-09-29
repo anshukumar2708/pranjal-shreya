@@ -89,19 +89,6 @@ function VenueCard({ venue, index }: { venue: Venue; index: number }) {
               srLabel={`to the ${venue.label.toLowerCase()} venue`}
               className="btn-royal w-full sm:w-auto"
             />
-            {venue.photoCredit ? (
-              <p className="mt-4 text-[0.7rem] text-ink-soft/80">
-                Venue photos:{" "}
-                <a
-                  href={venue.photoCredit.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline decoration-gold-500/50 underline-offset-2 hover:text-maroon-700"
-                >
-                  {venue.photoCredit.label}
-                </a>
-              </p>
-            ) : null}
           </div>
         </div>
       </article>
