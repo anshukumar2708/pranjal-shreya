@@ -18,6 +18,7 @@ import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
+import Image from "next/image";
 
 /**
  * The complete one-page wedding invitation.
@@ -101,7 +102,12 @@ export default function Home() {
 
       <main id="main">
         {/* 2 — Hero / couple banner */}
-        <HeroSection data={weddingData} />
+        {/* <HeroSection data={weddingData} /> */}
+
+        <div className="relative flex w-full flex-col items-center justify-center">
+          <Image src="/images/pranjal-shriya.jpeg" alt="Couple standing together" className="w-full h-auto" width={1200} height={600} />
+        </div>
+
 
         {/* 3 — Invitation message */}
         <InvitationSection data={weddingData} />
@@ -114,45 +120,45 @@ export default function Home() {
         />
 
         {/* 5 — Bride & groom introduction */}
-        <CoupleSection groom={groom} bride={bride} />
+        {/* <CoupleSection groom={groom} bride={bride} /> */}
 
         {/* 6 — Wedding events */}
         <WeddingEvents events={events} />
 
         {/* 7 — Wedding timeline */}
-        <WeddingTimeline events={events} />
+        {/* <WeddingTimeline events={events} /> */}
 
         {/* 8 — Our story */}
-        <StorySection moments={story} />
+        {/* <StorySection moments={story} /> */}
 
         {/* 9 & 11 — Groom's parents, siblings and family */}
-        <FamilySection family={groomFamily} accent="warm" id="families" />
+        {/* <FamilySection family={groomFamily} accent="warm" id="families" /> */}
 
         {/* 10 & 12 — Bride's parents, siblings and family */}
-        <FamilySection family={brideFamily} accent="rose" tone="tinted" />
+        {/* <FamilySection family={brideFamily} accent="rose" tone="tinted" /> */}
 
         {/* Family tree joining both sides */}
-        <FamilyTree
+        {/* <FamilyTree
           groom={groom}
           bride={bride}
           groomFamily={groomFamily}
           brideFamily={brideFamily}
-        />
+        /> */}
 
         {/* 13 — Couple photo showcase */}
         <CoupleShowcase groom={groom} bride={bride} />
 
         {/* 14 — Wedding gallery */}
-        <GallerySection images={gallery} />
+        {/* <GallerySection images={gallery} /> */}
 
         {/* 15 — Venue */}
         <VenueSection venue={venue} />
 
         {/* 16 — Add to calendar */}
-        <AddToCalendar events={events} coupleName={coupleShortName} />
+        {/* <AddToCalendar events={events} coupleName={coupleShortName} /> */}
 
         {/* 17 — Final invitation */}
-        <FinalInvitation data={weddingData} />
+        {/* <FinalInvitation data={weddingData} /> */}
       </main>
 
       {/* 18 — Footer */}

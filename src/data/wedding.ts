@@ -166,13 +166,13 @@ export const weddingData: WeddingData = {
     },
     {
       id: "barat",
-      name: "Barat & Wedding",
+      name: "Wedding",
       date: "24 November 2026",
       start: "2026-11-25T18:00:00+05:30",
       end: "2026-11-25T23:59:00+05:30",
       time: "6:00 PM onwards",
-      venue: "Royal Palace & Banquet",
-      address: "VIP Road, Raipur, Chhattisgarh",
+      venue: "Thakur Vighnaharan Singh Rajput Bhawan",
+      address: "Sarona, Raipur, Chhattisgarh",
       description:
         "The dhol starts at six and does not stop. Dance the groom to the gate, watch the pheras under the stars, and stay for the feast.",
       theme: "barat",
@@ -189,8 +189,8 @@ export const weddingData: WeddingData = {
       start: "2026-11-26T19:00:00+05:30",
       end: "2026-11-26T23:59:00+05:30",
       time: "7:00 PM onwards",
-      venue: "Royal Palace & Banquet, Grand Hall",
-      address: "VIP Road, Raipur, Chhattisgarh",
+      venue: "Thakur Vighnaharan Singh Rajput Bhawan",
+      address: "Sarona, Raipur, Chhattisgarh",
       description:
         "A royal evening to close the celebration — dinner, music, and the newlyweds meeting every single guest who made the journey.",
       theme: "reception",
@@ -506,8 +506,8 @@ export const weddingData: WeddingData = {
   ],
 
   venue: {
-    name: "Royal Palace & Banquet",
-    address: "VIP Road, Near Marine Drive",
+    name: "Thakur Vighnaharan Singh Rajput Bhawan",
+    address: "Sarona, Raipur, Chhattisgarh, India",
     city: "Raipur, Chhattisgarh, India",
     description:
       "A palace-style banquet with lantern-lit lawns, a marble mandap courtyard, and parking for 300 cars. Both the Barat and the Reception happen here, so you only need to find your way once.",
