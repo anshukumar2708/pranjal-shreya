@@ -1,6 +1,8 @@
 "use client";
 
 import { useCountdown } from "@/hooks/useCountdown";
+import AddToCalendarButton from "@/components/ui/AddToCalendarButton";
+import type { CalendarEventInput } from "@/lib/calendar";
 import FloralDivider from "@/components/decorations/FloralDivider";
 import Mandala from "@/components/decorations/Mandala";
 import MarigoldBorder from "@/components/decorations/MarigoldBorder";
@@ -12,6 +14,10 @@ interface CountdownProps {
   /** Human-readable date shown under the heading. */
   targetLabel: string;
   coupleName: string;
+  /** Every ceremony, for the "Add to Calendar" button under the date. */
+  calendarEvents?: CalendarEventInput[];
+  calendarLabels?: string[];
+  calendarFile?: string;
 }
 
 function Unit({ value, label, ready }: { value: number; label: string; ready: boolean }) {
@@ -40,7 +46,14 @@ function Unit({ value, label, ready }: { value: number; label: string; ready: bo
  * client tick so server and client markup match, and switches to a celebration
  * message once the date arrives instead of counting negative.
  */
-export default function Countdown({ target, targetLabel, coupleName }: CountdownProps) {
+export default function Countdown({
+  target,
+  targetLabel,
+  coupleName,
+  calendarEvents,
+  calendarLabels,
+  calendarFile = "wedding",
+}: CountdownProps) {
   const { days, hours, minutes, seconds, isComplete, isReady } = useCountdown(target);
 
   const units = [
@@ -124,6 +137,19 @@ export default function Countdown({ target, targetLabel, coupleName }: Countdown
             ❖
           </span>
         </div>
+
+        {calendarEvents?.length && !isComplete ? (
+          <div className="mt-6 flex justify-center">
+            <AddToCalendarButton
+              events={calendarEvents}
+              labels={calendarLabels}
+              filename={calendarFile}
+              tone="dark"
+              placement="bottom"
+              className="w-full max-w-xs"
+            />
+          </div>
+        ) : null}
 
         <FloralDivider tone="light" className="my-7" />
 

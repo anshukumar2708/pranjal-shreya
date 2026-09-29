@@ -11,10 +11,11 @@ import SectionHeading from "@/components/ui/SectionHeading";
 interface AddToCalendarProps {
   /** Only events flagged `calendar: true` get a card. */
   events: WeddingEvent[];
-  coupleName: string;
+  groomName: string;
+  brideName: string;
 }
 
-export default function AddToCalendar({ events, coupleName }: AddToCalendarProps) {
+export default function AddToCalendar({ events, groomName, brideName }: AddToCalendarProps) {
   const calendarEvents = events.filter((event) => event.calendar);
 
   return (
@@ -44,7 +45,7 @@ export default function AddToCalendar({ events, coupleName }: AddToCalendarProps
 
       <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
         {calendarEvents.map((event, index) => {
-          const calendarInput = eventToCalendarInput(event, coupleName);
+          const calendarInput = eventToCalendarInput(event, groomName, brideName);
 
           return (
             <Reveal key={event.id} variant="scale" delay={index * 120} className="h-full">
@@ -83,7 +84,7 @@ export default function AddToCalendar({ events, coupleName }: AddToCalendarProps
 
                   <button
                     type="button"
-                    onClick={() => downloadIcs(calendarInput, `${event.id}-${coupleName}`)}
+                    onClick={() => downloadIcs([calendarInput], `${groomName}-weds-${brideName}-${event.id}`)}
                     className="btn-outline-gold w-full !border-gold-300/60 !bg-transparent !text-cream-100 hover:!bg-cream-100 hover:!text-maroon-800"
                   >
                     <span aria-hidden="true">⬇</span>

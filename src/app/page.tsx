@@ -1,5 +1,6 @@
 import weddingData from "@/data/wedding";
 import { siteUrl } from "@/lib/site";
+import { eventToCalendarInput } from "@/lib/calendar";
 
 import Navbar from "@/components/wedding/Navbar";
 import HeroSection from "@/components/wedding/HeroSection";
@@ -118,6 +119,11 @@ export default function Home() {
           target={countdownTarget}
           targetLabel={dateRange}
           coupleName={coupleShortName}
+          calendarEvents={events.map((event) =>
+            eventToCalendarInput(event, groom.shortName, bride.shortName, siteUrl),
+          )}
+          calendarLabels={events.map((event) => event.name)}
+          calendarFile={`${groom.shortName}-weds-${bride.shortName}`.toLowerCase()}
         />
 
         {/* 3 — Invitation message */}
@@ -127,7 +133,7 @@ export default function Home() {
         {/* <CoupleSection groom={groom} bride={bride} /> */}
 
         {/* 6 — Wedding events */}
-        <WeddingEvents events={events} />
+        <WeddingEvents events={events} groomName={groom.shortName} brideName={bride.shortName} />
 
         {/* 7 — Wedding timeline */}
         {/* <WeddingTimeline events={events} /> */}
@@ -159,7 +165,7 @@ export default function Home() {
         <VenueSection venues={[venue, receptionVenue]} />
 
         {/* 16 — Add to calendar */}
-        {/* <AddToCalendar events={events} coupleName={coupleShortName} /> */}
+        {/* <AddToCalendar events={events} groomName={groom.shortName} brideName={bride.shortName} /> */}
 
         {/* 17 — Final invitation */}
         {/* <FinalInvitation data={weddingData} /> */}

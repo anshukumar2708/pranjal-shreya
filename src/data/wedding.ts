@@ -41,7 +41,7 @@ const portrait = (n: number, size = 600) => `https://i.pravatar.cc/${size}?img=$
 export const weddingData: WeddingData = {
   hashtag: "#PranjalWedsShriya",
   dateRange: "24 November 2026",
-  countdownTarget: "2026-11-25T10:00:00+05:30",
+  countdownTarget: "2026-11-24T18:00:00+05:30",
 
   invitationMessage:
     "joyfully request the pleasure of your gracious presence, with family and friends, at the wedding of their beloved son",
@@ -189,8 +189,8 @@ export const weddingData: WeddingData = {
       id: "barat",
       name: "Wedding",
       date: "24 November 2026",
-      start: "2026-11-25T18:00:00+05:30",
-      end: "2026-11-25T23:59:00+05:30",
+      start: "2026-11-24T18:00:00+05:30",
+      end: "2026-11-24T23:59:00+05:30",
       time: "6:00 PM onwards",
       venue: "Thakur Vighnaharan Singh Rajput Bhawan",
       address: "Sarona, Raipur, Chhattisgarh",

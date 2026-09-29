@@ -1,4 +1,7 @@
+import AddToCalendarButton from "@/components/ui/AddToCalendarButton";
 import DirectionsButton from "@/components/ui/DirectionsButton";
+import { eventToCalendarInput } from "@/lib/calendar";
+import { siteUrl } from "@/lib/site";
 import WeddingImage from "@/components/ui/WeddingImage";
 import type { EventTheme, WeddingEvent } from "@/types/wedding";
 import FlowerCorner from "@/components/decorations/FlowerCorner";
@@ -9,6 +12,9 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 interface WeddingEventsProps {
   events: WeddingEvent[];
+  /** Used to title calendar entries "<groom> weds <bride> · <ceremony>". */
+  groomName: string;
+  brideName: string;
 }
 
 interface ThemeStyle {
@@ -67,7 +73,17 @@ const THEMES: Record<EventTheme, ThemeStyle> = {
   },
 };
 
-function EventCard({ event, index }: { event: WeddingEvent; index: number }) {
+function EventCard({
+  event,
+  index,
+  groomName,
+  brideName,
+}: {
+  event: WeddingEvent;
+  index: number;
+  groomName: string;
+  brideName: string;
+}) {
   const theme = THEMES[event.theme];
   const dark = event.theme === "reception";
   const highlight = event.theme === "barat";
@@ -168,15 +184,23 @@ function EventCard({ event, index }: { event: WeddingEvent; index: number }) {
             ))}
           </dl>
 
-          {/* mt-auto pins the button to the card's foot, so buttons line up
+          {/* mt-auto pins the buttons to the card's foot, so they line up
               across a row even when descriptions differ in length. */}
-          <div className="mt-auto pt-6">
+          <div className="mt-auto grid gap-3 pt-6">
             <DirectionsButton
               destination={event.mapQuery ?? `${event.venue}, ${event.address}`}
               srLabel={`to the ${event.name} venue`}
               className={`btn-royal w-full ${
                 dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
               }`}
+            />
+            {/* Opens upward: the card clips overflow, and the space above the
+                button is the card's own body. */}
+            <AddToCalendarButton
+              events={[eventToCalendarInput(event, groomName, brideName, siteUrl)]}
+              filename={`${groomName}-weds-${brideName}-${event.id}`.toLowerCase()}
+              tone={dark ? "dark" : "light"}
+              placement="top"
             />
           </div>
         </div>
@@ -185,7 +209,7 @@ function EventCard({ event, index }: { event: WeddingEvent; index: number }) {
   );
 }
 
-export default function WeddingEvents({ events }: WeddingEventsProps) {
+export default function WeddingEvents({ events, groomName, brideName }: WeddingEventsProps) {
   return (
     <section
       id="events"
@@ -225,7 +249,7 @@ export default function WeddingEvents({ events }: WeddingEventsProps) {
             key={event.id}
             className="w-full md:w-[calc((100%-1.75rem)/2)] xl:w-[calc((100%-3.5rem)/3)]"
           >
-            <EventCard event={event} index={index} />
+            <EventCard event={event} index={index} groomName={groomName} brideName={brideName} />
           </div>
         ))}
       </div>
