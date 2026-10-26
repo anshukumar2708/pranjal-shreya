@@ -61,12 +61,20 @@ export const weddingData: WeddingData = {
     // so the full-length original would render his face barely legible.
     image: photo("groom-portrait.jpg"),
     alt: "Portrait of Pranjal Singh, the groom, in his wine sherwani",
+    // The first photo fills the large frame, so it is a solo shot; the three
+    // after it are the small frames beside it.
     gallery: [
+      {
+        // 3:4 original - fills the showcase's 3:4 large frame with no crop at all.
+        src: photo("couple/groom/solo-sherwani.jpeg"),
+        alt: "Pranjal Singh standing in a deep wine embroidered sherwani",
+        caption: "The Sherwani",
+      },
       {
         src: photo("couple/groom/steps-sherwani.jpg"),
         alt: "Pranjal Singh in a purple sherwani, sword in hand, leading Shriya down the steps",
-        caption: "The Sherwani",
-        focus: "50% 30%",
+        caption: "Hand In Hand",
+        focus: "50% 35%",
       },
       {
         // Landscape frame - shifted right so the couple fills the narrow thumbnail.
@@ -81,11 +89,6 @@ export const weddingData: WeddingData = {
         caption: "Evening Walk",
         focus: "50% 40%",
       },
-      {
-        src: photo("couple/groom/road-sunset.jpg"),
-        alt: "Pranjal and Shriya sitting back to back on an empty road at dusk",
-        caption: "Back To Back",
-      },
     ],
   },
 
@@ -99,7 +102,14 @@ export const weddingData: WeddingData = {
     // Square face crop of 3.jpeg, for the same reason as the groom's.
     image: photo("bride-portrait.jpg"),
     alt: "Portrait of Shriya Singh, the bride, in a blush pink lehenga",
+    // Solo shot first, for the large frame - as on the groom's side.
     gallery: [
+      {
+        // Cropped to 3:4 from just above her head, matching the groom's framing.
+        src: photo("couple/bride/solo-lehenga-portrait.jpg"),
+        alt: "Shriya Singh smiling in a studio portrait, mehendi on her hands",
+        caption: "Pink & Silver",
+      },
       {
         src: photo("couple/bride/temple-pillar.jpg"),
         alt: "Shriya Singh in a white and red saree beside Pranjal at an old stone temple",
@@ -118,11 +128,6 @@ export const weddingData: WeddingData = {
         alt: "Shriya Singh and Pranjal sharing a high five under the street lights",
         caption: "High Five",
         focus: "59% 50%",
-      },
-      {
-        src: photo("couple/bride/playful-road.jpg"),
-        alt: "Shriya Singh striking a playful pose behind a grinning Pranjal on the road",
-        caption: "Just Us",
       },
     ],
   },
@@ -444,28 +449,29 @@ export const weddingData: WeddingData = {
     ],
   },
 
-  // Landscape frames: `focus` keeps the couple's faces inside the narrow slice
-  // a phone screen shows of them.
+  // All four are 1600x1066 (3:2), cropped alike: the couple fills the frame with
+  // their faces in the upper third, clear of the title. `focus` keeps the faces
+  // in view when a wide screen trims the top and bottom, or a phone the sides.
   banner: [
     {
       src: photo("banner/engagement.jpeg"),
       alt: "Pranjal Singh and Shriya Singh at their engagement",
-      focus: "50% 35%",
+      focus: "50% 28%",
     },
     {
-      src: photo("banner/laughing-walk.jpg"),
+      src: photo("banner/laughing-walk-hd.jpg"),
       alt: "Pranjal and Shriya laughing together on an evening walk",
-      focus: "54% 35%",
+      focus: "48% 25%",
     },
     {
-      src: photo("banner/boat-lake.jpg"),
+      src: photo("banner/boat-lake-couple.jpg"),
       alt: "Pranjal and Shriya in a blue boat on a lake ringed by green hills",
-      focus: "66% 50%",
+      focus: "50% 20%",
     },
     {
-      src: photo("banner/picnic-gaze.jpg"),
+      src: photo("banner/picnic-gaze-hd.jpg"),
       alt: "Pranjal and Shriya gazing at each other at a night picnic",
-      focus: "38% 40%",
+      focus: "40% 30%",
     },
   ],
 

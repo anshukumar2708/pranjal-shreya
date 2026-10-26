@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import Reveal from "@/components/ui/Reveal";
 import type { BannerSlide } from "@/types/wedding";
 
-/** How long each photograph holds before crossfading to the next. */
+/** How long each photograph holds before the next one opens over it. */
 const SLIDE_MS = 6000;
+/** Length of the iris reveal that brings each photograph in. */
+const REVEAL_MS = 1600;
+/** Horizontal travel, in px, that counts as a swipe on touch screens. */
+const SWIPE_PX = 50;
+/** Number of `bannerKenBurns*` keyframes in globals.css. */
+const CAMERA_MOVES = 4;
 
 interface PhotoBannerProps {
   slides: BannerSlide[];
@@ -19,8 +25,13 @@ interface PhotoBannerProps {
 /**
  * Full-screen photo banner with the couple's names set over its lower third.
  * The faces sit in the upper-middle of each photo, so the title lives below
- * them on a maroon scrim instead of across them. Several slides crossfade on a
- * timer, each with a slow push-in; with reduced motion only the first shows.
+ * them on a maroon scrim instead of across them.
+ *
+ * Slides advance on a timer, by the dots, or by swiping. Each incoming photo
+ * opens out of a soft iris over the outgoing one, which keeps its slow camera
+ * move running underneath until it is fully covered, so nothing ever jumps.
+ * With reduced motion the timer never starts and the animations collapse to
+ * instant (see the global reduced-motion rule).
  */
 export default function PhotoBanner({
   slides,
@@ -28,14 +39,25 @@ export default function PhotoBanner({
   brideName,
   tagline = "Together Forever",
 }: PhotoBannerProps) {
-  const [active, setActive] = useState(0);
+  // `previous` stays painted beneath `active` while the reveal plays.
+  const [{ active, previous }, setShown] = useState<{ active: number; previous: number | null }>(
+    { active: 0, previous: null },
+  );
+  const touchStartX = useRef<number | null>(null);
+
+  const show = (index: number) =>
+    setShown((current) =>
+      index === current.active ? current : { active: index, previous: current.active },
+    );
+  const step = (by: number) => show((active + by + slides.length) % slides.length);
 
   useEffect(() => {
     if (slides.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // Re-armed on every change, so picking a slide by hand restarts its full hold.
     const timer = window.setTimeout(
-      () => setActive((active + 1) % slides.length),
+      () =>
+        setShown({ active: (active + 1) % slides.length, previous: active }),
       SLIDE_MS,
     );
     return () => window.clearTimeout(timer);
@@ -45,43 +67,88 @@ export default function PhotoBanner({
     <section
       id="home"
       aria-labelledby="banner-heading"
+      aria-roledescription="carousel"
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0].clientX;
+      }}
+      onTouchEnd={(event) => {
+        if (touchStartX.current === null || slides.length < 2) return;
+        const travel = event.changedTouches[0].clientX - touchStartX.current;
+        touchStartX.current = null;
+        if (Math.abs(travel) >= SWIPE_PX) step(travel < 0 ? 1 : -1);
+      }}
       className="relative isolate flex h-[100svh] min-h-[32rem] w-full items-end justify-center overflow-hidden bg-maroon-900"
     >
       {slides.map((slide, index) => {
         const isActive = index === active;
+        const isPrevious = index === previous;
         return (
-          <Image
+          <div
             key={slide.src}
-            src={slide.src}
-            alt={isActive ? slide.alt : ""}
             aria-hidden={!isActive}
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            style={{ objectPosition: slide.focus }}
-            className={`-z-20 object-cover transition-[opacity,transform] ease-out motion-reduce:transition-none ${
-              isActive
-                ? "scale-100 opacity-100 duration-[1500ms,9000ms]"
-                : "scale-110 opacity-0 duration-[1500ms,1500ms]"
+            className={`absolute inset-0 overflow-hidden ${
+              isActive || isPrevious ? "" : "invisible"
             }`}
-          />
+            style={{
+              zIndex: isActive ? -20 : -21,
+              animation: isActive
+                ? `bannerReveal ${REVEAL_MS}ms cubic-bezier(0.65, 0, 0.35, 1) both`
+                : undefined,
+            }}
+          >
+            <Image
+              src={slide.src}
+              alt={isActive ? slide.alt : ""}
+              fill
+              priority={index === 0}
+              // Fetched up front, so a reveal never opens onto a blank frame.
+              loading={index === 0 ? undefined : "eager"}
+              sizes="100vw"
+              quality={90}
+              className="object-cover"
+              style={{
+                objectPosition: slide.focus,
+                // Same value while active and while being covered, so the move
+                // carries on uninterrupted through the next slide's reveal.
+                animation:
+                  isActive || isPrevious
+                    ? `bannerKenBurns${index % CAMERA_MOVES} ${SLIDE_MS + REVEAL_MS}ms ease-in-out both`
+                    : undefined,
+              }}
+            />
+          </div>
         );
       })}
 
       {slides.length > 1 && (
-        <div className="absolute top-1/2 right-4 z-10 flex -translate-y-1/2 flex-col gap-2.5 sm:right-6">
-          {slides.map((slide, index) => (
-            <button
-              key={slide.src}
-              type="button"
-              onClick={() => setActive(index)}
-              aria-label={`Show photo ${index + 1} of ${slides.length}`}
-              aria-current={index === active}
-              className={`w-1.5 rounded-full bg-cream-100 transition-all duration-500 ${
-                index === active ? "h-7 opacity-100" : "h-1.5 opacity-50 hover:opacity-80"
-              }`}
-            />
-          ))}
+        <div className="absolute top-1/2 right-4 z-10 flex -translate-y-1/2 flex-col items-center gap-2.5 sm:right-6">
+          {slides.map((slide, index) => {
+            const isActive = index === active;
+            return (
+              <button
+                key={slide.src}
+                type="button"
+                onClick={() => show(index)}
+                aria-label={`Show photo ${index + 1} of ${slides.length}`}
+                aria-current={isActive}
+                className={`relative w-1.5 overflow-hidden rounded-full transition-all duration-500 ${
+                  isActive
+                    ? "h-9 bg-cream-100/35"
+                    : "h-1.5 bg-cream-100/50 hover:bg-cream-100/80"
+                }`}
+              >
+                {/* Fills over the hold, showing how long until the next photo. */}
+                {isActive && (
+                  <span
+                    key={active}
+                    aria-hidden="true"
+                    className="absolute inset-0 origin-top rounded-full bg-cream-100"
+                    style={{ animation: `bannerProgress ${SLIDE_MS}ms linear both` }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 

@@ -362,6 +362,69 @@
   }
 }
 
+/* Banner slideshow: the incoming photo opens out of a soft iris over the
+   outgoing one, which keeps drifting underneath until it is covered. */
+@keyframes bannerReveal {
+  from {
+    opacity: 0.35;
+    clip-path: circle(0% at 50% 42%);
+  }
+  to {
+    opacity: 1;
+    clip-path: circle(150% at 50% 42%);
+  }
+}
+
+/* One slow camera move per slide, cycled so consecutive photos never move
+   alike. Kept gentle (8% at most) so the photo is never enlarged past where it
+   stays sharp; every translate stays within half the scale's overflow, so the
+   photo's edge never shows. */
+@keyframes bannerKenBurns0 {
+  from {
+    transform: scale(1.08) translate(-1.5%, 0.5%);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes bannerKenBurns1 {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07) translate(1.5%, -1%);
+  }
+}
+
+@keyframes bannerKenBurns2 {
+  from {
+    transform: scale(1.07) translate(1.5%, 0);
+  }
+  to {
+    transform: scale(1.03) translate(-1.5%, 0);
+  }
+}
+
+@keyframes bannerKenBurns3 {
+  from {
+    transform: scale(1.03) translate(0, 1%);
+  }
+  to {
+    transform: scale(1.08) translate(0, -1%);
+  }
+}
+
+/* Fills the active slideshow dot over the slide's hold. */
+@keyframes bannerProgress {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 /* A newly posted blessing rising onto the wall. */
 @keyframes fadeUp {
   from {

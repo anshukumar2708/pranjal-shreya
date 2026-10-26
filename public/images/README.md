@@ -12,7 +12,11 @@ holds the photos for one section of the page.
 | `ceremonies/` | The five ceremony cards — see [its README](ceremonies/README.md) | `events[].image` |
 | `placeholder.svg` | Marigold "photograph coming soon" card | Automatic fallback when an image fails to load |
 
-`boat-lake.jpg` appears in both `banner/` and `couple/groom/` on purpose, so
+Banner photos are all 1600×1066 (3:2), cropped like `engagement.jpeg`: the
+couple fills the frame with their faces in the upper third, so the title over
+the bottom never covers them. Crop any new banner photo the same way.
+
+The boat-lake photo appears in both `banner/` and `couple/groom/` on purpose, so
 each folder stays self-contained.
 
 Photos for the hidden sections (hero, couple cards, story, family, gallery,
