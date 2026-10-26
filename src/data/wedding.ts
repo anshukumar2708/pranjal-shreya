@@ -453,29 +453,35 @@ export const weddingData: WeddingData = {
     ],
   },
 
-  // All four are 1600x1066 (3:2), cropped alike: the couple fills the frame with
-  // their faces in the upper third, clear of the title. `focus` keeps the faces
-  // in view when a wide screen trims the top and bottom, or a phone the sides.
+  // All four are 1600x1066-ish (3:2), cropped alike: the couple fills the frame
+  // with their faces in the upper third, clear of the title. Phones show the
+  // same photos, filling the tall screen - which leaves only about the middle
+  // third of each photo's width - so `focusMobile` centres that window between
+  // the two faces.
   banner: [
     {
       src: photo("banner/engagement.jpeg"),
       alt: "Pranjal Singh and Shriya Singh at their engagement",
       focus: "50% 28%",
+      focusMobile: "53% 50%",
     },
     {
       src: photo("banner/laughing-walk-hd.jpg"),
       alt: "Pranjal and Shriya laughing together on an evening walk",
       focus: "48% 25%",
+      focusMobile: "47% 50%",
     },
     {
       src: photo("banner/boat-lake-couple.jpg"),
       alt: "Pranjal and Shriya in a blue boat on a lake ringed by green hills",
       focus: "50% 20%",
+      focusMobile: "50% 50%",
     },
     {
       src: photo("banner/picnic-gaze-hd.jpg"),
       alt: "Pranjal and Shriya gazing at each other at a night picnic",
       focus: "40% 30%",
+      focusMobile: "28% 50%",
     },
   ],
 

@@ -21,6 +21,7 @@ import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import ScrollConfetti from "@/components/ui/ScrollConfetti";
 
 /**
  * The complete one-page wedding invitation.
@@ -177,6 +178,8 @@ export default function Home() {
 
       <MusicPlayer src={music.src} title={music.title} />
       <ScrollToTop />
+      {/* Party poppers on opening, and as each section first scrolls into view. */}
+      <ScrollConfetti />
     </>
   );
 }

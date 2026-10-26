@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import Reveal from "@/components/ui/Reveal";
+import { sidePoppers } from "@/lib/confetti";
 import type { BannerSlide } from "@/types/wedding";
 
 /** How long each photograph holds before the next one opens over it. */
@@ -14,6 +15,43 @@ const REVEAL_MS = 1600;
 const SWIPE_PX = 50;
 /** Number of `bannerKenBurns*` keyframes in globals.css. */
 const CAMERA_MOVES = 4;
+
+/**
+ * One slide's photograph, filling the screen on every device. The same photo
+ * is cropped by `focus` on wide screens and by `focusMobile` on portrait ones
+ * (phones), where only about the middle third of its width fits.
+ */
+function SlidePhoto({
+  slide,
+  alt,
+  first,
+  animation,
+}: {
+  slide: BannerSlide;
+  alt: string;
+  first: boolean;
+  animation?: string;
+}) {
+  return (
+    <Image
+      src={slide.src}
+      alt={alt}
+      fill
+      sizes="100vw"
+      quality={90}
+      // Every slide is fetched up front, so a reveal never opens onto a blank
+      // frame; the first is also the page's largest paint, so it goes first.
+      loading="eager"
+      fetchPriority={first ? "high" : undefined}
+      className="object-cover [object-position:var(--focus)] portrait:[object-position:var(--focus-mobile)]"
+      style={{
+        ["--focus" as string]: slide.focus ?? "50% 50%",
+        ["--focus-mobile" as string]: slide.focusMobile ?? slide.focus ?? "50% 50%",
+        animation,
+      }}
+    />
+  );
+}
 
 interface PhotoBannerProps {
   slides: BannerSlide[];
@@ -44,6 +82,18 @@ export default function PhotoBanner({
     { active: 0, previous: null },
   );
   const touchStartX = useRef<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // A party popper with every new photo. The first photo's burst comes from
+  // the page-wide opening celebration, so only later changes fire here — and
+  // only while the banner is still mostly on screen, or the running slideshow
+  // would keep showering confetti over sections further down.
+  useEffect(() => {
+    if (previous === null) return;
+    const box = sectionRef.current?.getBoundingClientRect();
+    if (!box || box.bottom < window.innerHeight * 0.5) return;
+    sidePoppers({ count: 90, speed: 18 });
+  }, [active, previous]);
 
   const show = (index: number) =>
     setShown((current) =>
@@ -65,6 +115,7 @@ export default function PhotoBanner({
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       aria-labelledby="banner-heading"
       aria-roledescription="carousel"
@@ -96,25 +147,17 @@ export default function PhotoBanner({
                 : undefined,
             }}
           >
-            <Image
-              src={slide.src}
+            <SlidePhoto
+              slide={slide}
               alt={isActive ? slide.alt : ""}
-              fill
-              priority={index === 0}
-              // Fetched up front, so a reveal never opens onto a blank frame.
-              loading={index === 0 ? undefined : "eager"}
-              sizes="100vw"
-              quality={90}
-              className="object-cover"
-              style={{
-                objectPosition: slide.focus,
-                // Same value while active and while being covered, so the move
-                // carries on uninterrupted through the next slide's reveal.
-                animation:
-                  isActive || isPrevious
-                    ? `bannerKenBurns${index % CAMERA_MOVES} ${SLIDE_MS + REVEAL_MS}ms ease-in-out both`
-                    : undefined,
-              }}
+              first={index === 0}
+              // Same value while active and while being covered, so the move
+              // carries on uninterrupted through the next slide's reveal.
+              animation={
+                isActive || isPrevious
+                  ? `bannerKenBurns${index % CAMERA_MOVES} ${SLIDE_MS + REVEAL_MS}ms ease-in-out both`
+                  : undefined
+              }
             />
           </div>
         );
@@ -159,7 +202,9 @@ export default function PhotoBanner({
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[55%] bg-gradient-to-t from-maroon-900/95 via-maroon-900/45 to-transparent"
       />
 
-      <div className="w-full px-4 pb-[clamp(3rem,9svh,5.5rem)] text-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)]">
+      {/* Phones lift the title clear of the fixed music button in the bottom
+          corner; wider screens have room beside it. */}
+      <div className="w-full px-4 pb-[5.625rem] text-center sm:pb-[clamp(3rem,9svh,5.5rem)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)]">
         <Reveal variant="up" delay={200}>
           <h1
             id="banner-heading"

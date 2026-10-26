@@ -415,6 +415,30 @@
   }
 }
 
+/* Scratch hearts: a band of light crossing the cover, then a long rest. */
+@keyframes heartShimmer {
+  0% {
+    transform: translateX(0);
+  }
+  45%,
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Scratch hearts: a happy bounce once every date part is revealed. */
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Fills the active slideshow dot over the slide's hold. */
 @keyframes bannerProgress {
   from {

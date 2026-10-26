@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { useCountdown } from "@/hooks/useCountdown";
 import AddToCalendarButton from "@/components/ui/AddToCalendarButton";
 import type { CalendarEventInput } from "@/lib/calendar";
@@ -7,6 +9,15 @@ import FloralDivider from "@/components/decorations/FloralDivider";
 import Mandala from "@/components/decorations/Mandala";
 import MarigoldBorder from "@/components/decorations/MarigoldBorder";
 import Reveal from "@/components/ui/Reveal";
+import ScratchHeart from "@/components/ui/ScratchHeart";
+import { celebrate } from "@/lib/confetti";
+
+/** What each scratch heart hides, in the order the date reads. */
+const DATE_PART_LABELS = [
+  { label: "the day", caption: "Day" },
+  { label: "the month", caption: "Month" },
+  { label: "the year", caption: "Year" },
+];
 
 interface CountdownProps {
   /** ISO timestamp of the wedding moment. */
@@ -55,6 +66,18 @@ export default function Countdown({
   calendarFile = "wedding",
 }: CountdownProps) {
   const { days, hours, minutes, seconds, isComplete, isReady } = useCountdown(target);
+  // "24 November 2026" -> one heart each for the day, month and year.
+  const dateParts = targetLabel.split(" ");
+  const [revealedCount, setRevealedCount] = useState(0);
+  const allRevealed = revealedCount >= dateParts.length;
+
+  // The grand finale once the whole date is out, just after the last
+  // heart's own popper so the two read as one celebration.
+  useEffect(() => {
+    if (!allRevealed) return;
+    const timer = window.setTimeout(celebrate, 350);
+    return () => window.clearTimeout(timer);
+  }, [allRevealed]);
 
   const units = [
     { value: days, label: "Days" },
@@ -125,18 +148,44 @@ export default function Countdown({
           {isComplete ? "The Day Is Here" : "Save the Date"}
         </h2>
 
-        {/* Date band */}
-        <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-gold-400/50 bg-maroon-900/40 px-6 py-2.5 backdrop-blur-sm sm:gap-4 sm:px-8 sm:py-3">
-          <span aria-hidden="true" className="hidden text-marigold-400 min-[380px]:inline">
-            ❖
-          </span>
-          <p className="font-serif-alt text-sm tracking-[0.18em] text-cream-100 uppercase sm:text-base">
-            {targetLabel}
-          </p>
-          <span aria-hidden="true" className="hidden text-marigold-400 min-[380px]:inline">
-            ❖
-          </span>
+        {/* Date as three scratch-card hearts: day, month, year. */}
+        <p className="sr-only">{targetLabel}</p>
+        <div className="mt-7 flex items-center justify-center gap-[clamp(0.5rem,3vw,2rem)]">
+          {dateParts.map((part, index) => (
+            <ScratchHeart
+              key={part}
+              label={DATE_PART_LABELS[index]?.label ?? "the date"}
+              caption={DATE_PART_LABELS[index]?.caption}
+              onReveal={() => setRevealedCount((count) => count + 1)}
+              shimmerDelayMs={index * 600}
+              celebrate={allRevealed}
+              // Three across fit a 320px phone: 3 x 27vw plus the gaps stays inside the padding.
+              className="w-[clamp(5.25rem,27vw,7.5rem)] sm:w-40 lg:w-44"
+            >
+              <span
+                className={`leading-none font-semibold uppercase ${
+                  /^\d+$/.test(part)
+                    ? "font-display text-[2.6rem] sm:text-6xl"
+                    : "font-serif-alt text-[0.72rem] tracking-[0.06em] sm:text-base sm:tracking-[0.1em]"
+                }`}
+              >
+                {part}
+              </span>
+            </ScratchHeart>
+          ))}
         </div>
+        <p
+          aria-live="polite"
+          className="mt-5 inline-flex items-center gap-2 font-serif-alt text-[0.7rem] tracking-[0.22em] text-gold-300 uppercase sm:text-sm"
+        >
+          <span aria-hidden="true" className="text-marigold-400">
+            {allRevealed ? "♥" : "✦"}
+          </span>
+          {allRevealed ? "We can't wait to see you there" : "Scratch the hearts to reveal our date"}
+          <span aria-hidden="true" className="text-marigold-400">
+            {allRevealed ? "♥" : "✦"}
+          </span>
+        </p>
 
         {calendarEvents?.length && !isComplete ? (
           <div className="mt-6 flex justify-center">

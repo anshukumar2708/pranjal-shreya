@@ -145,8 +145,14 @@ export interface Venue {
 export interface BannerSlide {
   src: string;
   alt: string;
-  /** CSS `object-position` keeping the couple in frame on tall screens. Omit for the centre. */
+  /** CSS `object-position` keeping the couple in frame on wide screens. Omit for the centre. */
   focus?: string;
+  /**
+   * `object-position` for portrait screens (phones). The tall screen keeps the
+   * photo's full height but only about a third of its width, so this slides
+   * that window sideways to keep both faces in frame. Falls back to `focus`.
+   */
+  focusMobile?: string;
 }
 
 export interface FamilyGroup {
