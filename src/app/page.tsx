@@ -22,6 +22,7 @@ import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import ScrollConfetti from "@/components/ui/ScrollConfetti";
+import WelcomeGate from "@/components/wedding/WelcomeGate";
 
 /**
  * The complete one-page wedding invitation.
@@ -180,6 +181,8 @@ export default function Home() {
       <ScrollToTop />
       {/* Party poppers on opening, and as each section first scrolls into view. */}
       <ScrollConfetti />
+      {/* Welcome cover: its "Open Invitation" tap is what lets the music play. */}
+      <WelcomeGate groomName={groom.shortName} brideName={bride.shortName} dateLabel={dateRange} />
     </>
   );
 }
