@@ -41,37 +41,29 @@ What lives there:
 
 ### The photographs
 
-The couple's real photographs live in `public/images/` and are referenced from
-[`src/data/wedding.ts`](src/data/wedding.ts) through a `photo()` helper. See
-[`public/images/README.md`](public/images/README.md) for a per-file table of
-what each photo is and where it appears.
+The couple's real photographs live in `public/images/`, one folder per section
+(`banner/`, `couple/groom/`, `couple/bride/`, `ceremonies/`), and are referenced
+from [`src/data/wedding.ts`](src/data/wedding.ts) through a `photo()` helper. See
+[`public/images/README.md`](public/images/README.md) for what each folder feeds.
+Photos for the hidden sections were removed and can be restored from git history.
 
-Two derived crops back the circular frames in the hero and the couple section:
-
-| File | Cut from | Why |
-| --- | --- | --- |
-| `groom-portrait.jpg` | `8.jpeg` | The hero circle is ~288px across. The full-length original would render his face too small to read, so a square face crop is used instead. |
-| `bride-portrait.jpg` | `3.jpeg` | Same reason. |
-
-The family member cards are the one thing still on placeholders — `portrait(n)`
-serves [pravatar.cc](https://i.pravatar.cc) headshots, because no photographs of
-the relatives were supplied. Remote hosts must be allow-listed in
+`portrait(n)` serves [pravatar.cc](https://i.pravatar.cc) headshots for the
+bride's relatives. Remote hosts must be allow-listed in
 [`next.config.ts`](next.config.ts) under `images.remotePatterns`; local
 `/public` paths need no configuration.
 
 #### Focus points
 
-Twelve of the thirteen supplied photographs are tall, and the layout crops
-photos into circles, 16:10 event cards and masonry cells. Every image slot
-therefore takes an optional `focus` — a CSS `object-position` — that decides
-which slice of a tall frame survives the crop:
+The layout crops photos into a full-screen banner, 3:4 and 4:5 collage frames
+and 16:10 event cards. Every image slot therefore takes an optional `focus` — a
+CSS `object-position` — that decides which slice of the frame survives the crop:
 
 ```ts
 {
-  src: photo("7.jpeg"),
-  alt: "Pranjal leading Shriya into the hall through the smoke",
-  caption: "The Grand Entry",
-  focus: "50% 12%",   // keep the top of the frame: that is where the faces are
+  src: photo("couple/groom/boat-lake.jpg"),
+  alt: "Pranjal and Shriya standing together in a blue boat on a hill-lined lake",
+  caption: "On The Lake",
+  focus: "71% 50%",   // shift right: that is where the couple stands
 }
 ```
 

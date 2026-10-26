@@ -1,10 +1,16 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import Reveal from "@/components/ui/Reveal";
+import type { BannerSlide } from "@/types/wedding";
+
+/** How long each photograph holds before crossfading to the next. */
+const SLIDE_MS = 6000;
 
 interface PhotoBannerProps {
-  src: string;
-  alt: string;
+  slides: BannerSlide[];
   groomName: string;
   brideName: string;
   tagline?: string;
@@ -12,38 +18,75 @@ interface PhotoBannerProps {
 
 /**
  * Full-screen photo banner with the couple's names set over its lower third.
- * The faces sit in the upper-middle of the photo, so the title lives below
- * them on a maroon scrim instead of across them.
+ * The faces sit in the upper-middle of each photo, so the title lives below
+ * them on a maroon scrim instead of across them. Several slides crossfade on a
+ * timer, each with a slow push-in; with reduced motion only the first shows.
  */
 export default function PhotoBanner({
-  src,
-  alt,
+  slides,
   groomName,
   brideName,
   tagline = "Together Forever",
 }: PhotoBannerProps) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (slides.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Re-armed on every change, so picking a slide by hand restarts its full hold.
+    const timer = window.setTimeout(
+      () => setActive((active + 1) % slides.length),
+      SLIDE_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [active, slides.length]);
+
   return (
     <section
       id="home"
       aria-labelledby="banner-heading"
       className="relative isolate flex h-[100svh] min-h-[32rem] w-full items-end justify-center overflow-hidden bg-maroon-900"
     >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover object-[50%_35%] motion-safe:animate-[bannerZoom_9s_cubic-bezier(0.2,0.7,0.2,1)_both]"
-      />
+      {slides.map((slide, index) => {
+        const isActive = index === active;
+        return (
+          <Image
+            key={slide.src}
+            src={slide.src}
+            alt={isActive ? slide.alt : ""}
+            aria-hidden={!isActive}
+            fill
+            priority={index === 0}
+            sizes="100vw"
+            style={{ objectPosition: slide.focus }}
+            className={`-z-20 object-cover transition-[opacity,transform] ease-out motion-reduce:transition-none ${
+              isActive
+                ? "scale-100 opacity-100 duration-[1500ms,9000ms]"
+                : "scale-110 opacity-0 duration-[1500ms,1500ms]"
+            }`}
+          />
+        );
+      })}
 
-      {/* Top scrim keeps the navbar readable; the bottom one carries the title.
-          Maroon rather than black so the shade matches the theme and the
-          groom's sherwani. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/60 to-transparent sm:h-48"
-      />
+      {slides.length > 1 && (
+        <div className="absolute top-1/2 right-4 z-10 flex -translate-y-1/2 flex-col gap-2.5 sm:right-6">
+          {slides.map((slide, index) => (
+            <button
+              key={slide.src}
+              type="button"
+              onClick={() => setActive(index)}
+              aria-label={`Show photo ${index + 1} of ${slides.length}`}
+              aria-current={index === active}
+              className={`w-1.5 rounded-full bg-cream-100 transition-all duration-500 ${
+                index === active ? "h-7 opacity-100" : "h-1.5 opacity-50 hover:opacity-80"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* The scrim carries the title. Maroon rather than black so the shade
+          matches the theme and the groom's sherwani. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[55%] bg-gradient-to-t from-maroon-900/95 via-maroon-900/45 to-transparent"

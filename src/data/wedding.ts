@@ -7,16 +7,17 @@ import type { WeddingData } from "@/types/wedding";
  * ---------------------------------------------------------------------------
  * PHOTOGRAPHS
  * ---------------------------------------------------------------------------
- * The couple's real photographs live in `public/images/` and are referenced
- * through `photo()`. Two square, face-centred crops - `groom-portrait.jpg` and
- * `bride-portrait.jpg`, cut from 8.jpeg and 3.jpeg - back the circular frames
- * in the hero and the couple section, where the full-length originals would
- * leave the faces too small to read at 288px across.
+ * The couple's real photographs live in `public/images/`, one folder per
+ * section on the page, and are referenced through `photo()`:
+ *   banner/        - the full-screen slideshow (`banner`)
+ *   couple/groom/  - the groom's collage in "The Bride & Groom" (`groom.gallery`)
+ *   couple/bride/  - the bride's collage (`bride.gallery`)
+ *   ceremonies/    - the five ceremony cards (`events`)
  *
- * The groom's side - parents, siblings, uncle, aunt and bua - uses their own
- * photographs from `public/images/groom-family/`. The bride's relatives still
- * use `portrait()` headshots: no photographs of them were supplied. Drop real
- * ones in `public/images/` and swap the value - nothing else needs to change.
+ * Only the sections shown on the page have their photographs on disk. The
+ * hidden ones (hero, couple cards, story, family, gallery, venues) still point
+ * at files that were removed - `git log -- public/images` has them back - and
+ * render the placeholder until real files are dropped in.
  *
  * ---------------------------------------------------------------------------
  * FOCUS POINTS
@@ -62,28 +63,28 @@ export const weddingData: WeddingData = {
     alt: "Portrait of Pranjal Singh, the groom, in his wine sherwani",
     gallery: [
       {
-        // 3:4 original - fills the showcase's 3:4 hero frame with no crop at all.
-        src: photo("8.jpeg"),
-        alt: "Pranjal Singh standing in a deep wine embroidered sherwani",
+        src: photo("couple/groom/steps-sherwani.jpg"),
+        alt: "Pranjal Singh in a purple sherwani, sword in hand, leading Shriya down the steps",
         caption: "The Sherwani",
+        focus: "50% 30%",
       },
       {
-        src: photo("11.jpeg"),
-        alt: "Pranjal Singh laughing with Shriya as they walk in hand in hand",
-        caption: "That Smile",
-        focus: "50% 22%",
+        // Landscape frame - shifted right so the couple fills the narrow thumbnail.
+        src: photo("couple/groom/boat-lake.jpg"),
+        alt: "Pranjal and Shriya standing together in a blue boat on a hill-lined lake",
+        caption: "On The Lake",
+        focus: "71% 50%",
       },
       {
-        src: photo("7.jpeg"),
-        alt: "Pranjal Singh leading Shriya into the hall through the smoke",
-        caption: "The Grand Entry",
-        focus: "50% 0%",
+        src: photo("couple/groom/evening-walk.jpg"),
+        alt: "Pranjal and Shriya smiling at each other on an evening walk",
+        caption: "Evening Walk",
+        focus: "50% 40%",
       },
       {
-        src: photo("13.jpeg"),
-        alt: "Pranjal Singh looking at Shriya during a stop on a drive",
-        caption: "Off Duty",
-        focus: "50% 0%",
+        src: photo("couple/groom/road-sunset.jpg"),
+        alt: "Pranjal and Shriya sitting back to back on an empty road at dusk",
+        caption: "Back To Back",
       },
     ],
   },
@@ -100,29 +101,28 @@ export const weddingData: WeddingData = {
     alt: "Portrait of Shriya Singh, the bride, in a blush pink lehenga",
     gallery: [
       {
-        src: photo("12.jpeg"),
-        alt: "Shriya Singh in her blush lehenga before the ceremony",
-        caption: "Getting Ready",
-        // Trims the empty curtain above her so she sits centred in the frame.
-        focus: "50% 78%",
+        src: photo("couple/bride/temple-pillar.jpg"),
+        alt: "Shriya Singh in a white and red saree beside Pranjal at an old stone temple",
+        caption: "Red & White",
+        // Trims the bare stone above them so the pair sits centred in the frame.
+        focus: "50% 70%",
       },
       {
-        src: photo("3.jpeg"),
-        alt: "Shriya Singh smiling in a studio portrait, mehendi on her hands",
-        caption: "Pink & Silver",
-        focus: "55% 58%",
+        src: photo("couple/bride/picnic-laugh.jpg"),
+        alt: "Shriya Singh laughing in Pranjal's arms at a night picnic",
+        caption: "That Laugh",
+        focus: "76% 40%",
       },
       {
-        src: photo("5.jpeg"),
-        alt: "Shriya Singh seated for the ceremony beside the puja thali",
-        caption: "The Rituals",
-        focus: "52% 34%",
+        src: photo("couple/bride/high-five.jpg"),
+        alt: "Shriya Singh and Pranjal sharing a high five under the street lights",
+        caption: "High Five",
+        focus: "59% 50%",
       },
       {
-        src: photo("9.jpeg"),
-        alt: "Shriya Singh walking in hand in hand with Pranjal",
-        caption: "Hand In Hand",
-        focus: "50% 0%",
+        src: photo("couple/bride/playful-road.jpg"),
+        alt: "Shriya Singh striking a playful pose behind a grinning Pranjal on the road",
+        caption: "Just Us",
       },
     ],
   },
@@ -443,6 +443,31 @@ export const weddingData: WeddingData = {
       },
     ],
   },
+
+  // Landscape frames: `focus` keeps the couple's faces inside the narrow slice
+  // a phone screen shows of them.
+  banner: [
+    {
+      src: photo("banner/engagement.jpeg"),
+      alt: "Pranjal Singh and Shriya Singh at their engagement",
+      focus: "50% 35%",
+    },
+    {
+      src: photo("banner/laughing-walk.jpg"),
+      alt: "Pranjal and Shriya laughing together on an evening walk",
+      focus: "54% 35%",
+    },
+    {
+      src: photo("banner/boat-lake.jpg"),
+      alt: "Pranjal and Shriya in a blue boat on a lake ringed by green hills",
+      focus: "66% 50%",
+    },
+    {
+      src: photo("banner/picnic-gaze.jpg"),
+      alt: "Pranjal and Shriya gazing at each other at a night picnic",
+      focus: "38% 40%",
+    },
+  ],
 
   gallery: [
     // The masonry mixes tall cells (row-span-2, roughly 3:4) with short ones

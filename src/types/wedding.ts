@@ -137,6 +137,13 @@ export interface Venue {
   mapsUrl: string;
 }
 
+export interface BannerSlide {
+  src: string;
+  alt: string;
+  /** CSS `object-position` keeping the couple in frame on tall screens. Omit for the centre. */
+  focus?: string;
+}
+
 export interface FamilyGroup {
   /** e.g. "Groom's Family" */
   title: string;
@@ -164,6 +171,8 @@ export interface WeddingData {
   groomFamily: FamilyGroup;
   brideFamily: FamilyGroup;
   gallery: GalleryImage[];
+  /** Full-screen banner photographs, crossfaded in order. First is shown on load. */
+  banner: BannerSlide[];
   venue: Venue;
   receptionVenue: Venue;
   nav: NavItem[];

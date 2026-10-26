@@ -2,7 +2,6 @@ import weddingData from "@/data/wedding";
 import { siteUrl } from "@/lib/site";
 import { eventToCalendarInput } from "@/lib/calendar";
 
-import Navbar from "@/components/wedding/Navbar";
 import HeroSection from "@/components/wedding/HeroSection";
 import PhotoBanner from "@/components/wedding/PhotoBanner";
 import InvitationSection from "@/components/wedding/InvitationSection";
@@ -36,9 +35,9 @@ export default function Home() {
     groomFamily,
     brideFamily,
     gallery,
+    banner,
     venue,
     receptionVenue,
-    nav,
     music,
     countdownTarget,
     dateRange,
@@ -102,15 +101,12 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
 
-      <Navbar items={nav} coupleName={coupleShortName} onDark />
-
       <main id="main">
         {/* 2 — Hero / couple banner */}
         {/* <HeroSection data={weddingData} /> */}
 
         <PhotoBanner
-          src="/images/pranjal-shriya.jpeg"
-          alt={`${groom.name} and ${bride.name}`}
+          slides={banner}
           groomName={groom.shortName}
           brideName={bride.shortName}
         />
@@ -164,7 +160,7 @@ export default function Home() {
         {/* <GallerySection images={gallery} /> */}
 
         {/* 15 — Wedding & reception venues */}
-        <VenueSection venues={[venue, receptionVenue]} />
+        {/* <VenueSection venues={[venue, receptionVenue]} /> */}
 
         {/* Blessings wall — guests' wishes, stored on the server */}
         <BlessingsSection coupleName={coupleShortName} />

@@ -74,8 +74,6 @@
 
   html {
     scroll-behavior: smooth;
-    /* Clears the floating navbar when jumping to a section. */
-    scroll-padding-top: 6.5rem;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -361,16 +359,6 @@
   to {
     opacity: 0;
     transform: scale(1.45);
-  }
-}
-
-/* Slow cinematic push-in on the banner photograph. */
-@keyframes bannerZoom {
-  from {
-    transform: scale(1.12);
-  }
-  to {
-    transform: scale(1);
   }
 }
 
