@@ -40,10 +40,12 @@ const description = `${groom.name} weds ${bride.name}. ${dateRange} at ${venue.n
 /**
  * The share card: the homepage banner photo with the couple's names, date and
  * place over a maroon fade, so a pasted link previews as the invitation itself.
- * `public/og-image.jpg` is 1200x630. When it changes, bump `?v=` — WhatsApp,
+ * `public/og-image.jpg` is 1200x630, saved as a baseline (not progressive) JPEG
+ * under 300 KB - the format every chat app previews reliably. When it changes,
+ * bump `?v=` here and in page.tsx - WhatsApp,
  * Facebook and others cache previews by image URL.
  */
-const SHARE_IMAGE_PATH = "/og-image.jpg?v=2";
+const SHARE_IMAGE_PATH = "/og-image.jpg?v=3";
 
 const shareImage = {
   url: SHARE_IMAGE_PATH,

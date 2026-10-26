@@ -19,8 +19,9 @@ under `music` in `src/data/wedding.ts`.
   that first attempt is refused, the button pulses "Tap for music" and the
   track starts on the guest's first tap, click or key press anywhere.
   (Scrolling does not count as interaction for browsers.)
-- The one floating button mutes and unmutes. Muting is remembered, so a guest
-  who muted is not surprised by sound when they reopen the link.
+- The one floating button mutes and unmutes. Muting lasts only until the
+  page is refreshed or reopened - every refresh and every opening plays the
+  song again.
 - With no file here the button shows a disabled "No music" state, so the page
   is never broken by a missing track.
 

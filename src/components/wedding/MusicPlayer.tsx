@@ -11,7 +11,7 @@ interface MusicPlayerProps {
 const TARGET_VOLUME = 0.35;
 /** Milliseconds spent easing up to it, so the shehnai drifts in. */
 const FADE_MS = 2600;
-/** Remembers a guest who muted the music, so a reload does not blast it again. */
+/** Where earlier versions saved a guest's mute; now only cleared, never read. */
 const MUTED_KEY = "wedding-music-muted";
 
 /**
@@ -21,20 +21,16 @@ const MUTED_KEY = "wedding-music-muted";
  */
 const GESTURES = ["pointerdown", "pointerup", "click", "touchend", "keydown"] as const;
 
-function readMutedPreference() {
+/**
+ * Muting is never remembered: every opening and every refresh plays the song.
+ * Earlier versions saved a mute, so clear it to let those devices hear it again.
+ */
+function clearSavedMute() {
   try {
-    return window.localStorage.getItem(MUTED_KEY) === "1";
+    window.localStorage.removeItem(MUTED_KEY);
+    window.sessionStorage.removeItem(MUTED_KEY);
   } catch {
-    return false;
-  }
-}
-
-function writeMutedPreference(muted: boolean) {
-  try {
-    if (muted) window.localStorage.setItem(MUTED_KEY, "1");
-    else window.localStorage.removeItem(MUTED_KEY);
-  } catch {
-    // Private mode or blocked storage — the preference just isn't remembered.
+    // Private mode or blocked storage — nothing was saved there anyway.
   }
 }
 
@@ -49,7 +45,7 @@ function writeMutedPreference(muted: boolean) {
  * track fades up from silence and loops.
  *
  * Muting keeps the track running silently (so unmuting resumes in place) and
- * is remembered, so a guest who muted is not surprised by sound on reload.
+ * lasts only until the page is refreshed or reopened, which plays it again.
  */
 export default function MusicPlayer({ src, title }: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -106,15 +102,8 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
   }, [fadeUp]);
 
   useEffect(() => {
-    // A guest who muted last time starts muted, and nothing auto-starts.
-    const opening = window.setTimeout(() => {
-      if (readMutedPreference()) {
-        mutedRef.current = true;
-        setMuted(true);
-        return;
-      }
-      void start();
-    }, 0);
+    clearSavedMute();
+    const opening = window.setTimeout(() => void start(), 0);
 
     const onGesture = (event: Event) => {
       // Taps on the music button are the button's to handle: starting here too
@@ -142,14 +131,12 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
       audio.muted = true;
       mutedRef.current = true;
       setMuted(true);
-      writeMutedPreference(true);
       return;
     }
 
     // Muted or not yet started → sound on.
     mutedRef.current = false;
     setMuted(false);
-    writeMutedPreference(false);
 
     if (playing) {
       audio.muted = false;
