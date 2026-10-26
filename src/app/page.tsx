@@ -155,7 +155,7 @@ export default function Home() {
         /> */}
 
         {/* 13 — Couple photo showcase */}
-        <CoupleShowcase groom={groom} bride={bride} />
+        {/* <CoupleShowcase groom={groom} bride={bride} /> */}
 
         {/* 14 — Wedding gallery */}
         {/* <GallerySection images={gallery} /> */}
