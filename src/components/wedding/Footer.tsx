@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { WeddingData } from "@/types/wedding";
 import FloralDivider from "@/components/decorations/FloralDivider";
 import MarigoldBorder from "@/components/decorations/MarigoldBorder";
@@ -72,7 +73,7 @@ export default function Footer({ data }: FooterProps) {
                 <Reveal as="li" key={item.href} delay={150 + i * 120}>
                   {/* The whole row is one link, so the icon, name and number
                       all dial — and the tap target stays generous on phones. */}
-                  <a
+                  <Link
                     href={item.href}
                     aria-label={`${item.label}, ${item.value}`}
                     className="group flex items-center gap-4 rounded-full border border-gold-500/30 bg-maroon-900/30 py-2 pr-6 pl-2 text-left transition hover:border-gold-300/70 hover:bg-maroon-900/50 focus-visible:border-gold-300"
@@ -95,7 +96,7 @@ export default function Footer({ data }: FooterProps) {
                         {item.value}
                       </span>
                     </span>
-                  </a>
+                  </Link>
                 </Reveal>
               );
             })}
@@ -135,7 +136,7 @@ export default function Footer({ data }: FooterProps) {
             <span aria-hidden="true" className="hidden text-xl text-gold-500/60 sm:inline">
               ·
             </span>
-            <a
+            <Link
               href="tel:+919770601469"
               aria-label="Call Anshu Singh, +91 97706 01469"
               className="group inline-flex items-center gap-2.5 font-display text-lg text-cream-200/85 transition-colors hover:text-marigold-300 sm:text-xl"
@@ -147,7 +148,7 @@ export default function Footer({ data }: FooterProps) {
                 <PhoneIcon className="h-4 w-4" />
               </span>
               +91 97706 01469
-            </a>
+            </Link>
           </p>
         </div>
       </Reveal>

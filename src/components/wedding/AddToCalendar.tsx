@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { WeddingEvent } from "@/types/wedding";
 import { downloadIcs, eventToCalendarInput, googleCalendarUrl } from "@/lib/calendar";
 import FloralDivider from "@/components/decorations/FloralDivider";
@@ -71,7 +72,7 @@ export default function AddToCalendar({ events, groomName, brideName }: AddToCal
                 </p>
 
                 <div className="mt-7 flex w-full flex-col gap-3">
-                  <a
+                  <Link
                     href={googleCalendarUrl(calendarInput)}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -80,7 +81,7 @@ export default function AddToCalendar({ events, groomName, brideName }: AddToCal
                     <span aria-hidden="true">📅</span>
                     Google Calendar
                     <span className="sr-only">for {event.name} (opens in a new tab)</span>
-                  </a>
+                  </Link>
 
                   <button
                     type="button"

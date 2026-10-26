@@ -27,6 +27,11 @@ export interface Partner {
   title: string;
   father: string;
   mother: string;
+  /**
+   * Grandparents as printed on the invitation card, honorifics included
+   * (e.g. "Late Smt. … & Late Shri …"). Omit to leave the line out.
+   */
+  grandparents?: string;
   bio: string;
   /** Home address, shown on the couple card. Omit to leave the row out. */
   address?: string;

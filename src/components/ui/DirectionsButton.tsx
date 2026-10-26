@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+import Link from "next/link";
 
 interface DirectionsButtonProps {
   /** Place Google Maps should route to, e.g. "Hotel Alka Palace, Durg". */
@@ -85,7 +86,7 @@ export default function DirectionsButton({
   };
 
   return (
-    <a
+    <Link
       href={href}
       target="_blank"
       rel="noopener noreferrer"
@@ -104,6 +105,6 @@ export default function DirectionsButton({
         {srLabel ? ` ${srLabel}` : ""} (opens Google Maps in a new tab, from your current
         location)
       </span>
-    </a>
+    </Link>
   );
 }

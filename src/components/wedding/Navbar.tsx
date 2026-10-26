@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import type { NavItem } from "@/types/wedding";
 
 interface NavbarProps {
@@ -89,12 +90,12 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
 
   return (
     <>
-      <a
+      <Link
         href="#invitation"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:rounded-full focus:bg-maroon-800 focus:px-5 focus:py-3 focus:text-cream-100"
       >
         Skip to invitation
-      </a>
+      </Link>
 
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -115,7 +116,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
                   : "border border-transparent bg-transparent"
             }`}
           >
-            <a
+            <Link
               href="#home"
               onClick={(event) => handleNav(event, "#home")}
               className="flex shrink-0 items-center gap-2"
@@ -130,7 +131,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
               >
                 {coupleName}
               </span>
-            </a>
+            </Link>
 
             {/* Desktop links */}
             <ul className="hidden items-center gap-1 lg:flex">
@@ -138,7 +139,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
                 const isActive = active === item.href;
                 return (
                   <li key={item.href}>
-                    <a
+                    <Link
                       href={item.href}
                       onClick={(event) => handleNav(event, item.href)}
                       aria-current={isActive ? "true" : undefined}
@@ -159,7 +160,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
                           isActive ? "scale-x-100" : "scale-x-0"
                         }`}
                       />
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
@@ -217,7 +218,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
           <ul className="mt-4 grid gap-1.5">
             {items.map((item, index) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
                   onClick={(event) => handleNav(event, item.href)}
                   aria-current={active === item.href ? "true" : undefined}
@@ -231,7 +232,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
                   <span className="font-body text-xs opacity-60">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

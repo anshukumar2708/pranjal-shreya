@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
 
 import {
   downloadIcs,
@@ -126,7 +127,7 @@ export default function AddToCalendarButton({
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {events.map((event, i) => (
-                    <a
+                    <Link
                       key={event.id}
                       href={provider.url(event)}
                       target="_blank"
@@ -136,13 +137,13 @@ export default function AddToCalendarButton({
                     >
                       {labels?.[i] ?? event.title}
                       <span className="sr-only"> to {provider.name} (opens in a new tab)</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </li>
             ) : (
               <li key={provider.name}>
-                <a
+                <Link
                   href={provider.url(events[0])}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -152,7 +153,7 @@ export default function AddToCalendarButton({
                   <span aria-hidden="true">{provider.icon}</span>
                   {provider.name}
                   <span className="sr-only"> (opens in a new tab)</span>
-                </a>
+                </Link>
               </li>
             ),
           )}

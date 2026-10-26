@@ -45,7 +45,8 @@ export const weddingData: WeddingData = {
   countdownTarget: "2026-11-24T18:00:00+05:30",
 
   invitationMessage:
-    "joyfully request the pleasure of your gracious presence, with family and friends, at the wedding of their beloved son",
+    // `\n` splits it over two lines on the invitation card.
+    "invite you and your family to their son's wedding\nYou all are cordially invited",
   finalInvitationMessage:
     "With hearts full of happiness and families full of blessings, we invite you to join us as we celebrate the beginning of a beautiful new chapter.",
 
@@ -55,6 +56,8 @@ export const weddingData: WeddingData = {
     title: "The Groom",
     father: "Kamlesh Singh",
     mother: "Lalita Singh",
+    // "स्मृतिशेष" on the printed card is rendered as "Late".
+    grandparents: "Late Smt. Shakuntala Singh & Late Shri Sumer Singh",
     address: "Santrabadi, Durg, Chhattisgarh – 491001",
     bio: "Born and raised in Raipur, Pranjal is an architect who believes every good building — like every good marriage — begins with a strong foundation. He loves early morning chai, old Hindi film music, and making his family laugh at the dinner table.",
     // Square face crop of 8.jpeg - the circular hero frame is only ~288px wide,
@@ -98,6 +101,7 @@ export const weddingData: WeddingData = {
     title: "The Bride",
     father: "Sandeep Singh",
     mother: "Sangeeta Singh",
+    grandparents: "Smt. Pramila Singh Sengar & Late Shri Narendra Singh Sengar",
     bio: "Shriya is a classical dancer turned graphic designer from Raipur. She collects handwoven sarees, paints when the house is quiet, and has never once said no to a plate of jalebi. Her warmth is the first thing everyone remembers about her.",
     // Square face crop of 3.jpeg, for the same reason as the groom's.
     image: photo("bride-portrait.jpg"),
