@@ -21,21 +21,18 @@ function GoldRule() {
 }
 
 /**
- * One side of the card, laid out like the printed invitation: honorific and
- * name, then grandparents and parents, each relation on its own line above
+ * One side of the card, laid out like the printed invitation: the name, then
+ * grandparents and parents, each relation on its own line above
  * the names ("सुपौत्र", "सुपुत्र" on the card), framed by gold rules.
  */
 function FamilyBlock({
   partner,
-  honorific,
   grandLabel,
   childLabel,
   variant,
   delay,
 }: {
   partner: Partner;
-  /** चि. for the groom, सौ.कां. for the bride, as the printed card has them. */
-  honorific: string;
   grandLabel: string;
   childLabel: string;
   variant: "left" | "right";
@@ -53,11 +50,8 @@ function FamilyBlock({
       </Reveal>
 
       <Reveal variant={variant} delay={delay + 100}>
-        <p className="mt-4 flex items-baseline justify-center gap-2 text-maroon-700">
-          <span className="font-body text-base text-maroon-600 sm:text-lg">{honorific}</span>
-          <span className="font-script text-5xl leading-tight sm:text-6xl lg:text-7xl">
-            {partner.name}
-          </span>
+        <p className="mt-4 text-center font-script text-5xl leading-tight text-maroon-700 sm:text-6xl lg:text-7xl">
+          {partner.name}
         </p>
       </Reveal>
 
@@ -157,7 +151,6 @@ export default function InvitationSection({ data }: InvitationSectionProps) {
 
           <FamilyBlock
             partner={groom}
-            honorific="चि."
             grandLabel="Grandson of"
             childLabel="Son of"
             variant="left"
@@ -180,7 +173,6 @@ export default function InvitationSection({ data }: InvitationSectionProps) {
 
           <FamilyBlock
             partner={bride}
-            honorific="सौ.कां."
             grandLabel="Granddaughter of"
             childLabel="Daughter of"
             variant="right"
@@ -223,7 +215,7 @@ export default function InvitationSection({ data }: InvitationSectionProps) {
               With warm regards
             </p>
             <p className="mt-1 font-script text-3xl text-maroon-700 sm:text-4xl">
-              {groom.father.split(" ").at(-1)} Family
+              {groom.father.split(" ").at(-1)}&apos;s Family
             </p>
           </Reveal>
 
