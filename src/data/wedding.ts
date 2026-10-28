@@ -666,9 +666,9 @@ export const weddingData: WeddingData = {
   ],
 
   music: {
-    // Drop the track at /public/music/wedding-theme.mp3 — see the README in
+    // Drop the track at /public/music/wedding-theme.m4a — see the README in
     // that folder. It starts softly on open and loops.
-    src: "/music/wedding-theme.mp3",
+    src: "/music/wedding-theme.m4a",
     title: "Traditional Wedding Shehnai",
   },
 

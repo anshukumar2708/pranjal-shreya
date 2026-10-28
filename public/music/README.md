@@ -1,6 +1,6 @@
 # Background music
 
-**`wedding-theme.mp3`** — "Traditional wedding — ceremonial vibe with shehnai"
+**`wedding-theme.m4a`** — "Traditional wedding — ceremonial vibe with shehnai"
 (1:34, ~3 MB), from Pixabay Music under the Pixabay Content License (free to
 use, no attribution required):
 https://pixabay.com/music/wedding-traditional-wedding-ceremonial-vibe-with-shehna-376293/

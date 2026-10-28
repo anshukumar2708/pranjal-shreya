@@ -207,7 +207,7 @@ export default function Navbar({ items, coupleName, onDark = false }: NavbarProp
           type="button"
           aria-label="Close navigation menu"
           onClick={() => setOpen(false)}
-          className="absolute inset-0 h-full w-full cursor-default bg-maroon-900/70 backdrop-blur-sm"
+          className="absolute inset-0 h-full w-full cursor-pointer bg-maroon-900/70 backdrop-blur-sm"
         />
 
         <nav

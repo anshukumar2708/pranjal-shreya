@@ -99,6 +99,29 @@
     text-wrap: pretty;
   }
 
+  /* Tailwind v4 dropped the pointer cursor on buttons; restore it for every
+     clickable control. Disabled ones show "not allowed" instead. */
+  a[href],
+  button,
+  [role="button"],
+  summary,
+  label[for],
+  select,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"],
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
   :focus-visible {
     outline: 3px solid var(--color-marigold-500);
     outline-offset: 3px;
