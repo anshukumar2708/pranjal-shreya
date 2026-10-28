@@ -58,9 +58,21 @@ export default function Home() {
     return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString().slice(0, 10);
   };
 
+  const groomId = `${siteUrl}/#groom`;
+  const brideId = `${siteUrl}/#bride`;
+  const eventId = `${siteUrl}/#wedding`;
+  const person = (id: string, name: string, spouseId: string) => ({
+    "@type": "Person",
+    "@id": id,
+    name,
+    spouse: { "@id": spouseId },
+    homeLocation: { "@type": "Place", name: venue.city },
+  });
+
   const eventSchema = {
-    "@context": "https://schema.org",
     "@type": "Event",
+    "@id": eventId,
+    url: siteUrl,
     name: `${groom.name} & ${bride.name} — Wedding`,
     description: `The wedding of ${groom.name} and ${bride.name}, ${dateRange}, at ${venue.name}.`,
     startDate: countdownTarget,
@@ -78,10 +90,10 @@ export default function Home() {
       },
       ...(venue.mapsUrl ? { hasMap: venue.mapsUrl } : {}),
     },
-    organizer: {
-      "@type": "Person",
-      name: `${groom.name} & ${bride.name}`,
-    },
+    organizer: [{ "@id": groomId }, { "@id": brideId }],
+    performer: [{ "@id": groomId }, { "@id": brideId }],
+    isAccessibleForFree: true,
+    inLanguage: "en-IN",
     subEvent: events.map((event) => ({
       "@type": "Event",
       name: event.name,
@@ -95,12 +107,47 @@ export default function Home() {
     })),
   };
 
+  // One linked graph: the site, this page, the couple and their wedding, so a
+  // search for either name can be tied to this invitation.
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: `${groom.name} & ${bride.name} — Wedding Invitation`,
+        alternateName: [
+          `${coupleShortName} Wedding`,
+          `${groom.name} weds ${bride.name}`,
+          weddingData.hashtag,
+        ],
+        inLanguage: "en-IN",
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
+        url: siteUrl,
+        name: `${groom.name} & ${bride.name} Wedding Invitation · ${dateRange}`,
+        description: `Wedding invitation of ${groom.name} and ${bride.name}, ${dateRange}, ${venue.name}, ${venue.city}.`,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: [{ "@id": eventId }, { "@id": groomId }, { "@id": brideId }],
+        mainEntity: { "@id": eventId },
+        primaryImageOfPage: `${siteUrl}/og-image.jpg?v=3`,
+        inLanguage: "en-IN",
+      },
+      person(groomId, groom.name, brideId),
+      person(brideId, bride.name, groomId),
+      eventSchema,
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         // The payload is built here from our own data — never user input.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
       <main id="main">

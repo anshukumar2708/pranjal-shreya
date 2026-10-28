@@ -34,8 +34,16 @@ const mukta = Mukta({
 
 const { groom, bride, dateRange, venue, hashtag } = weddingData;
 
-const title = `${groom.shortName} & ${bride.shortName} — Wedding Invitation`;
-const description = `${groom.name} weds ${bride.name}. ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Mehendi, Haldi, Sangeet, Wedding and Reception.`;
+// Full names lead the title: they are what guests type into a search box.
+const title = `${groom.name} & ${bride.name} Wedding Invitation · ${dateRange}`;
+const description = `${groom.name} weds ${bride.name} — wedding (shaadi) invitation for ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Mehendi, Haldi, Sangeet, Wedding and Reception.`;
+
+/**
+ * Search Console ownership tags, read from the environment so no code change
+ * is needed once the site is live. Unset ones are simply left out.
+ */
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION?.trim();
 
 /**
  * The share card: the homepage banner photo with the couple's names, date and
@@ -68,23 +76,54 @@ export const metadata: Metadata = {
   publisher: `${groom.name} & ${bride.name}`,
   category: "Wedding",
   keywords: [
-    "wedding invitation",
+    groom.name,
+    bride.name,
     `${groom.name} weds ${bride.name}`,
+    `${groom.name} ${bride.name} wedding`,
+    `${groom.name} ${bride.name} marriage`,
     `${groom.shortName} and ${bride.shortName}`,
+    `${groom.shortName} ${bride.shortName} wedding`,
+    `${groom.shortName} weds ${bride.shortName}`,
     hashtag.replace("#", ""),
+    "wedding invitation",
+    "marriage invitation",
+    "wedding card",
+    "online wedding invitation",
+    "digital wedding invitation",
+    "e-invite",
+    "shaadi card",
+    "shaadi invitation",
+    "vivah nimantran",
     "Indian wedding",
     "Hindu wedding",
+    "Rajput wedding",
     "shubh vivah",
     "mehendi",
     "haldi",
     "sangeet",
     "barat",
     "reception",
+    "प्रांजल सिंह",
+    "श्रिया सिंह",
+    "शादी का निमंत्रण",
+    "विवाह निमंत्रण",
+    "शुभ विवाह",
     venue.name,
     venue.city,
+    `wedding in ${venue.city}`,
     dateRange,
   ],
   alternates: { canonical: "/" },
+  // Where the wedding is, for "wedding in Raipur"-style local searches.
+  other: { "geo.region": "IN-CT", "geo.placename": venue.city.split(",")[0] },
+  ...(googleVerification || bingVerification
+    ? {
+        verification: {
+          ...(googleVerification ? { google: googleVerification } : {}),
+          ...(bingVerification ? { other: { "msvalidate.01": bingVerification } } : {}),
+        },
+      }
+    : {}),
   openGraph: {
     type: "website",
     url: "/",
@@ -112,6 +151,11 @@ export const metadata: Metadata = {
     },
   },
   formatDetection: { telephone: true, address: true, email: true },
+  appleWebApp: {
+    capable: true,
+    title: `${groom.shortName} & ${bride.shortName}`,
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {
