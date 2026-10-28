@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 import Reveal from "@/components/ui/Reveal";
 import { sidePoppers } from "@/lib/confetti";
@@ -137,9 +138,8 @@ export default function PhotoBanner({
           <div
             key={slide.src}
             aria-hidden={!isActive}
-            className={`absolute inset-0 overflow-hidden ${
-              isActive || isPrevious ? "" : "invisible"
-            }`}
+            className={`absolute inset-0 overflow-hidden ${isActive || isPrevious ? "" : "invisible"
+              }`}
             style={{
               zIndex: isActive ? -20 : -21,
               animation: isActive
@@ -174,11 +174,10 @@ export default function PhotoBanner({
                 onClick={() => show(index)}
                 aria-label={`Show photo ${index + 1} of ${slides.length}`}
                 aria-current={isActive}
-                className={`relative w-1.5 overflow-hidden rounded-full transition-all duration-500 ${
-                  isActive
-                    ? "h-9 bg-cream-100/35"
-                    : "h-1.5 bg-cream-100/50 hover:bg-cream-100/80"
-                }`}
+                className={`relative w-1.5 overflow-hidden rounded-full transition-all duration-500 ${isActive
+                  ? "h-9 bg-cream-100/35"
+                  : "h-1.5 bg-cream-100/50 hover:bg-cream-100/80"
+                  }`}
               >
                 {/* Fills over the hold, showing how long until the next photo. */}
                 {isActive && (

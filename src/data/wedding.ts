@@ -460,7 +460,7 @@ export const weddingData: WeddingData = {
   // the two faces.
   banner: [
     {
-      src: photo("banner/engagement.jpeg"),
+      src: photo("banner/engagement-clean.jpg"),
       alt: "Pranjal Singh and Shriya Singh at their engagement",
       focus: "50% 28%",
       focusMobile: "53% 50%",
