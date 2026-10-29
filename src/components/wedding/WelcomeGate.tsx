@@ -1,11 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import Mandala from "@/components/decorations/Mandala";
 
 /** Fired on `window` as the invitation's inner doors open onto the page. */
 export const INVITATION_OPEN_EVENT = "invitation:open";
+/**
+ * Fired on `window` the instant "Open Invitation" is tapped — synchronously,
+ * still inside the tap, so the background music may start from it.
+ */
+export const INVITATION_OPENING_EVENT = "invitation:opening";
+
+/** The cover's own tune, played only while the cover is up. */
+const WELCOME_MUSIC_SRC = "/music/welcome-music.mp4";
+const WELCOME_VOLUME = 0.5;
+/** How long the welcome tune takes to fade away once the card is opened. */
+const WELCOME_FADE_OUT_MS = 900;
+
+/** Events that count as a user gesture for the autoplay policy. */
+const GESTURES = ["pointerdown", "pointerup", "click", "touchend", "keydown"] as const;
 
 /**
  * The opening, step by step (ms from the tap):
@@ -41,17 +55,96 @@ function slice(position: string, size: string): CSSProperties {
  * like a folded invitation card: top and bottom flaps first, then two inner
  * doors sealed with the couple's monogram.
  *
- * Its "Open Invitation" tap is the guest's first interaction with the page —
- * which browsers require before any sound may play — so the background music
- * starts the moment it is tapped (the music player listens for that first
- * tap). As the doors part it announces `invitation:open`, which the page's
+ * While the cover is up it plays its own welcome tune, tried as soon as the
+ * page loads or is refreshed. Browsers refuse sound before the visitor has
+ * interacted with the page, so if that is refused the tune starts on the
+ * guest's first tap, click or key press on the cover instead.
+ *
+ * Tapping "Open Invitation" fades the welcome tune out and announces
+ * `invitation:opening`, from which the background music starts — inside the
+ * tap, as browsers require. As the doors part it announces `invitation:open`, which the page's
  * party poppers wait for. The invitation is fully rendered behind the cover,
  * so search engines and link previews still read every word of it.
  */
 export default function WelcomeGate({ groomName, brideName, dateLabel }: WelcomeGateProps) {
   const [stage, setStage] = useState<Stage>("closed");
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const timers = useRef<number[]>([]);
+  const muteRef = useRef<HTMLButtonElement>(null);
+  const fadeRef = useRef<number | null>(null);
+  /** Set once the card is tapped open, so the welcome tune never restarts. */
+  const openedRef = useRef(false);
+
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || openedRef.current || !audio.paused) return;
+    audio.volume = WELCOME_VOLUME;
+    audio.play().catch(() => {
+      // Refused by the autoplay policy (or no file) — the gestures below retry.
+    });
+  }, []);
+
+  // Play the welcome tune on load and on every refresh; if the browser refuses
+  // sound before an interaction, start it on the guest's first gesture instead.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onGesture = (event: Event) => {
+      // "Open Invitation" hands over to the background music, and the mute
+      // button handles its own taps.
+      const target = event.target as Node;
+      if (buttonRef.current?.contains(target) || muteRef.current?.contains(target)) return;
+      play();
+    };
+
+    play();
+    audio.addEventListener("canplay", play);
+    GESTURES.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
+    return () => {
+      audio.removeEventListener("canplay", play);
+      GESTURES.forEach((e) => window.removeEventListener(e, onGesture));
+    };
+  }, [play]);
+
+  /** Mute or unmute the welcome tune; unmuting also starts it if it was blocked. */
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const next = playing ? !audio.muted : false;
+    audio.muted = next;
+    setMuted(next);
+    if (!next) play();
+  };
+
+  useEffect(
+    () => () => {
+      if (fadeRef.current !== null) window.clearInterval(fadeRef.current);
+      audioRef.current?.pause();
+    },
+    [],
+  );
+
+  /** Ease the welcome tune down to silence, then stop it. */
+  const fadeOutWelcome = () => {
+    const audio = audioRef.current;
+    if (!audio || audio.paused) return;
+    const step = 50;
+    const decrement = audio.volume / (WELCOME_FADE_OUT_MS / step);
+    fadeRef.current = window.setInterval(() => {
+      const next = Math.max(0, audio.volume - decrement);
+      audio.volume = next;
+      if (next <= 0) {
+        audio.pause();
+        if (fadeRef.current !== null) window.clearInterval(fadeRef.current);
+        fadeRef.current = null;
+      }
+    }, step);
+  };
 
   // Hold the page still behind the cover, and put focus on the one action.
   useEffect(() => {
@@ -68,6 +161,10 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
 
   const open = () => {
     if (stage !== "closed") return;
+    openedRef.current = true;
+    fadeOutWelcome();
+    // Synchronous, so the background music starts inside this very tap.
+    window.dispatchEvent(new Event(INVITATION_OPENING_EVENT));
     // A reload remembers its scroll position; the invitation should begin at the top.
     window.scrollTo({ top: 0 });
 
@@ -99,6 +196,16 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
       className={`fixed inset-0 z-[70] overflow-hidden ${opening ? "pointer-events-none" : ""}`}
       style={{ perspective: "1600px" }}
     >
+      <audio
+        ref={audioRef}
+        src={WELCOME_MUSIC_SRC}
+        loop
+        preload="auto"
+        aria-hidden="true"
+        onPlaying={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+      />
+
       {/* Stage 2 — the inner doors, sealed in the middle with a monogram. */}
       {(["left", "right"] as const).map((side) => (
         <div
@@ -215,6 +322,53 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           </button>
           <p className="mt-4 font-body text-xs text-cream-200/70">Tap to open · music will play</p>
         </div>
+      </div>
+
+      {/* Mute / unmute for the welcome tune — where the page's music button sits. */}
+      <div
+        className="absolute bottom-7 left-6 flex items-center gap-2.5 sm:bottom-12 sm:left-12"
+        style={{ transition: `opacity ${FADE_MS}ms ease-out`, opacity: opening ? 0 : 1 }}
+      >
+        <button
+          ref={muteRef}
+          type="button"
+          onClick={toggleMute}
+          aria-pressed={playing && !muted}
+          aria-label={playing && !muted ? "Mute welcome music" : "Unmute welcome music"}
+          title={playing && !muted ? "Mute music" : "Play music"}
+          className="relative flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/70 bg-maroon-900/60 text-cream-100 backdrop-blur-sm transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 sm:h-14 sm:w-14"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor" />
+            {playing && !muted ? (
+              <>
+                <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+              </>
+            ) : (
+              <>
+                <path d="m16 9 5 6" />
+                <path d="m21 9-5 6" />
+              </>
+            )}
+          </svg>
+        </button>
+        <span
+          role="status"
+          aria-live="polite"
+          className="font-serif-alt text-[0.62rem] tracking-[0.16em] text-cream-200/80 uppercase"
+        >
+          {playing && !muted ? "Music on" : muted ? "Music muted" : "Tap for music"}
+        </span>
       </div>
     </div>
   );

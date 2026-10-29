@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { INVITATION_OPENING_EVENT } from "@/components/wedding/WelcomeGate";
+
 interface MusicPlayerProps {
   src: string;
   title: string;
@@ -37,8 +39,9 @@ function clearSavedMute() {
 /**
  * Floating background-music button: one control that mutes and unmutes.
  *
- * The shehnai should greet a guest as the invitation opens, so playback is
- * tried straight away. Browsers refuse sound before the visitor has interacted
+ * The shehnai should greet a guest as the invitation opens, so it waits while
+ * the welcome cover plays its own tune and starts from the "Open Invitation"
+ * tap (`invitation:opening`). Browsers refuse sound before the visitor has interacted
  * with the page, so when that first attempt is refused the start is armed
  * behind the guest's first tap, click or key press — the earliest moment sound
  * is allowed — and the button pulses "Tap for music" meanwhile. Either way the
@@ -55,6 +58,8 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
   const startedRef = useRef(false);
   /** Set while the guest has chosen silence, so gestures never override it. */
   const mutedRef = useRef(false);
+  /** Set once the welcome cover is opened; until then its own tune plays. */
+  const openedRef = useRef(false);
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -82,7 +87,7 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
 
   const start = useCallback(async () => {
     const audio = audioRef.current;
-    if (!audio || startedRef.current || mutedRef.current) return false;
+    if (!audio || !openedRef.current || startedRef.current || mutedRef.current) return false;
 
     try {
       audio.muted = false;
@@ -103,7 +108,13 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
 
   useEffect(() => {
     clearSavedMute();
-    const opening = window.setTimeout(() => void start(), 0);
+
+    // Dispatched synchronously from the "Open Invitation" tap, so play() here
+    // still counts as part of that gesture.
+    const onOpening = () => {
+      openedRef.current = true;
+      void start();
+    };
 
     const onGesture = (event: Event) => {
       // Taps on the music button are the button's to handle: starting here too
@@ -113,9 +124,10 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
       void start();
     };
 
+    window.addEventListener(INVITATION_OPENING_EVENT, onOpening);
     GESTURES.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
     return () => {
-      window.clearTimeout(opening);
+      window.removeEventListener(INVITATION_OPENING_EVENT, onOpening);
       GESTURES.forEach((e) => window.removeEventListener(e, onGesture));
       clearFade();
     };
