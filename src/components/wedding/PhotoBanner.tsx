@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Reveal from "@/components/ui/Reveal";
+import ScrollLink from "@/components/ui/ScrollLink";
 import { sidePoppers } from "@/lib/confetti";
 import type { BannerSlide } from "@/types/wedding";
 
@@ -233,6 +234,27 @@ export default function PhotoBanner({
           </div>
         </Reveal>
       </div>
+
+      {/* Bouncing arrow hinting that the invitation continues below. It sits
+          where the back-to-top button appears once the guest scrolls. */}
+      <ScrollLink
+        href="#countdown"
+        ariaLabel="Scroll down to see more"
+        className="absolute right-4 bottom-5 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/60 bg-maroon-900/40 text-cream-100 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-colors hover:bg-maroon-900/70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marigold-300/60 sm:right-6 sm:bottom-7 sm:h-14 sm:w-14"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="h-6 w-6 motion-safe:animate-bounce"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
+      </ScrollLink>
     </section>
   );
 }

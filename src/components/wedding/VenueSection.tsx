@@ -58,11 +58,7 @@ function VenueCard({ venue, index }: { venue: Venue; index: number }) {
 
           <FloralDivider className="my-5 !justify-start" />
 
-          <p className="text-sm leading-relaxed text-ink-soft sm:text-base">
-            {venue.description}
-          </p>
-
-          <dl className="mt-7 space-y-4">
+          <dl className="mt-2 space-y-4">
             {details.map((detail) => (
               <div key={detail.label} className="flex items-start gap-3">
                 <span

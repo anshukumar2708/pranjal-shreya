@@ -14,9 +14,9 @@ import { celebrate } from "@/lib/confetti";
 
 /** What each scratch heart hides, in the order the date reads. */
 const DATE_PART_LABELS = [
-  { label: "the day", caption: "Day" },
-  { label: "the month", caption: "Month" },
-  { label: "the year", caption: "Year" },
+  { label: "the day" },
+  { label: "the month" },
+  { label: "the year" },
 ];
 
 interface CountdownProps {
@@ -155,7 +155,6 @@ export default function Countdown({
             <ScratchHeart
               key={part}
               label={DATE_PART_LABELS[index]?.label ?? "the date"}
-              caption={DATE_PART_LABELS[index]?.caption}
               onReveal={() => setRevealedCount((count) => count + 1)}
               shimmerDelayMs={index * 600}
               celebrate={allRevealed}
@@ -166,7 +165,7 @@ export default function Countdown({
                 className={`leading-none font-semibold uppercase ${
                   /^\d+$/.test(part)
                     ? "font-display text-[2.6rem] sm:text-6xl"
-                    : "font-serif-alt text-[0.72rem] tracking-[0.06em] sm:text-base sm:tracking-[0.1em]"
+                    : "font-serif-alt text-[0.8rem] tracking-[0.04em] sm:text-[1.05rem] lg:text-lg"
                 }`}
               >
                 {part}

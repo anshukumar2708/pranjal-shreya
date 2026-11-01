@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Partner, WeddingData } from "@/types/wedding";
 import FlowerCorner from "@/components/decorations/FlowerCorner";
@@ -122,12 +123,15 @@ export default function InvitationSection({ data }: InvitationSectionProps) {
 
           {/* Lines appear in reading order, like a card being opened. */}
           <Reveal variant="fade" delay={150}>
-            <p
-              aria-hidden="true"
-              className="text-3xl motion-safe:animate-[floatY_4s_ease-in-out_infinite]"
-            >
-              🕉️
-            </p>
+            {/* Maroon line art traced from a CC0 pencil sketch by Bharmitha Selvaraj, via Wikimedia Commons. */}
+            <Image
+              src="/images/ganesh.png"
+              alt="Lord Ganesha"
+              width={800}
+              height={799}
+              sizes="(min-width: 640px) 10rem, 8rem"
+              className="mx-auto h-auto w-32 sm:w-40"
+            />
             <p className="eyebrow mt-4">With the blessings of our elders</p>
           </Reveal>
 

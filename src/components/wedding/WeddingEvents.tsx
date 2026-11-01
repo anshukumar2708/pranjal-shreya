@@ -100,15 +100,17 @@ function EventCard({
           </span>
         ) : null}
 
-        <div className="relative aspect-[16/10] w-full overflow-hidden">
+        {/* Every ceremony photo is prepared at 1524:704 (about 2.16:1), so the
+            frame matches it exactly and each photo fills it with nothing cut. */}
+        <div className="relative aspect-[1524/704] w-full overflow-hidden">
           <WeddingImage
             src={event.image}
             alt={event.alt}
             fill
             loading="lazy"
+            quality={90}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            style={{ objectPosition: event.focus }}
-            className="object-cover transition-transform duration-[1400ms] group-hover:scale-110"
+            className="object-cover transition-transform duration-[1400ms] group-hover:scale-105"
           />
           <span
             aria-hidden="true"
@@ -119,43 +121,33 @@ function EventCard({
             className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-300 to-transparent"
           />
 
-          <span
+          {/* <span
             className={`absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-serif-alt text-[0.68rem] tracking-[0.14em] uppercase shadow-md ${theme.badge}`}
           >
             <span aria-hidden="true">{event.icon}</span>
             Ceremony {String(index + 1).padStart(2, "0")}
-          </span>
+          </span> */}
         </div>
 
-        <div className="flex flex-1 flex-col p-6 sm:p-7">
+        <div className="flex flex-1 flex-col px-6 pt-4 pb-6 sm:px-7 sm:pt-5 sm:pb-7">
           <h3
             id={`event-${event.id}-title`}
-            className={`font-display text-2xl font-semibold sm:text-3xl ${
-              dark ? "text-cream-100" : ""
-            }`}
+            className={`font-display text-2xl font-semibold sm:text-3xl ${dark ? "text-cream-100" : ""
+              }`}
           >
             {event.name}
           </h3>
 
           <p
             aria-hidden="true"
-            className={`mt-1.5 text-[0.7rem] tracking-[0.3em] ${theme.accent}`}
+            className={`mt-1 text-[0.7rem] tracking-[0.3em] ${theme.accent}`}
           >
             {theme.motif}
           </p>
 
-          <p
-            className={`mt-4 text-sm leading-relaxed ${
-              dark ? "text-cream-200/85" : "text-ink-soft"
-            }`}
-          >
-            {event.description}
-          </p>
-
           <dl
-            className={`mt-6 space-y-3 border-t pt-5 text-sm ${
-              dark ? "border-gold-500/30" : "border-maroon-700/15"
-            }`}
+            className={`mt-3.5 space-y-3 border-t pt-4 text-sm ${dark ? "border-gold-500/30" : "border-maroon-700/15"
+              }`}
           >
             {[
               { icon: "📅", label: "Date", value: event.date },
@@ -173,9 +165,8 @@ function EventCard({
                     {row.label}
                   </dt>
                   <dd
-                    className={`mt-0.5 font-display text-base font-semibold break-words ${
-                      dark ? "text-cream-100" : "text-maroon-800"
-                    }`}
+                    className={`mt-0.5 font-display text-base font-semibold break-words ${dark ? "text-cream-100" : "text-maroon-800"
+                      }`}
                   >
                     {row.value}
                   </dd>
@@ -190,9 +181,8 @@ function EventCard({
             <DirectionsButton
               destination={event.mapQuery ?? `${event.venue}, ${event.address}`}
               srLabel={`to the ${event.name} venue`}
-              className={`btn-royal w-full ${
-                dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
-              }`}
+              className={`btn-royal w-full ${dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
+                }`}
             />
             {/* Opens upward: the card clips overflow, and the space above the
                 button is the card's own body. */}
@@ -234,7 +224,6 @@ export default function WeddingEvents({ events, groomName, brideName }: WeddingE
           eyebrow="Five joyful ceremonies"
           script="Join us for the"
           title="Wedding Ceremonies"
-          subtitle="Every ritual has its own colour, its own music and its own kind of chaos. Come for one, come for all five — we would love to have you at each."
         />
       </div>
 
