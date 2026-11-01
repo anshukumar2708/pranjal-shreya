@@ -177,20 +177,28 @@ function EventCard({
 
           {/* mt-auto pins the buttons to the card's foot, so they line up
               across a row even when descriptions differ in length. */}
-          <div className="mt-auto grid gap-3 pt-6">
+          {/* Both buttons share one row, so they get short labels and tighter
+              padding to fit even a phone-width card. */}
+          <div className="mt-auto grid grid-cols-2 gap-2.5 pt-6">
             <DirectionsButton
               destination={event.mapQuery ?? `${event.venue}, ${event.address}`}
               srLabel={`to the ${event.name} venue`}
-              className={`btn-royal w-full ${dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
+              className={`btn-royal w-full !gap-1.5 !px-3 !text-[0.72rem] !tracking-[0.06em] whitespace-nowrap ${dark ? "!bg-none !bg-marigold-500 !text-maroon-900" : ""
                 }`}
-            />
-            {/* Opens upward: the card clips overflow, and the space above the
-                button is the card's own body. */}
+            >
+              <span aria-hidden="true">🧭</span>
+              Directions
+            </DirectionsButton>
+            {/* Opens upward and right-aligned: the card clips overflow, and
+                the space above the button is the card's own body. */}
             <AddToCalendarButton
               events={[eventToCalendarInput(event, groomName, brideName, siteUrl)]}
               filename={`${groomName}-weds-${brideName}-${event.id}`.toLowerCase()}
               tone={dark ? "dark" : "light"}
               placement="top"
+              align="end"
+              label="Calendar"
+              buttonClassName="!gap-1.5 !px-3 !text-[0.72rem] !tracking-[0.06em] whitespace-nowrap"
             />
           </div>
         </div>

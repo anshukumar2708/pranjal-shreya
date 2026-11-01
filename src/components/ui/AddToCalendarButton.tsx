@@ -21,7 +21,11 @@ interface AddToCalendarButtonProps {
   tone?: "light" | "dark";
   /** Which way the menu opens. */
   placement?: "top" | "bottom";
+  /** Centre the menu on the button, or line its right edge up with it. */
+  align?: "center" | "end";
   label?: string;
+  /** Extra classes for the trigger button itself. */
+  buttonClassName?: string;
   className?: string;
 }
 
@@ -42,7 +46,9 @@ export default function AddToCalendarButton({
   filename,
   tone = "light",
   placement = "bottom",
+  align = "center",
   label = "Add to Calendar",
+  buttonClassName = "",
   className = "",
 }: AddToCalendarButtonProps) {
   const [open, setOpen] = useState(false);
@@ -94,7 +100,7 @@ export default function AddToCalendarButton({
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={menuId}
-        className={`${triggerStyle} w-full`}
+        className={`${triggerStyle} w-full ${buttonClassName}`}
       >
         <span aria-hidden="true">📅</span>
         {label}
@@ -109,7 +115,11 @@ export default function AddToCalendarButton({
       <div
         id={menuId}
         hidden={!open}
-        className={`absolute left-1/2 z-30 w-[min(20rem,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-gold-500/40 bg-cream-100 p-2 text-left shadow-[0_24px_60px_-20px_rgba(107,15,26,0.6)] ${
+        className={`absolute z-30 rounded-2xl ${
+          align === "end"
+            ? "right-0 w-[min(18rem,calc(100vw-4rem))]"
+            : "left-1/2 w-[min(20rem,calc(100vw-2rem))] -translate-x-1/2"
+        } border border-gold-500/40 bg-cream-100 p-2 text-left shadow-[0_24px_60px_-20px_rgba(107,15,26,0.6)] ${
           placement === "top" ? "bottom-full mb-3" : "top-full mt-3"
         }`}
       >
