@@ -35,8 +35,12 @@ const mukta = Mukta({
 const { groom, bride, dateRange, venue, hashtag } = weddingData;
 
 // Full names lead the title: they are what guests type into a search box.
+// No description is set anywhere (meta, Open Graph or Twitter): chat apps like
+// WhatsApp fall back from og:description to the meta one, and the couple want
+// shared links to preview with the title and photo only.
 const title = `${groom.name} & ${bride.name} Wedding Invitation · ${dateRange}`;
-const description = `${groom.name} weds ${bride.name} — wedding (shaadi) invitation for ${dateRange} at ${venue.name}, ${venue.city}. Together with our families, you are invited to the Mehendi, Haldi, Sangeet, Wedding and Reception.`;
+// Shorter title for link previews (WhatsApp, Facebook, X), where space is tight.
+const shareTitle = `${groom.shortName} & ${bride.shortName} Wedding Invitation · ${dateRange}`;
 
 /**
  * Search Console ownership tags, read from the environment so no code change
@@ -69,7 +73,6 @@ export const metadata: Metadata = {
     default: title,
     template: `%s · ${groom.shortName} & ${bride.shortName}`,
   },
-  description,
   applicationName: `${groom.shortName} & ${bride.shortName} Wedding`,
   authors: [{ name: groom.name }, { name: bride.name }],
   creator: groom.name,
@@ -128,15 +131,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: `${groom.shortName} & ${bride.shortName} — Wedding Invitation`,
-    title,
-    description,
+    title: shareTitle,
     locale: "en_IN",
     images: [shareImage],
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: shareTitle,
     images: [{ url: shareImage.url, alt: shareImage.alt }],
   },
   robots: {
