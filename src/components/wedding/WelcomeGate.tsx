@@ -56,9 +56,10 @@ function slice(position: string, size: string): CSSProperties {
  * doors sealed with the couple's monogram.
  *
  * While the cover is up it plays its own welcome tune, tried as soon as the
- * page loads or is refreshed. Browsers refuse sound before the visitor has
- * interacted with the page, so if that is refused the tune starts on the
- * guest's first tap, click or key press on the cover instead.
+ * page loads or is refreshed. Browsers (mobile Chrome especially) refuse sound
+ * before the visitor has interacted with the page, so if that is refused the
+ * tune starts muted — always allowed — and the guest's first tap, click or key
+ * press on the cover turns the sound on, mid-song and without a load wait.
  *
  * Tapping "Open Invitation" fades the welcome tune out and announces
  * `invitation:opening`, from which the background music starts — inside the
@@ -78,13 +79,44 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  /**
+   * Set while the tune runs muted because the browser refused sound on load.
+   * Muted playback is always allowed, so the tune is already rolling and the
+   * guest's first touch only has to turn the sound on — instantly, mid-song.
+   */
+  const [silenced, setSilenced] = useState(false);
+  const silencedRef = useRef(false);
+
+  const setSilencedBoth = (value: boolean) => {
+    silencedRef.current = value;
+    setSilenced(value);
+  };
 
   const play = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || openedRef.current || !audio.paused) return;
+    if (!audio || openedRef.current) return;
+
+    // Already rolling muted by the autoplay fallback: a gesture just unmutes it.
+    if (silencedRef.current) {
+      if (navigator.userActivation && !navigator.userActivation.isActive) return;
+      audio.muted = false;
+      setSilencedBoth(false);
+      return;
+    }
+
+    if (!audio.paused) return;
     audio.volume = WELCOME_VOLUME;
     audio.play().catch(() => {
-      // Refused by the autoplay policy (or no file) — the gestures below retry.
+      // Refused by the autoplay policy (or no file). Start it muted instead —
+      // browsers allow that without a gesture — and the gestures below unmute.
+      if (audio.error || openedRef.current || !audio.paused) return;
+      audio.muted = true;
+      audio
+        .play()
+        .then(() => setSilencedBoth(true))
+        .catch(() => {
+          audio.muted = false;
+        });
     });
   }, []);
 
@@ -115,6 +147,13 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
   const toggleMute = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (silencedRef.current) {
+      // Rolling muted by the autoplay fallback: this tap turns the sound on.
+      audio.muted = false;
+      setSilencedBoth(false);
+      setMuted(false);
+      return;
+    }
     const next = playing ? !audio.muted : false;
     audio.muted = next;
     setMuted(next);
@@ -183,6 +222,8 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
   if (stage === "open") return null;
 
   const opening = stage === "opening";
+  /** Actually heard — not paused, not muted by the guest, not autoplay-silenced. */
+  const audible = playing && !muted && !silenced;
   const ease = "cubic-bezier(0.65, 0, 0.35, 1)";
   const flapTransition = `transform ${FLAPS_MS}ms ${ease} ${FLAPS_AT}ms, opacity ${FLAPS_MS}ms ease-in ${FLAPS_AT}ms`;
   const doorTransition = `transform ${DOORS_MS}ms ${ease} ${DOORS_AT}ms, opacity ${DOORS_MS}ms ease-in ${DOORS_AT}ms`;
@@ -333,9 +374,9 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           ref={muteRef}
           type="button"
           onClick={toggleMute}
-          aria-pressed={playing && !muted}
-          aria-label={playing && !muted ? "Mute welcome music" : "Unmute welcome music"}
-          title={playing && !muted ? "Mute music" : "Play music"}
+          aria-pressed={audible}
+          aria-label={audible ? "Mute welcome music" : "Unmute welcome music"}
+          title={audible ? "Mute music" : "Play music"}
           className="relative flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/70 bg-maroon-900/60 text-cream-100 backdrop-blur-sm transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 sm:h-14 sm:w-14"
         >
           <svg
@@ -349,7 +390,7 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
             className="h-6 w-6"
           >
             <path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor" />
-            {playing && !muted ? (
+            {audible ? (
               <>
                 <path d="M15.5 8.5a5 5 0 0 1 0 7" />
                 <path d="M18.5 5.5a9 9 0 0 1 0 13" />
@@ -367,7 +408,7 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           aria-live="polite"
           className="font-serif-alt text-[0.62rem] tracking-[0.16em] text-cream-200/80 uppercase"
         >
-          {playing && !muted ? "Music on" : muted ? "Music muted" : "Tap for music"}
+          {audible ? "Music on" : muted ? "Music muted" : "Tap for music"}
         </span>
       </div>
     </div>
