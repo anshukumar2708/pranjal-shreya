@@ -3,19 +3,12 @@ import type { WeddingData } from "@/types/wedding";
 import FloralDivider from "@/components/decorations/FloralDivider";
 import MarigoldBorder from "@/components/decorations/MarigoldBorder";
 import Reveal from "@/components/ui/Reveal";
+import PhoneIcon from "@/components/ui/PhoneIcon";
 import ScrollLink from "@/components/ui/ScrollLink";
+import DeveloperCredit from "@/components/wedding/DeveloperCredit";
 
 interface FooterProps {
   data: WeddingData;
-}
-
-/** Handset glyph for the call buttons. */
-function PhoneIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-      <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z" />
-    </svg>
-  );
 }
 
 export default function Footer({ data }: FooterProps) {
@@ -124,33 +117,8 @@ export default function Footer({ data }: FooterProps) {
           © {year} {groom.name} &amp; {bride.name}. Made with love for our families and friends.
         </p>
 
-        {/* Developer credit */}
-        <div className="mt-8 border-t border-gold-500/20 pt-6">
-          <p className="font-serif-alt text-xs tracking-[0.24em] text-cream-200/60 uppercase sm:text-sm">
-            Designed &amp; Developed by
-          </p>
-          <p className="mt-3 flex flex-col items-center justify-center gap-x-4 gap-y-1 sm:flex-row">
-            <span className="font-display text-xl font-semibold text-cream-100 sm:text-2xl">
-              Anshu Singh
-            </span>
-            <span aria-hidden="true" className="hidden text-xl text-gold-500/60 sm:inline">
-              ·
-            </span>
-            <Link
-              href="tel:+919770601469"
-              aria-label="Call Anshu Singh, +91 97706 01469"
-              className="group inline-flex items-center gap-2.5 font-display text-lg text-cream-200/85 transition-colors hover:text-marigold-300 sm:text-xl"
-            >
-              <span
-                aria-hidden="true"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-marigold-400 to-gold-500 text-maroon-900 shadow-[0_6px_16px_-6px_rgba(249,166,32,0.8)] transition group-hover:scale-110 group-active:scale-95"
-              >
-                <PhoneIcon className="h-4 w-4" />
-              </span>
-              +91 97706 01469
-            </Link>
-          </p>
-        </div>
+        {/* Developer credit — types itself in as it scrolls into view. */}
+        <DeveloperCredit />
       </Reveal>
     </footer>
   );
