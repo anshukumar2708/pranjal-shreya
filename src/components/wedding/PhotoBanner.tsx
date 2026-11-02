@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import Reveal from "@/components/ui/Reveal";
 import ScrollLink from "@/components/ui/ScrollLink";
+import { TypedText, useTypewriter } from "@/components/ui/Typewriter";
 import { INVITATION_OPEN_EVENT } from "@/components/wedding/WelcomeGate";
 import { sidePoppers } from "@/lib/confetti";
 import type { BannerSlide } from "@/types/wedding";
@@ -24,6 +25,8 @@ const REVEAL_MS = 1600;
 const SWIPE_PX = 50;
 /** Number of `bannerKenBurns*` keyframes in globals.css. */
 const CAMERA_MOVES = 4;
+/** Wait after the doors start parting, so the title types onto a clear view. */
+const TYPE_AFTER_OPEN_MS = 700;
 
 /**
  * One slide's photograph, filling the screen on every device. The same photo
@@ -97,14 +100,27 @@ export default function PhotoBanner({
   const completedRef = useRef(false);
   const activeRef = useRef(active);
 
+  // The title types itself in — names, then the tagline — once the doors open.
+  const [typing, setTyping] = useState(false);
+  const { shown, caretLine } = useTypewriter(
+    [groomName, "&", brideName, tagline],
+    typing,
+    { letterMs: 110, linePauseMs: 250, keepCaret: false },
+  );
+
   // The slideshow already runs behind the welcome cover, so count only what
   // the guest actually sees: from the moment the doors open.
   useEffect(() => {
+    let timer: number | undefined;
     const onOpen = () => {
       seenRef.current = new Set([activeRef.current]);
+      timer = window.setTimeout(() => setTyping(true), TYPE_AFTER_OPEN_MS);
     };
     window.addEventListener(INVITATION_OPEN_EVENT, onOpen);
-    return () => window.removeEventListener(INVITATION_OPEN_EVENT, onOpen);
+    return () => {
+      window.removeEventListener(INVITATION_OPEN_EVENT, onOpen);
+      window.clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -239,11 +255,20 @@ export default function PhotoBanner({
             id="banner-heading"
             className="flex flex-wrap items-baseline justify-center gap-x-[0.3em] font-display text-[clamp(2.75rem,8vw,6rem)] leading-[1.05] font-semibold text-cream-100"
           >
-            <span>{groomName}</span>
-            <span className="gold-text font-script text-[0.8em] font-normal">
+            <span>
+              <TypedText text={groomName} shown={shown[0]} caret={caretLine === 0} />
+            </span>
+            {/* One gold glyph: it simply appears in its turn. */}
+            <span
+              className={`gold-text font-script text-[0.8em] font-normal transition-opacity duration-300 ${
+                shown[1] ? "opacity-100" : "opacity-0"
+              }`}
+            >
               &amp;
             </span>
-            <span>{brideName}</span>
+            <span>
+              <TypedText text={brideName} shown={shown[2]} caret={caretLine === 2} />
+            </span>
           </h1>
         </Reveal>
 
@@ -254,7 +279,7 @@ export default function PhotoBanner({
               className="h-px w-[clamp(2.5rem,10vw,7rem)] bg-gradient-to-r from-transparent to-gold-400"
             />
             <p className="font-serif-alt text-xs tracking-[0.3em] whitespace-nowrap text-marigold-300 uppercase sm:text-sm">
-              {tagline}
+              <TypedText text={tagline} shown={shown[3]} caret={caretLine === 3} />
             </p>
             <span
               aria-hidden="true"
