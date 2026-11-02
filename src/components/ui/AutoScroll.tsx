@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 import { BANNER_COMPLETE_EVENT } from "@/components/wedding/PhotoBanner";
-import { INVITATION_OPEN_EVENT } from "@/components/wedding/WelcomeGate";
 import { slowScrollTo } from "@/lib/slowScroll";
 
 /** How long each section stays on screen before the page moves on. */
@@ -13,10 +12,13 @@ const HOLD_MS = 15000;
 const STOPS = "#main > section, footer";
 
 /**
- * Events that mean the guest has taken over. Any one of them stops the
- * auto-scroll for the rest of the visit; the guest scrolls by hand from there.
+ * The guest's own input never ends the tour — it only pauses it, so it never
+ * fights a finger. A press holds it for as long as the finger stays down; a
+ * release, wheel turn or key press restarts the 15 seconds from there.
  */
-const TAKE_OVER = ["touchstart", "wheel", "pointerdown", "keydown"] as const;
+const PRESS = ["touchstart", "pointerdown"] as const;
+const RELEASE = ["touchend", "touchcancel", "pointerup", "pointercancel"] as const;
+const NUDGE = ["wheel", "keydown"] as const;
 
 /** The first stop still below the top of the screen, or null at the end. */
 function nextStop(): HTMLElement | null {
@@ -24,57 +26,98 @@ function nextStop(): HTMLElement | null {
   return stops.find((el) => el.getBoundingClientRect().top > 8) ?? null;
 }
 
+/** True while the guest is typing in a field, e.g. writing a blessing. */
+function typing(): boolean {
+  const el = document.activeElement;
+  return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
+}
+
 /**
  * Hands-free tour of the invitation. Once the banner has shown every photo
  * (`banner:complete`), the page glides down to the next section, then on to
- * each following one every 15 seconds, and stops at the last.
+ * each following one every 15 seconds, all the way to the footer.
  *
- * The guest can always scroll themselves, and the first touch, click, wheel
- * turn or key press stops the tour so it never fights them. With reduced
+ * The tour runs whether or not the guest touches the screen. While a finger
+ * is down it pauses (a glide in progress halts where it is); once the finger
+ * leaves the screen, the 15 seconds start over from wherever the guest has
+ * scrolled to, and the tour carries on to the next section below. A wheel turn
+ * or key press does the same. It also pauses while the guest is typing or has
+ * switched to another tab or app, resuming when they return. With reduced
  * motion the banner never advances on its own, so the tour never starts.
  */
 export default function AutoScroll() {
   useEffect(() => {
     let timer: number | null = null;
-    let stopped = false;
+    let started = false;
+    let pressed = false;
     let cancelGlide = () => {};
 
-    const stop = () => {
-      stopped = true;
-      // A touch mid-glide stops the page right where it is.
+    const pause = () => {
       cancelGlide();
+      cancelGlide = () => {};
       if (timer !== null) window.clearTimeout(timer);
       timer = null;
-      TAKE_OVER.forEach((e) => window.removeEventListener(e, stop));
+    };
+
+    const hold = () => {
+      if (timer !== null) window.clearTimeout(timer);
+      timer = window.setTimeout(advance, HOLD_MS);
     };
 
     const advance = () => {
-      if (stopped) return;
+      timer = null;
+      // A release or return from another tab re-arms the tour.
+      if (pressed || document.hidden) return;
+      if (typing()) return hold();
       const target = nextStop();
-      if (!target) return stop();
+      // At the footer: nothing below. A guest scrolling back up re-arms it.
+      if (!target) return;
       // The 15 seconds start once the section has arrived, not as it sets off.
-      cancelGlide = slowScrollTo(target, () => {
-        if (!stopped) timer = window.setTimeout(advance, HOLD_MS);
-      });
+      cancelGlide = slowScrollTo(target, hold);
+    };
+
+    const onPress = () => {
+      pressed = true;
+      if (started) pause();
+    };
+
+    const onRelease = () => {
+      pressed = false;
+      if (started) hold();
+    };
+
+    const onNudge = () => {
+      if (!started) return;
+      pause();
+      hold();
+    };
+
+    const onVisibility = () => {
+      if (!started) return;
+      if (document.hidden) pause();
+      else hold();
     };
 
     const onBannerComplete = () => {
-      if (!stopped && timer === null) advance();
+      if (started) return;
+      started = true;
+      advance();
     };
 
-    // Listen for a take-over only once the doors part, so the "Open
-    // Invitation" tap itself never counts as one.
-    const onOpen = () => {
-      if (stopped) return;
-      TAKE_OVER.forEach((e) => window.addEventListener(e, stop, { passive: true }));
-    };
+    const listen = [
+      ...PRESS.map((e) => [e, onPress] as const),
+      ...RELEASE.map((e) => [e, onRelease] as const),
+      ...NUDGE.map((e) => [e, onNudge] as const),
+    ];
 
-    window.addEventListener(INVITATION_OPEN_EVENT, onOpen);
     window.addEventListener(BANNER_COMPLETE_EVENT, onBannerComplete);
+    document.addEventListener("visibilitychange", onVisibility);
+    listen.forEach(([e, fn]) => window.addEventListener(e, fn, { passive: true }));
     return () => {
-      window.removeEventListener(INVITATION_OPEN_EVENT, onOpen);
       window.removeEventListener(BANNER_COMPLETE_EVENT, onBannerComplete);
-      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+      listen.forEach(([e, fn]) => window.removeEventListener(e, fn));
+      pause();
     };
   }, []);
 
