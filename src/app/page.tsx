@@ -20,6 +20,7 @@ import AddToCalendar from "@/components/wedding/AddToCalendar";
 import FinalInvitation from "@/components/wedding/FinalInvitation";
 import Footer from "@/components/wedding/Footer";
 import MusicPlayer from "@/components/wedding/MusicPlayer";
+import AutoScroll from "@/components/ui/AutoScroll";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import ScrollConfetti from "@/components/ui/ScrollConfetti";
 import WelcomeGate from "@/components/wedding/WelcomeGate";
@@ -226,6 +227,9 @@ export default function Home() {
 
       <MusicPlayer src={music.src} title={music.title} />
       <ScrollToTop />
+      {/* After the banner's last photo, glide section by section every 15s;
+          any touch, click, wheel or key press stops it. */}
+      <AutoScroll />
       {/* Party poppers on opening, and as each section first scrolls into view. */}
       <ScrollConfetti />
       {/* Welcome cover: its "Open Invitation" tap is what lets the music play. */}

@@ -133,16 +133,14 @@
     color: var(--color-maroon-900);
   }
 
-  /* Slim, on-theme scrollbar. */
+  /* No visible scrollbar anywhere: the page still scrolls by wheel, touch,
+     keys and the auto-scroll, it just shows no bar. */
+  * {
+    scrollbar-width: none; /* Firefox, and Chrome 121+ */
+    -ms-overflow-style: none; /* old Edge */
+  }
   ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--color-cream-200);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(var(--color-marigold-400), var(--color-maroon-700));
-    border-radius: 999px;
+    display: none; /* Safari and older Chrome */
   }
 }
 

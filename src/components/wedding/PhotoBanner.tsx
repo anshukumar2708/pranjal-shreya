@@ -6,8 +6,15 @@ import Link from "next/link";
 
 import Reveal from "@/components/ui/Reveal";
 import ScrollLink from "@/components/ui/ScrollLink";
+import { INVITATION_OPEN_EVENT } from "@/components/wedding/WelcomeGate";
 import { sidePoppers } from "@/lib/confetti";
 import type { BannerSlide } from "@/types/wedding";
+
+/**
+ * Fired on `window` once, when the guest has seen every photograph since the
+ * invitation opened and the last one's hold ends — the cue for auto-scroll.
+ */
+export const BANNER_COMPLETE_EVENT = "banner:complete";
 
 /** How long each photograph holds before the next one opens over it. */
 const SLIDE_MS = 6000;
@@ -85,6 +92,25 @@ export default function PhotoBanner({
   );
   const touchStartX = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  /** Slides shown since the invitation opened; null while the cover is up. */
+  const seenRef = useRef<Set<number> | null>(null);
+  const completedRef = useRef(false);
+  const activeRef = useRef(active);
+
+  // The slideshow already runs behind the welcome cover, so count only what
+  // the guest actually sees: from the moment the doors open.
+  useEffect(() => {
+    const onOpen = () => {
+      seenRef.current = new Set([activeRef.current]);
+    };
+    window.addEventListener(INVITATION_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(INVITATION_OPEN_EVENT, onOpen);
+  }, []);
+
+  useEffect(() => {
+    activeRef.current = active;
+    seenRef.current?.add(active);
+  }, [active]);
 
   // A party popper with every new photo. The first photo's burst comes from
   // the page-wide opening celebration, so only later changes fire here — and
@@ -107,11 +133,14 @@ export default function PhotoBanner({
     if (slides.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // Re-armed on every change, so picking a slide by hand restarts its full hold.
-    const timer = window.setTimeout(
-      () =>
-        setShown({ active: (active + 1) % slides.length, previous: active }),
-      SLIDE_MS,
-    );
+    const timer = window.setTimeout(() => {
+      // Every photo has now had its full hold in front of the guest.
+      if (!completedRef.current && seenRef.current?.size === slides.length) {
+        completedRef.current = true;
+        window.dispatchEvent(new Event(BANNER_COMPLETE_EVENT));
+      }
+      setShown({ active: (active + 1) % slides.length, previous: active });
+    }, SLIDE_MS);
     return () => window.clearTimeout(timer);
   }, [active, slides.length]);
 
@@ -240,15 +269,15 @@ export default function PhotoBanner({
       <ScrollLink
         href="#countdown"
         ariaLabel="Scroll down to see more"
-        className="absolute right-4 bottom-5 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/60 bg-maroon-900/40 text-cream-100 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-colors hover:bg-maroon-900/70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marigold-300/60 sm:right-6 sm:bottom-7 sm:h-14 sm:w-14"
+        className="absolute right-4 bottom-5 z-10 flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-cream-100 bg-gradient-to-br from-marigold-400 via-gold-400 to-marigold-500 text-maroon-900 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.7)] transition hover:scale-105 hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-marigold-300/60 active:scale-95 sm:right-6 sm:bottom-7 sm:h-14 sm:w-14"
       >
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
-          className="h-6 w-6 motion-safe:animate-bounce"
+          className="h-6 w-6 motion-safe:animate-bounce sm:h-7 sm:w-7"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="3.25"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
