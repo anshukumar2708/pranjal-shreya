@@ -100,9 +100,10 @@ function EventCard({
           </span>
         ) : null}
 
-        {/* Every ceremony photo is prepared at 1524:704 (about 2.16:1), so the
-            frame matches it exactly and each photo fills it with nothing cut. */}
-        <div className="relative aspect-[1524/704] w-full overflow-hidden">
+        {/* Ceremony photos are 3:2 (Haldi, Mehendi) or 5:4 (Sangeet, Wedding,
+            Reception); a 4:3 frame sits between the two, so each photo fills it
+            with only a thin edge trimmed. */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
           <WeddingImage
             src={event.image}
             alt={event.alt}
