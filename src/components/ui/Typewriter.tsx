@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface TypewriterOptions {
   /** Time per letter. */
@@ -48,7 +48,10 @@ export function useTypewriter(
         : -1
       : lines.findIndex((line, i) => typed < offsets[i] + line.length);
 
-  return { shown, caretLine, done };
+  /** Clear everything typed, ready to type it all in again. */
+  const restart = useCallback(() => setTyped(0), []);
+
+  return { shown, caretLine, done, restart };
 }
 
 /** Gold typing cursor. Zero-width, so it never nudges the text around it. */

@@ -105,7 +105,7 @@ export default function PhotoBanner({
   const { shown, caretLine } = useTypewriter(
     [groomName, "&", brideName, tagline],
     typing,
-    { letterMs: 110, linePauseMs: 250, keepCaret: false },
+    { letterMs: 180, linePauseMs: 400, keepCaret: false },
   );
 
   // The slideshow already runs behind the welcome cover, so count only what
