@@ -38,8 +38,8 @@ const { groom, bride, dateRange, venue, hashtag } = weddingData;
 // WhatsApp fall back from og:description to the meta one, and the couple want
 // shared links to preview with the title and photo only.
 const title = `Wedding Invitation of ${groom.shortName} & ${bride.shortName}❤️`;
-// Shorter title for link previews (WhatsApp, Facebook, X), where space is tight.
-const shareTitle = `${groom.shortName} & ${bride.shortName} Wedding Invitation · ${dateRange}`;
+// Link previews (WhatsApp, Facebook, X) use the same title.
+const shareTitle = title;
 
 /**
  * Search Console ownership tags, read from the environment so no code change
