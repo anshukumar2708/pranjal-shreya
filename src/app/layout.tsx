@@ -34,11 +34,10 @@ const mukta = Mukta({
 
 const { groom, bride, dateRange, venue, hashtag } = weddingData;
 
-// Full names lead the title: they are what guests type into a search box.
 // No description is set anywhere (meta, Open Graph or Twitter): chat apps like
 // WhatsApp fall back from og:description to the meta one, and the couple want
 // shared links to preview with the title and photo only.
-const title = `${groom.name} & ${bride.name} Wedding Invitation · ${dateRange}`;
+const title = `Wedding Invitation of ${groom.shortName} & ${bride.shortName}❤️`;
 // Shorter title for link previews (WhatsApp, Facebook, X), where space is tight.
 const shareTitle = `${groom.shortName} & ${bride.shortName} Wedding Invitation · ${dateRange}`;
 
@@ -121,11 +120,11 @@ export const metadata: Metadata = {
   other: { "geo.region": "IN-CT", "geo.placename": venue.city.split(",")[0] },
   ...(googleVerification || bingVerification
     ? {
-        verification: {
-          ...(googleVerification ? { google: googleVerification } : {}),
-          ...(bingVerification ? { other: { "msvalidate.01": bingVerification } } : {}),
-        },
-      }
+      verification: {
+        ...(googleVerification ? { google: googleVerification } : {}),
+        ...(bingVerification ? { other: { "msvalidate.01": bingVerification } } : {}),
+      },
+    }
     : {}),
   openGraph: {
     type: "website",
