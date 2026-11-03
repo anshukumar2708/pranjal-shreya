@@ -129,7 +129,7 @@ export default function Home() {
         "@type": "WebPage",
         "@id": `${siteUrl}/#webpage`,
         url: siteUrl,
-        name: `${groom.name} & ${bride.name} Wedding Invitation · ${dateRange}`,
+        name: `Wedding Invitation of ${groom.shortName} & ${bride.shortName}❤️`,
         description: `Wedding invitation of ${groom.name} and ${bride.name}, ${dateRange}, ${venue.name}, ${venue.city}.`,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: [{ "@id": eventId }, { "@id": groomId }, { "@id": brideId }],
