@@ -79,7 +79,7 @@ export default function Home() {
     startDate: countdownTarget,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: [`${siteUrl}/og-image.jpg?v=3`],
+    image: [`${siteUrl}/og-image.jpg`],
     location: {
       "@type": "Place",
       name: venue.name,
@@ -134,7 +134,7 @@ export default function Home() {
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: [{ "@id": eventId }, { "@id": groomId }, { "@id": brideId }],
         mainEntity: { "@id": eventId },
-        primaryImageOfPage: `${siteUrl}/og-image.jpg?v=3`,
+        primaryImageOfPage: `${siteUrl}/og-image.jpg`,
         inLanguage: "en-IN",
       },
       person(groomId, groom.name, brideId),

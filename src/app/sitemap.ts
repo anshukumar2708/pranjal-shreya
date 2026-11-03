@@ -12,7 +12,7 @@ import { siteUrl } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const absolute = (src: string) => (src.startsWith("http") ? src : `${siteUrl}${src}`);
   const images = [
-    "/og-image.jpg?v=3",
+    "/og-image.jpg",
     ...weddingData.banner.map((slide) => slide.src),
   ]
     .filter((src) => src.startsWith("/"))

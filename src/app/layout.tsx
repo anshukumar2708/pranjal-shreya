@@ -56,7 +56,7 @@ const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION?.trim();
  * bump `?v=` here and in page.tsx - WhatsApp,
  * Facebook and others cache previews by image URL.
  */
-const SHARE_IMAGE_PATH = "/og-image.jpg?v=3";
+const SHARE_IMAGE_PATH = "/og-image.jpg";
 
 const shareImage = {
   url: SHARE_IMAGE_PATH,
@@ -128,7 +128,8 @@ export const metadata: Metadata = {
     : {}),
   openGraph: {
     type: "website",
-    url: "/",
+    // No og:url on purpose: it would tie every share (even `/?v=2`) to the
+    // root URL, and Meta/WhatsApp would keep serving the old cached preview.
     siteName: `${groom.shortName} & ${bride.shortName} — Wedding Invitation`,
     title: shareTitle,
     locale: "en_IN",
