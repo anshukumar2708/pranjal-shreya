@@ -60,6 +60,8 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
   const mutedRef = useRef(false);
   /** Set once the welcome cover is opened; until then its own tune plays. */
   const openedRef = useRef(false);
+  /** Set while the track is paused because the page is in the background. */
+  const pausedForHiddenRef = useRef(false);
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -124,10 +126,37 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
       void start();
     };
 
+    // Pause while the tab or app is in the background and resume on return —
+    // mobile browsers otherwise stop the track and never restart it.
+    const onVisibility = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (document.hidden) {
+        if (!audio.paused) {
+          pausedForHiddenRef.current = true;
+          audio.pause();
+        }
+        return;
+      }
+      if (pausedForHiddenRef.current) {
+        pausedForHiddenRef.current = false;
+        audio.play().catch(() => {
+          // Refused: re-arm, so the guest's next tap starts it again.
+          startedRef.current = false;
+          setPlaying(false);
+        });
+      } else if (!startedRef.current) {
+        // Stopped by an interruption (call, Siri, headphones): try again now.
+        void start();
+      }
+    };
+
     window.addEventListener(INVITATION_OPENING_EVENT, onOpening);
+    document.addEventListener("visibilitychange", onVisibility);
     GESTURES.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
     return () => {
       window.removeEventListener(INVITATION_OPENING_EVENT, onOpening);
+      document.removeEventListener("visibilitychange", onVisibility);
       GESTURES.forEach((e) => window.removeEventListener(e, onGesture));
       clearFade();
     };
@@ -181,6 +210,13 @@ export default function MusicPlayer({ src, title }: MusicPlayerProps) {
         preload="auto"
         onCanPlay={() => {
           void start();
+        }}
+        onPause={() => {
+          // Paused by the system rather than by us (tab switch): re-arm, so the
+          // next tap or return to the page starts it again.
+          if (pausedForHiddenRef.current || !startedRef.current) return;
+          startedRef.current = false;
+          setPlaying(false);
         }}
         onError={() => setUnavailable(true)}
       >

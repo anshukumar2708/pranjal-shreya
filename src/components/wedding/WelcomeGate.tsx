@@ -98,6 +98,8 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
 
     // Already rolling muted by the autoplay fallback: a gesture just unmutes it.
     if (silencedRef.current) {
+      // Paused meanwhile (tab hidden, OS interruption): muted play is always allowed.
+      if (audio.paused) audio.play().catch(() => {});
       if (navigator.userActivation && !navigator.userActivation.isActive) return;
       audio.muted = false;
       setSilencedBoth(false);
@@ -134,11 +136,30 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
       play();
     };
 
+    // Pause while the tab or app is in the background, and pick the tune back
+    // up when the guest returns (mobile browsers otherwise leave it stopped).
+    let pausedForHidden = false;
+    const onVisibility = () => {
+      if (openedRef.current) return;
+      if (document.hidden) {
+        if (!audio.paused) {
+          pausedForHidden = true;
+          audio.pause();
+        }
+      } else if (pausedForHidden) {
+        pausedForHidden = false;
+        // Refused only if sound was never allowed; the gestures retry then.
+        audio.play().catch(() => {});
+      }
+    };
+
     play();
     audio.addEventListener("canplay", play);
+    document.addEventListener("visibilitychange", onVisibility);
     GESTURES.forEach((e) => window.addEventListener(e, onGesture, { passive: true }));
     return () => {
       audio.removeEventListener("canplay", play);
+      document.removeEventListener("visibilitychange", onVisibility);
       GESTURES.forEach((e) => window.removeEventListener(e, onGesture));
     };
   }, [play]);
@@ -172,12 +193,15 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
   const fadeOutWelcome = () => {
     const audio = audioRef.current;
     if (!audio || audio.paused) return;
+    if (fadeRef.current !== null) window.clearInterval(fadeRef.current);
     const step = 50;
     const decrement = audio.volume / (WELCOME_FADE_OUT_MS / step);
     fadeRef.current = window.setInterval(() => {
       const next = Math.max(0, audio.volume - decrement);
       audio.volume = next;
-      if (next <= 0) {
+      // iPhone/iPad ignore `volume` (it always reads 1), so a fade would never
+      // finish and the tune would play over the background music: stop it now.
+      if (next <= 0 || Math.abs(audio.volume - next) > 0.001) {
         audio.pause();
         if (fadeRef.current !== null) window.clearInterval(fadeRef.current);
         fadeRef.current = null;
