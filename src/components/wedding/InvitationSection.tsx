@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Partner, WeddingData } from "@/types/wedding";
@@ -18,6 +19,25 @@ function GoldRule() {
       <span className="text-[0.55rem] text-gold-500">◆</span>
       <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold-400 sm:w-28" />
     </div>
+  );
+}
+
+/**
+ * A pair of names joined by "&". On phones each name and the "&" sit on their
+ * own centred line, so long names never wrap mid-way; from `sm` up they read
+ * on one line as before.
+ */
+function PairedNames({ names }: { names: string }) {
+  const parts = names.split(/\s*&\s*/);
+  return (
+    <>
+      {parts.map((name, i) => (
+        <Fragment key={i}>
+          {i > 0 && <span className="block sm:inline">{" & "}</span>}
+          <span className="block sm:inline">{name}</span>
+        </Fragment>
+      ))}
+    </>
   );
 }
 
@@ -65,7 +85,7 @@ function FamilyBlock({
                 {row.label}
               </dt>
               <dd className="mt-1 font-display text-lg font-semibold text-maroon-800 sm:text-2xl">
-                {row.names}
+                <PairedNames names={row.names} />
               </dd>
             </div>
           ))}
@@ -139,7 +159,7 @@ export default function InvitationSection({ data }: InvitationSectionProps) {
               their son's wedding, as a traditional groom's-side card reads. */}
           <Reveal delay={300}>
             <p className="mt-6 font-display text-xl font-semibold text-maroon-800 sm:text-2xl">
-              Shri {groom.father} &amp; Smt. {groom.mother}
+              <PairedNames names={`Shri ${groom.father} & Smt. ${groom.mother}`} />
             </p>
 
             {/* Maroon → rose → saffron, the card's own colours, so the

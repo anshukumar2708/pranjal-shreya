@@ -227,8 +227,8 @@ export default function Home() {
 
       <MusicPlayer src={music.src} title={music.title} />
       <ScrollToTop />
-      {/* After the banner's last photo, glide section by section every 15s,
-          touched or not; a touch only pauses it for another 15s. */}
+      {/* After the banner's last photo, glide section by section every 10s,
+          touched or not; a touch only pauses it for another 10s. */}
       <AutoScroll />
       {/* Party poppers on opening, and as each section first scrolls into view. */}
       <ScrollConfetti />

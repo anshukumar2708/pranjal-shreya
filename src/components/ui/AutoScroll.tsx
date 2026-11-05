@@ -6,15 +6,16 @@ import { BANNER_COMPLETE_EVENT } from "@/components/wedding/PhotoBanner";
 import { slowScrollTo } from "@/lib/slowScroll";
 
 /** How long each section stays on screen before the page moves on. */
-const HOLD_MS = 15000;
+const HOLD_MS = 10000;
 
-/** The stops, top to bottom: every section of the invitation, then the footer. */
-const STOPS = "#main > section, footer";
+/** The stops, top to bottom: every section of the invitation, the footer,
+    then the "Designed & Developed by" credit at the very bottom. */
+const STOPS = "#main > section, footer, [data-autoscroll-stop]";
 
 /**
  * The guest's own input never ends the tour — it only pauses it, so it never
  * fights a finger. A press holds it for as long as the finger stays down; a
- * release, wheel turn or key press restarts the 15 seconds from there.
+ * release, wheel turn or key press restarts the 10 seconds from there.
  */
 const PRESS = ["touchstart", "pointerdown"] as const;
 const RELEASE = ["touchend", "touchcancel", "pointerup", "pointercancel"] as const;
@@ -35,11 +36,11 @@ function typing(): boolean {
 /**
  * Hands-free tour of the invitation. Once the banner has shown every photo
  * (`banner:complete`), the page glides down to the next section, then on to
- * each following one every 15 seconds, all the way to the footer.
+ * each following one every 10 seconds, all the way down to the "Designed & Developed by" credit.
  *
  * The tour runs whether or not the guest touches the screen. While a finger
  * is down it pauses (a glide in progress halts where it is); once the finger
- * leaves the screen, the 15 seconds start over from wherever the guest has
+ * leaves the screen, the 10 seconds start over from wherever the guest has
  * scrolled to, and the tour carries on to the next section below. A wheel turn
  * or key press does the same. It also pauses while the guest is typing or has
  * switched to another tab or app, resuming when they return. With reduced
@@ -70,9 +71,9 @@ export default function AutoScroll() {
       if (pressed || document.hidden) return;
       if (typing()) return hold();
       const target = nextStop();
-      // At the footer: nothing below. A guest scrolling back up re-arms it.
+      // At the credit: nothing below. A guest scrolling back up re-arms it.
       if (!target) return;
-      // The 15 seconds start once the section has arrived, not as it sets off.
+      // The 10 seconds start once the section has arrived, not as it sets off.
       cancelGlide = slowScrollTo(target, hold);
     };
 

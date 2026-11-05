@@ -54,7 +54,7 @@ export default function DeveloperCredit() {
   const phoneStarted = shown[2] > 0;
 
   return (
-    <div ref={rootRef} className="mt-8 border-t border-gold-500/20 pt-6">
+    <div ref={rootRef} data-autoscroll-stop className="mt-8 border-t border-gold-500/20 pt-6">
       {/* Its own glowing panel, so the credit reads apart from the footer
           around it: saffron heading, gold name, cream number. Full width on
           phones; on wider screens it wraps snugly around the text. */}
