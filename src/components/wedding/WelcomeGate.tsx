@@ -335,7 +335,10 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
 
       {/* The card's face — fades first, before anything moves. */}
       <div
-        className="absolute inset-0 flex items-center justify-center px-6 text-center"
+        // On phones the gaps and the names scale with the screen's height
+        // (dvh), so a tall phone is filled instead of leaving empty bands and a
+        // short one still fits. The bottom padding keeps clear of the music control.
+        className="absolute inset-0 flex items-center justify-center px-6 pt-8 pb-24 text-center sm:py-0"
         style={{
           transition: `opacity ${FADE_MS}ms ease-out`,
           opacity: opening ? 0 : 1,
@@ -355,37 +358,39 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           <p lang="hi" className="font-body text-lg font-medium text-marigold-300 sm:text-xl">
             ॥ श्री गणेशाय नमः ॥
           </p>
-          <p className="mt-6 font-serif-alt text-xs tracking-[0.3em] text-cream-200/85 uppercase sm:text-sm">
+          <p className="mt-[clamp(1rem,4.5dvh,3rem)] font-serif-alt text-xs leading-relaxed tracking-[0.3em] text-cream-200/85 uppercase sm:mt-6 sm:text-sm">
             You are invited to the wedding of
           </p>
 
           <h2
             id="welcome-heading"
-            className="gold-text mt-4 flex flex-col items-center pb-2 font-script text-6xl leading-tight sm:text-7xl"
+            className="gold-text mt-[clamp(0.75rem,3.5dvh,2.5rem)] flex flex-col items-center pb-2 font-script text-[clamp(2.75rem,8dvh,4.5rem)] leading-tight sm:mt-4 sm:text-7xl"
           >
             <span>{groomName}</span>
-            <span className="text-4xl sm:text-5xl">&amp;</span>
+            <span className="text-[clamp(1.75rem,5dvh,2.75rem)] sm:text-5xl">&amp;</span>
             <span>{brideName}</span>
           </h2>
 
-          <div className="mt-4 flex items-center gap-3">
-            <span aria-hidden="true" className="h-px w-10 bg-gradient-to-r from-transparent to-gold-400 sm:w-16" />
-            <p className="font-serif-alt text-sm tracking-[0.25em] text-cream-100 uppercase sm:text-base">
+          <div className="mt-[clamp(0.75rem,3.5dvh,2.5rem)] flex items-center gap-3 sm:mt-4">
+            <span aria-hidden="true" className="h-px w-6 bg-gradient-to-r from-transparent to-gold-400 sm:w-16" />
+            <p className="font-serif-alt text-sm tracking-[0.18em] whitespace-nowrap text-cream-100 uppercase sm:text-base sm:tracking-[0.25em]">
               {dateLabel}
             </p>
-            <span aria-hidden="true" className="h-px w-10 bg-gradient-to-l from-transparent to-gold-400 sm:w-16" />
+            <span aria-hidden="true" className="h-px w-6 bg-gradient-to-l from-transparent to-gold-400 sm:w-16" />
           </div>
 
           <button
             ref={buttonRef}
             type="button"
             onClick={open}
-            className="mt-10 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-8 py-4 font-serif-alt text-sm font-semibold tracking-[0.2em] text-maroon-900 uppercase transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
+            className="mt-[clamp(1.5rem,6dvh,4rem)] inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-6 py-4 whitespace-nowrap sm:mt-10 sm:px-8 font-serif-alt text-sm font-semibold tracking-[0.2em] text-maroon-900 uppercase transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
           >
             <span aria-hidden="true">💌</span>
             Open Invitation
           </button>
-          <p className="mt-4 font-body text-xs text-cream-200/70">Tap to open · music will play</p>
+          <p className="mt-[clamp(0.75rem,2.5dvh,1.5rem)] font-body text-xs text-cream-200/70 sm:mt-4">
+            Tap to open · music will play
+          </p>
         </div>
       </div>
 
