@@ -2,11 +2,14 @@
 
 import { useEffect } from "react";
 
-import { BANNER_COMPLETE_EVENT } from "@/components/wedding/PhotoBanner";
+import { INVITATION_OPEN_EVENT } from "@/components/wedding/WelcomeGate";
 import { slowScrollTo } from "@/lib/slowScroll";
 
 /** How long each section stays on screen before the page moves on. */
 const HOLD_MS = 10000;
+/** The banner and the "Save the Date" section get longer, for their animations. */
+const LONG_HOLD_MS = 15000;
+const LONG_HOLD_IDS = new Set(["home", "countdown"]);
 
 /** The stops, top to bottom: every section of the invitation, the footer,
     then the "Designed & Developed by" credit at the very bottom. */
@@ -27,6 +30,13 @@ function nextStop(): HTMLElement | null {
   return stops.find((el) => el.getBoundingClientRect().top > 8) ?? null;
 }
 
+/** How long to hold the section now filling the top of the screen. */
+function holdFor(): number {
+  const stops = Array.from(document.querySelectorAll<HTMLElement>(STOPS));
+  const current = stops.filter((el) => el.getBoundingClientRect().top <= 8).pop() ?? stops[0];
+  return current && LONG_HOLD_IDS.has(current.id) ? LONG_HOLD_MS : HOLD_MS;
+}
+
 /** True while the guest is typing in a field, e.g. writing a blessing. */
 function typing(): boolean {
   const el = document.activeElement;
@@ -34,9 +44,9 @@ function typing(): boolean {
 }
 
 /**
- * Hands-free tour of the invitation. Once the banner has shown every photo
- * (`banner:complete`), the page glides down to the next section, then on to
- * each following one every 10 seconds, all the way down to the "Designed & Developed by" credit.
+ * Hands-free tour of the invitation. Once the invitation opens, the banner
+ * holds for 15 seconds, the "Save the Date" section for 15, and every other
+ * section for 10, all the way down to the "Designed & Developed by" credit.
  *
  * The tour runs whether or not the guest touches the screen. While a finger
  * is down it pauses (a glide in progress halts where it is); once the finger
@@ -62,7 +72,7 @@ export default function AutoScroll() {
 
     const hold = () => {
       if (timer !== null) window.clearTimeout(timer);
-      timer = window.setTimeout(advance, HOLD_MS);
+      timer = window.setTimeout(advance, holdFor());
     };
 
     const advance = () => {
@@ -99,10 +109,13 @@ export default function AutoScroll() {
       else hold();
     };
 
-    const onBannerComplete = () => {
+    // The tour starts as the invitation opens: the banner holds for its 15
+    // seconds, then the page moves on. With reduced motion it never starts.
+    const onOpen = () => {
       if (started) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       started = true;
-      advance();
+      if (!pressed) hold();
     };
 
     const listen = [
@@ -111,11 +124,11 @@ export default function AutoScroll() {
       ...NUDGE.map((e) => [e, onNudge] as const),
     ];
 
-    window.addEventListener(BANNER_COMPLETE_EVENT, onBannerComplete);
+    window.addEventListener(INVITATION_OPEN_EVENT, onOpen);
     document.addEventListener("visibilitychange", onVisibility);
     listen.forEach(([e, fn]) => window.addEventListener(e, fn, { passive: true }));
     return () => {
-      window.removeEventListener(BANNER_COMPLETE_EVENT, onBannerComplete);
+      window.removeEventListener(INVITATION_OPEN_EVENT, onOpen);
       document.removeEventListener("visibilitychange", onVisibility);
       listen.forEach(([e, fn]) => window.removeEventListener(e, fn));
       pause();

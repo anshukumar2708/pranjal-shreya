@@ -35,6 +35,32 @@ const SPARKLES: [number, number, number][] = [
   [0.5, 0.78, 0.03],
 ];
 
+/**
+ * Zig-zag path the automatic scratch follows, as shares of width and height:
+ * back and forth across the heart from top to bottom, like a quick hand.
+ */
+const AUTO_PATH: [number, number][] = [
+  [0.2, 0.12],
+  [0.4, 0.1],
+  [0.6, 0.12],
+  [0.8, 0.1],
+  [0.92, 0.22],
+  [0.08, 0.24],
+  [0.06, 0.36],
+  [0.94, 0.34],
+  [0.92, 0.46],
+  [0.08, 0.48],
+  [0.14, 0.6],
+  [0.86, 0.58],
+  [0.76, 0.7],
+  [0.24, 0.72],
+  [0.36, 0.82],
+  [0.64, 0.82],
+  [0.5, 0.94],
+];
+/** How long the automatic scratch takes, start to finish. */
+const AUTO_DURATION_MS = 4200;
+
 interface ScratchHeartProps {
   /** What the heart hides, e.g. "24" or "November". */
   children: React.ReactNode;
@@ -47,6 +73,10 @@ interface ScratchHeartProps {
   shimmerDelayMs?: number;
   /** Plays a small celebratory pop, e.g. once every heart is open. */
   celebrate?: boolean;
+  /** When true, the heart scratches itself open after `autoDelayMs`. */
+  autoScratch?: boolean;
+  /** Pause before the automatic scratch begins. */
+  autoDelayMs?: number;
   className?: string;
 }
 
@@ -77,6 +107,8 @@ export default function ScratchHeart({
   onReveal,
   shimmerDelayMs = 0,
   celebrate = false,
+  autoScratch = false,
+  autoDelayMs = 500,
   className = "",
 }: ScratchHeartProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -85,6 +117,8 @@ export default function ScratchHeart({
   const last = useRef<{ x: number; y: number } | null>(null);
   const strokes = useRef(0);
   const [revealed, setRevealed] = useState(false);
+  // Mirrors `revealed` so the auto-scratch and pointer handlers never reveal twice.
+  const revealedRef = useRef(false);
   // The text stays hidden until the cover is painted, so the date never
   // flashes through before the page's script has run.
   const [covered, setCovered] = useState(false);
@@ -143,12 +177,88 @@ export default function ScratchHeart({
   }, []);
 
   const reveal = () => {
-    if (revealed) return;
+    if (revealedRef.current) return;
+    revealedRef.current = true;
     setRevealed(true);
     // A party popper goes off from the heart as its secret comes out.
     if (rootRef.current) burstFrom(rootRef.current, { count: 100, spread: 100, speed: 11 });
     onReveal?.();
   };
+  // Latest `reveal`, so the auto-scratch effect doesn't restart on every render.
+  const revealRef = useRef(reveal);
+  useEffect(() => {
+    revealRef.current = reveal;
+  });
+
+  // Scratch the heart open by itself: a brush sweeps a zig-zag across it, then
+  // the rest falls away. Guests can still scratch by hand at the same time.
+  useEffect(() => {
+    if (!autoScratch || !covered || revealedRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+
+    // Without motion, skip the brush and just let the cover fade.
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+    let start = 0;
+    let drawnTo = 0; // how far along the path, in segments, is already drawn
+
+    const pointAt = (progress: number) => {
+      const scaled = progress * (AUTO_PATH.length - 1);
+      const i = Math.min(Math.floor(scaled), AUTO_PATH.length - 2);
+      const t = scaled - i;
+      const [x1, y1] = AUTO_PATH[i];
+      const [x2, y2] = AUTO_PATH[i + 1];
+      return {
+        x: (x1 + (x2 - x1) * t) * canvas.offsetWidth,
+        y: (y1 + (y2 - y1) * t) * canvas.offsetHeight,
+      };
+    };
+
+    const step = (now: number) => {
+      if (revealedRef.current) return;
+      if (!start) start = now;
+      // A steady hand, easing only gently at the start and end, so every
+      // stroke of the scratch is visible.
+      const linear = Math.min(1, (now - start) / AUTO_DURATION_MS);
+      const eased = linear - Math.sin(2 * Math.PI * linear) / (2 * Math.PI) * 0.35;
+
+      const from = pointAt(drawnTo);
+      const to = pointAt(eased);
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = canvas.offsetWidth * BRUSH_SHARE * 1.15;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      // Pass through every corner between the last frame and this one.
+      const scaledFrom = drawnTo * (AUTO_PATH.length - 1);
+      const scaledTo = eased * (AUTO_PATH.length - 1);
+      for (let i = Math.floor(scaledFrom) + 1; i <= scaledTo; i++) {
+        const [x, y] = AUTO_PATH[i];
+        ctx.lineTo(x * canvas.offsetWidth, y * canvas.offsetHeight);
+      }
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+      ctx.restore();
+      drawnTo = eased;
+
+      if (linear < 1) frame = requestAnimationFrame(step);
+      else revealRef.current();
+    };
+
+    const timer = window.setTimeout(() => {
+      if (still) revealRef.current();
+      else frame = requestAnimationFrame(step);
+    }, autoDelayMs);
+
+    return () => {
+      window.clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+  }, [autoScratch, covered, autoDelayMs]);
 
   /** Fraction of the cover already cleared, sampled on a coarse grid. */
   const clearedShare = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
@@ -191,7 +301,7 @@ export default function ScratchHeart({
   };
 
   const onPointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
-    if (revealed) return;
+    if (revealedRef.current) return;
     scratching.current = true;
     last.current = null;
     event.currentTarget.setPointerCapture(event.pointerId);

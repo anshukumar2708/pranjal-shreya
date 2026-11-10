@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCountdown } from "@/hooks/useCountdown";
 import AddToCalendarButton from "@/components/ui/AddToCalendarButton";
@@ -68,8 +68,30 @@ export default function Countdown({
   const { days, hours, minutes, seconds, isComplete, isReady } = useCountdown(target);
   // "24 November 2026" -> one heart each for the day, month and year.
   const dateParts = targetLabel.split(" ");
-  const [revealedCount, setRevealedCount] = useState(0);
+  const [revealedParts, setRevealedParts] = useState<boolean[]>(() => dateParts.map(() => false));
+  const revealedCount = revealedParts.filter(Boolean).length;
   const allRevealed = revealedCount >= dateParts.length;
+
+  // Once the hearts are on screen they scratch themselves open one by one —
+  // day, then month, then year. Any heart a guest opens by hand is skipped.
+  const heartsRef = useRef<HTMLDivElement>(null);
+  const [heartsInView, setHeartsInView] = useState(false);
+  useEffect(() => {
+    const row = heartsRef.current;
+    if (!row) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeartsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.6 },
+    );
+    observer.observe(row);
+    return () => observer.disconnect();
+  }, []);
+  const autoIndex = heartsInView ? revealedParts.indexOf(false) : -1;
 
   // The grand finale once the whole date is out, just after the last
   // heart's own popper so the two read as one celebration.
@@ -150,12 +172,21 @@ export default function Countdown({
 
         {/* Date as three scratch-card hearts: day, month, year. */}
         <p className="sr-only">{targetLabel}</p>
-        <div className="mt-7 flex items-center justify-center gap-[clamp(0.5rem,3vw,2rem)]">
+        <div
+          ref={heartsRef}
+          className="mt-7 flex items-center justify-center gap-[clamp(0.5rem,3vw,2rem)]"
+        >
           {dateParts.map((part, index) => (
             <ScratchHeart
               key={part}
               label={DATE_PART_LABELS[index]?.label ?? "the date"}
-              onReveal={() => setRevealedCount((count) => count + 1)}
+              onReveal={() =>
+                setRevealedParts((parts) => parts.map((done, i) => done || i === index))
+              }
+              autoScratch={index === autoIndex}
+              // Guests get 2 seconds with the hearts before the day starts
+              // scratching itself; then each next heart follows shortly after.
+              autoDelayMs={index === 0 ? 2000 : 1000}
               shimmerDelayMs={index * 600}
               celebrate={allRevealed}
               // Three across fit a 320px phone: 3 x 27vw plus the gaps stays inside the padding.
