@@ -3,6 +3,14 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import Mandala from "@/components/decorations/Mandala";
+import { TypedText, useTypewriter } from "@/components/ui/Typewriter";
+
+/** The button's label, typed in letter by letter, over and over. */
+const BUTTON_LABEL = "Open Invitation";
+/** Pause before the label first types itself in. */
+const BUTTON_TYPE_DELAY_MS = 500;
+/** How long the full label rests before it types itself in again. */
+const BUTTON_RETYPE_MS = 1500;
 
 /** Fired on `window` as the invitation's inner doors open onto the page. */
 export const INVITATION_OPEN_EVENT = "invitation:open";
@@ -76,6 +84,22 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
   const fadeRef = useRef<number | null>(null);
   /** Set once the card is tapped open, so the welcome tune never restarts. */
   const openedRef = useRef(false);
+
+  // The button label types itself in, rests a moment, then types in again —
+  // continuously, so the eye keeps coming back to it.
+  const [labelStarted, setLabelStarted] = useState(false);
+  const label = useTypewriter([BUTTON_LABEL], labelStarted, { letterMs: 110 });
+  const { done: labelDone, restart: retypeLabel } = label;
+  useEffect(() => {
+    const timer = window.setTimeout(() => setLabelStarted(true), BUTTON_TYPE_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+  useEffect(() => {
+    if (!labelDone) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(retypeLabel, BUTTON_RETYPE_MS);
+    return () => window.clearTimeout(timer);
+  }, [labelDone, retypeLabel]);
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -354,7 +378,7 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           className="pointer-events-none absolute inset-4 rounded-[1.75rem] border border-gold-400/40 sm:inset-8"
         />
 
-        <div className="relative flex max-w-md flex-col items-center">
+        <div className="relative flex w-full max-w-[500px] flex-col items-center">
           <p lang="hi" className="font-body text-lg font-medium text-marigold-300 sm:text-xl">
             ॥ श्री गणेशाय नमः ॥
           </p>
@@ -383,10 +407,19 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
             ref={buttonRef}
             type="button"
             onClick={open}
-            className="mt-[clamp(1.5rem,6dvh,4rem)] inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-6 py-4 whitespace-nowrap sm:mt-10 sm:px-8 font-serif-alt text-sm font-semibold tracking-[0.2em] text-maroon-900 uppercase transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
+            className="mt-[clamp(1.5rem,6dvh,4rem)] inline-flex w-[calc(100%-1.25rem)] max-w-[500px] items-center justify-center gap-3 rounded-full border-2 border-black shadow-[0_8px_18px_rgba(0,0,0,0.65)] bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-6 py-4 whitespace-nowrap sm:mt-10 sm:px-8 font-serif-alt text-sm font-bold tracking-[0.2em] text-maroon-900 uppercase [-webkit-text-stroke:0.5px_currentColor] transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
           >
             <span aria-hidden="true">💌</span>
-            Open Invitation
+            {/* Untyped letters stay in place, transparent, so the button never
+                changes size and screen readers always hear the whole label. */}
+            <span>
+              <TypedText
+                text={BUTTON_LABEL}
+                shown={label.shown[0]}
+                caret={label.caretLine === 0}
+                caretClassName="bg-maroon-900"
+              />
+            </span>
           </button>
           <p className="mt-[clamp(0.75rem,2.5dvh,1.5rem)] font-body text-xs text-cream-200/70 sm:mt-4">
             Tap to open · music will play

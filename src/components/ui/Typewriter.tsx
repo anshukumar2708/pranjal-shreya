@@ -54,11 +54,13 @@ export function useTypewriter(
   return { shown, caretLine, done, restart };
 }
 
-/** Gold typing cursor. Zero-width, so it never nudges the text around it. */
-function Caret() {
+/** Typing cursor, gold by default. Zero-width, so it never nudges the text around it. */
+function Caret({ className = "bg-marigold-300" }: { className?: string }) {
   return (
     <span aria-hidden="true" className="relative inline-block w-0">
-      <span className="absolute -top-[0.85em] left-[0.06em] h-[1em] w-[2px] bg-marigold-300 animate-[caretBlink_1s_steps(1)_infinite]" />
+      <span
+        className={`absolute -top-[0.85em] left-[0.06em] h-[1em] w-[2px] animate-[caretBlink_1s_steps(1)_infinite] ${className}`}
+      />
     </span>
   );
 }
@@ -68,11 +70,22 @@ function Caret() {
  * there, only transparent, so the line keeps its exact size and position, and
  * screen readers and search engines always read it whole.
  */
-export function TypedText({ text, shown, caret }: { text: string; shown: number; caret: boolean }) {
+export function TypedText({
+  text,
+  shown,
+  caret,
+  caretClassName,
+}: {
+  text: string;
+  shown: number;
+  caret: boolean;
+  /** Colour of the cursor, e.g. "bg-maroon-900" on a light background. */
+  caretClassName?: string;
+}) {
   return (
     <>
       {text.slice(0, shown)}
-      {caret ? <Caret /> : null}
+      {caret ? <Caret className={caretClassName} /> : null}
       {shown < text.length ? <span className="opacity-0">{text.slice(shown)}</span> : null}
     </>
   );
