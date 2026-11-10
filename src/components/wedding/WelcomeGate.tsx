@@ -407,9 +407,15 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
             ref={buttonRef}
             type="button"
             onClick={open}
-            className="mt-[clamp(1.5rem,6dvh,4rem)] inline-flex w-[calc(100%-1.25rem)] max-w-[500px] items-center justify-center gap-3 rounded-full border-2 border-black shadow-[0_8px_18px_rgba(0,0,0,0.65)] bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-6 py-4 whitespace-nowrap sm:mt-10 sm:px-8 font-serif-alt text-sm font-bold tracking-[0.2em] text-maroon-900 uppercase [-webkit-text-stroke:0.5px_currentColor] transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
+            className="mt-[clamp(1.5rem,6dvh,4rem)] inline-flex w-[calc(100%-1.25rem)] max-w-[500px] items-center justify-center gap-[0.6em] rounded-full border-2 border-black shadow-[0_8px_18px_rgba(0,0,0,0.65)] bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-4 py-4 whitespace-nowrap sm:mt-10 sm:px-8 font-serif-alt text-[clamp(0.9rem,4.6vw,1.6rem)] font-bold tracking-[0.12em] text-maroon-900 uppercase [-webkit-text-stroke:0.04em_currentColor] transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:tracking-[0.2em]"
+            // The label grows with the button (which follows the screen width,
+            // up to 500px), and its thickening stroke grows with it, so it
+            // stays just as bold at every size.
           >
-            <span aria-hidden="true">💌</span>
+            {/* Sized in em, so the icon grows and shrinks with the label. */}
+            <span aria-hidden="true" className="text-[1.4em] leading-none [-webkit-text-stroke:0]">
+              💌
+            </span>
             {/* Untyped letters stay in place, transparent, so the button never
                 changes size and screen readers always hear the whole label. */}
             <span>
