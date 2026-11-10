@@ -3,14 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import Mandala from "@/components/decorations/Mandala";
-import { TypedText, useTypewriter } from "@/components/ui/Typewriter";
-
-/** The button's label, typed in letter by letter. */
-const BUTTON_LABEL = "Open Invitation";
-/** Pause before the label first types itself in. */
-const BUTTON_TYPE_DELAY_MS = 600;
-/** How long the full label rests before it types itself in again. */
-const BUTTON_RETYPE_MS = 3000;
 
 /** Fired on `window` as the invitation's inner doors open onto the page. */
 export const INVITATION_OPEN_EVENT = "invitation:open";
@@ -84,22 +76,6 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
   const fadeRef = useRef<number | null>(null);
   /** Set once the card is tapped open, so the welcome tune never restarts. */
   const openedRef = useRef(false);
-
-  // The button label types itself in, rests, then types in again, so the
-  // eye keeps coming back to it.
-  const [labelStarted, setLabelStarted] = useState(false);
-  const label = useTypewriter([BUTTON_LABEL], labelStarted, { letterMs: 110 });
-  const { done: labelDone, restart: retypeLabel } = label;
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLabelStarted(true), BUTTON_TYPE_DELAY_MS);
-    return () => window.clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    if (!labelDone) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setTimeout(retypeLabel, BUTTON_RETYPE_MS);
-    return () => window.clearTimeout(timer);
-  }, [labelDone, retypeLabel]);
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -359,9 +335,7 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
 
       {/* The card's face — fades first, before anything moves. */}
       <div
-        // On phones the bottom padding keeps the content clear of the music
-        // control in the corner; wider screens have room beside it.
-        className="absolute inset-0 flex items-center justify-center px-5 pt-12 pb-28 text-center sm:px-6 sm:py-16"
+        className="absolute inset-0 flex items-center justify-center px-6 text-center"
         style={{
           transition: `opacity ${FADE_MS}ms ease-out`,
           opacity: opening ? 0 : 1,
@@ -381,20 +355,20 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
           <p lang="hi" className="font-body text-lg font-medium text-marigold-300 sm:text-xl">
             ॥ श्री गणेशाय नमः ॥
           </p>
-          <p className="mt-5 font-serif-alt text-xs leading-relaxed tracking-[0.3em] text-cream-200/85 uppercase sm:mt-6 sm:text-sm">
+          <p className="mt-6 font-serif-alt text-xs tracking-[0.3em] text-cream-200/85 uppercase sm:text-sm">
             You are invited to the wedding of
           </p>
 
           <h2
             id="welcome-heading"
-            className="gold-text mt-5 flex flex-col items-center gap-1 pb-2 font-script text-[3.25rem] leading-[1.15] sm:mt-6 sm:text-7xl"
+            className="gold-text mt-4 flex flex-col items-center pb-2 font-script text-6xl leading-tight sm:text-7xl"
           >
             <span>{groomName}</span>
-            <span className="text-3xl sm:text-5xl">&amp;</span>
+            <span className="text-4xl sm:text-5xl">&amp;</span>
             <span>{brideName}</span>
           </h2>
 
-          <div className="mt-5 flex items-center gap-3 sm:mt-6">
+          <div className="mt-4 flex items-center gap-3">
             <span aria-hidden="true" className="h-px w-10 bg-gradient-to-r from-transparent to-gold-400 sm:w-16" />
             <p className="font-serif-alt text-sm tracking-[0.25em] text-cream-100 uppercase sm:text-base">
               {dateLabel}
@@ -406,30 +380,12 @@ export default function WelcomeGate({ groomName, brideName, dateLabel }: Welcome
             ref={buttonRef}
             type="button"
             onClick={open}
-            // Same marigold-gold fill; the lettering is heavy, near-black maroon
-            // with a dark rim, so the button reads at first glance.
-            className="group mt-8 inline-flex items-center gap-3 rounded-full border-[3px] border-[#2a0409] bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 py-1.5 pr-7 pl-2 font-display text-[1.25rem] font-bold tracking-[0.1em] whitespace-nowrap text-maroon-700 sm:mt-9 sm:gap-4 sm:py-2 sm:pr-11 sm:pl-2.5 sm:tracking-[0.16em] uppercase [-webkit-text-stroke:0.6px_var(--color-maroon-700)] [text-shadow:0_1px_0_rgba(255,240,208,0.55)] transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-[1.85rem]"
+            className="mt-10 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-marigold-400 via-gold-400 to-marigold-400 px-8 py-4 font-serif-alt text-sm font-semibold tracking-[0.2em] text-maroon-900 uppercase transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream-100 active:scale-95 motion-safe:animate-[gatePulse_2.2s_ease-out_infinite] sm:text-base"
           >
-            <span
-              aria-hidden="true"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#2a0409] text-lg [text-shadow:none] transition-transform group-hover:rotate-[-8deg] sm:h-11 sm:w-11 sm:text-xl"
-            >
-              💌
-            </span>
-            {/* Untyped letters stay in place, transparent, so the button never
-                changes size and screen readers always hear the whole label. */}
-            <span>
-              <TypedText
-                text={BUTTON_LABEL}
-                shown={label.shown[0]}
-                caret={label.caretLine === 0}
-                caretClassName="bg-maroon-700"
-              />
-            </span>
+            <span aria-hidden="true">💌</span>
+            Open Invitation
           </button>
-          <p className="mt-5 font-body text-xs tracking-wide text-cream-200/70">
-            Tap to open · music will play
-          </p>
+          <p className="mt-4 font-body text-xs text-cream-200/70">Tap to open · music will play</p>
         </div>
       </div>
 
